@@ -13,5 +13,7 @@ variants = [for(l=lengths) for(d=diameters) [l, l/80*20, 1, d, l/80*0.9, 1.5, [0
 // For reed 2.0! //
 ///////////////////
 
-heigth_cut_prcnt = [11, 12, 15];
-variants2 = [for(l=lengths) for(d=diameters) for(h=heigth_cut_prcnt) [l, l/80*20, d, h]];
+// heigth_cut_prcnt = [11, 12, 15];
+heigth_cut_prcnt = [15];
+leaf_degrees = [0.5, 1, 1.5, 2];
+variants2 = [for(l=lengths) for(d=diameters) for(h=heigth_cut_prcnt) for(ld=leaf_degrees) [l, l/80*20, d, h, ld]];

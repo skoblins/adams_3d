@@ -43,7 +43,7 @@ module reed_ending(total_length, end_length, d) {
 }
 
 module reed_base(total_length, end_length, d){
-    translate([0,0,end_length]) {
+    translate([0, 0, end_length]) {
         // główny cylinder
         cylinder(h=total_length - end_length, d=d, center = false);
         reed_ending(total_length, end_length, d);
@@ -116,15 +116,38 @@ module leaf_holder(total_length, end_length, d, wall_thickness, flattening_degre
     }
 }
 
-module leaf_plane(total_length, end_length, d, wall_thickness, flattening_degree, flattening_offset){
+module leaf_plane(total_length, end_length, d, wall_thickness, flattening_degree, flattening_offset, thickness_offset){
     
-    translate([0, -wall_thickness/2, total_length - 0.3]) rotate([-(flattening_degree+flattening_offset), 180, 0]) intersection(){
-        translate([-d/2, d/2 + wall_thickness/2, 0]) rotate([flattening_degree, 0, 0]) cube([d, wall_thickness/2, (total_length-end_length - d)], center = false);
-        translate([0, /*d/2 - */wall_thickness/2, 0]) cylinder(h = (total_length - end_length), d = d, center = false);    
+    translate([0, -wall_thickness/2 - sin(flattening_offset) * (total_length - end_length), total_length - 0.3]) rotate([-(flattening_degree + flattening_offset), 180, 0]) intersection(){
+        translate([-d/2, d/2 + wall_thickness/2, 0]) rotate([flattening_degree, 0, 0]) cube([d, wall_thickness/2 + thickness_offset, (total_length-end_length - d)], center = false);
+        translate([0, /*d/2 - */wall_thickness/2, 0]) cylinder(h = (total_length - end_length), d = d, center = false);
     }
 }
 
-module leaf(total_length, end_length, cap_length, d, wall_thickness=1, flattening_degree, hole_proportions, flattening_offset){
+module leaf(total_length, end_length, cap_length, d, wall_thickness, flattening_degree, hole_proportions, flattening_offset, thickness_offset){
     leaf_holder(total_length, end_length, d, wall_thickness, flattening_degree);
-    leaf_plane(total_length, end_length, d, wall_thickness, flattening_degree, flattening_offset);
+    leaf_plane(total_length, end_length, d, wall_thickness, flattening_degree, flattening_offset, thickness_offset);
 }
+
+///////////////
+// Reed 2.0! //
+///////////////
+
+
+module reed2_base(total_length, end_length, d){
+    wall_thickness = 0.1 * d;
+    difference() {
+        reed_base(total_length, end_length, d);
+        translate([0, 0, -0.1]) cylinder(h = total_length * 1.1, d = d - wall_thickness * 2);
+    }
+    translate([0, 0, total_length - wall_thickness]) cylinder(h = wall_thickness, d = d);
+}
+
+module reed2(total_length, end_length, d, heigth_cut_prcnt) {
+    difference(){
+        reed2_base(total_length, end_length, d);
+        scale([1,1,1]) translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60], center=false);
+    }
+    // translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60], center=false);
+}
+

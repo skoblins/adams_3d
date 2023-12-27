@@ -1,7 +1,7 @@
 include <reed/reed.scad>
 include <variants.scad>
 
-$fn=100;
+$fn=20;
 
 max_in_a_row = 6;
 

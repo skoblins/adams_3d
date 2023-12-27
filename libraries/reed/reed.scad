@@ -29,7 +29,7 @@ module partial_pipe(length, outer_diameter, thickness, completeness_percent=33){
 module reed_ending(total_length, end_length, d) {
     // pogrubienie przy mocowaniu
     translate([0,0,-end_length]){
-        flute_count = 20;
+        flute_count = 10;
         difference() { //karbowanie
             cylinder(h=end_length,r2=d*1.1/2,r1=d*0.9/2,center=false);
             for(i=[1:flute_count]){
@@ -45,7 +45,7 @@ module reed_ending(total_length, end_length, d) {
 module reed_base(total_length, end_length, d){
     translate([0, 0, end_length]) {
         // główny cylinder
-        cylinder(h=total_length - end_length, d=d, center = false);
+        cylinder(h=total_length - end_length, d=d);
         reed_ending(total_length, end_length, d);
     } // wyrównanie po dodaniu końcówki
 }
@@ -178,16 +178,20 @@ module reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, leaf_degree){
 }
 
 module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
+    halved_leaf_degree = leaf_degree/2;
     difference() {
         reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt);
-        reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree);
+        reed2_cut(total_length, d, heigth_cut_prcnt, halved_leaf_degree);
     }
-    reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, leaf_degree);
+    reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, halved_leaf_degree);
 
-    %intersection(){
+    translate([d/2, 0, 0.35 * total_length]) rotate([0, halved_leaf_degree, 0]) translate([-d/2, 0, -0.35 * total_length]) intersection(){
         cylinder(h=total_length * 0.94, d=d);
-        translate([0, 0, -0.01*total_length]) translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60], center=false);
-        // rotate([0, leaf_degree, 0]) reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree);
+        translate([0, 0, -0.001*total_length]) translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60]);
     }
+
+    my_text = str("L", total_length, " EL", end_length, " D", d, " HC", heigth_cut_prcnt, " LD", leaf_degree);
+    wall_thickness = d * 0.1;
+    translate([d/8,-d/2+wall_thickness/8, end_length+d]) rotate([0,-90,90]) linear_extrude(wall_thickness/4) text(my_text, size = (total_length - end_length)/48);
 }
 

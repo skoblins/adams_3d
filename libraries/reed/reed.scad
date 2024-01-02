@@ -142,10 +142,22 @@ module reed2_base(total_length, end_length, d){
     }
 }
 
+module reed2_leaf_socket(heigth_cut_prcnt, d, total_length) {
+    // deepens the cut, for more secure leaf hold
+    translate([-heigth_cut_prcnt/120 * d, 0, 0]) cube(size=[heigth_cut_prcnt/50 * d * 1.1, d, total_length * 0.1]);
+}
+
+module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
+    translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.25 * total_length]) {
+        cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.70]);
+        reed2_leaf_socket(heigth_cut_prcnt, d, total_length);
+    }
+}
+
 module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
     difference(){
         reed2_base(total_length, end_length, d);
-        translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60], center=false);
+        reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
     }
 }
 
@@ -161,10 +173,10 @@ module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
     }
 }
 
-module reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, leaf_degree){
+module reed2_filling_at_end(total_length, end_length, d, heigth_cut_prcnt, leaf_degree){
     // filling
     intersection(){
-        translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) {
+        translate([d/1.9 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) {
             rotate([0, -2*leaf_degree, 0]) rotate([180, 90, -90]) {
                 rotate_extrude(angle = leaf_degree, $fn=100) {
                     rotate([0, 0, 90]) {
@@ -177,21 +189,32 @@ module reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, leaf_degree){
     }
 }
 
+module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt) {
+    wall_thickness = d * 0.1;
+    intersection(){
+        cylinder(h=total_length * 0.94, d=d);
+        reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
+    }
+    translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
+}
+
+module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
+    my_text = str("L", total_length, " EL", end_length, " D", d, " HC", heigth_cut_prcnt, " LD", leaf_degree);
+    linear_extrude(wall_thickness/4) text(my_text, size = (total_length - end_length)/32);
+}
+
 module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
     halved_leaf_degree = leaf_degree/2;
-    difference() {
-        reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt);
-        reed2_cut(total_length, d, heigth_cut_prcnt, halved_leaf_degree);
-    }
-    reed2_cut_filling_at_end(total_length, d, heigth_cut_prcnt, halved_leaf_degree);
-
-    translate([d/2, 0, 0.35 * total_length]) rotate([0, halved_leaf_degree, 0]) translate([-d/2, 0, -0.35 * total_length]) intersection(){
-        cylinder(h=total_length * 0.94, d=d);
-        translate([0, 0, -0.001*total_length]) translate([d/2 - d * heigth_cut_prcnt / 100, -d/2, 0.35 * total_length]) cube(size=[heigth_cut_prcnt/100 * d * 1.1, d, total_length * 0.60]);
-    }
-
-    my_text = str("L", total_length, " EL", end_length, " D", d, " HC", heigth_cut_prcnt, " LD", leaf_degree);
     wall_thickness = d * 0.1;
-    translate([d/8,-d/2+wall_thickness/8, end_length+d]) rotate([0,-90,90]) linear_extrude(wall_thickness/4) text(my_text, size = (total_length - end_length)/48);
+    difference() {
+        reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt); // just a flat cut
+        reed2_cut(total_length, d, heigth_cut_prcnt, halved_leaf_degree); // deeper cut, half of the leaf degree is added here
+    }
+
+    reed2_filling_at_end(total_length, end_length, d, heigth_cut_prcnt, leaf_degree);
+
+    // reed2_leaf(d, total_length, halved_leaf_degree, heigth_cut_prcnt);
+    translate([d/8,-d/2+wall_thickness/8, end_length+d]) rotate([0,-90,90]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
 }
+
 

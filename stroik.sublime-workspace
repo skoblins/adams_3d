@@ -1,0 +1,1080 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"thi",
+				"thickness_offsets"
+			],
+			[
+				"fla",
+				"flattening_offset"
+			],
+			[
+				"flattening",
+				"flattening_offset"
+			],
+			[
+				"len",
+				"lengths"
+			],
+			[
+				"ca",
+				"cap_length"
+			],
+			[
+				"lea",
+				"leaf_plane"
+			],
+			[
+				"la",
+				"leaf_holder"
+			],
+			[
+				"pro",
+				"product_owner_messages"
+			],
+			[
+				"rin",
+				"ring_zmq_connector"
+			],
+			[
+				"uint",
+				"uint16_t"
+			],
+			[
+				"if",
+				"ifmain"
+			],
+			[
+				"CMAKE_SYSTEM_",
+				"CMAKE_EFFECTIVE_SYSTEM_NAME"
+			],
+			[
+				"SHARED",
+				"SHARED_INTERNAL_DIR"
+			],
+			[
+				"add_com",
+				"add_compile_definitions"
+			],
+			[
+				"add_de",
+				"add_definitions"
+			],
+			[
+				"inc",
+				"inc_root"
+			],
+			[
+				"file",
+				"filepattern"
+			],
+			[
+				"add",
+				"add_dependencies\tbuiltin"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"instll",
+				"Package Control: Install Package"
+			],
+			[
+				"uni",
+				"Permute Lines: Unique"
+			],
+			[
+				"sort",
+				"Sort Lines (Case Sensitive)"
+			],
+			[
+				"uniq",
+				"Permute Lines: Unique"
+			],
+			[
+				"sor",
+				"Sort Lines (Case Sensitive)"
+			],
+			[
+				"per",
+				"Permute Lines: Reverse"
+			],
+			[
+				"setting",
+				"Preferences: Settings"
+			],
+			[
+				"prett",
+				"Pretty JSON: Format JSON"
+			],
+			[
+				"clo",
+				"Project: Close"
+			],
+			[
+				"previ",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"prei",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"add",
+				"Project: Add Folder"
+			],
+			[
+				"close",
+				"Project: Close"
+			],
+			[
+				"mark",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"wrap",
+				"Word Wrap: Toggle"
+			],
+			[
+				"pretty",
+				"Pretty JSON: Format JSON"
+			],
+			[
+				"pret",
+				"Pretty JSON: Format and Sort JSON"
+			],
+			[
+				"git blam",
+				"Git: Blame"
+			],
+			[
+				"git co",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git push",
+				"Git: Push Current Branch"
+			],
+			[
+				"git qui",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git checkou",
+				"Git: Checkout Current File"
+			],
+			[
+				"git commit",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"quick",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git diff",
+				"Git: Diff Current File"
+			],
+			[
+				"git ",
+				"Git: Blame"
+			],
+			[
+				"git blame",
+				"Git: Blame"
+			],
+			[
+				"gitdiff",
+				"Git: Diff Current File"
+			],
+			[
+				"set cmak",
+				"Set Syntax: CMake"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Install Package Control"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 131.199996948,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/SkbA/Documents/OpenSCAD",
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries",
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries/reed",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik"
+	],
+	"file_history":
+	[
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries/reed/reed.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik/listki.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik/variants.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik/playground.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik/rurki-D.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik/stroik.scad",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2024_01_18/bin/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release/meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2024_01_18/start_all.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2024_01_18/start_dhw.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2024_01_18/HPMU_basic.json",
+		"/C/Users/SkbA/Downloads/Vitocal_262_Boroń/Vitocal_262/2024_01/Vitocal_262_T2E.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_11/bin/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_11/start_dhw.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_11/bin/start_hmi.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_11/bin/start_dhw.bat",
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries/reed.scad",
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries/stroik",
+		"/C/Users/SkbA/Documents/OpenSCAD/libraries/reed",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/Post_Build_Firmware.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_11/HPMU_basic.json",
+		"/C/Users/SkbA/Documents/OpenSCAD/stroik-przebierka-D.scad",
+		"/C/work/e3_ecu/DHW_release/HPMU_basic.json",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/stlink_flash.bat",
+		"/C/work/e3_tools/ring-udce/src/helpers/setenv.bat",
+		"/C/work/e3_tools/ring-udce/src/helpers/readme.txt",
+		"/C/work/e3_ecu/0116_hmi/CMakeLists.txt",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/start_simulation.bat",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/GCC_x86/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10_26/start_dhw.bat",
+		"/C/work/e3_ecu/DHW_release/start_all.bat",
+		"/C/work/e3_ecu/0116_hmi/x86/start_hmi.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/start_hmi.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10_26/setenv.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10_26/start_simulation.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10_26/bin/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/setenv.bat",
+		"/C/work/e3_ecu/DHW_release/HPMU_2023_10_basic.json",
+		"/C/work/e3_tools/ring-udce/src/helpers/start_hmi.bat",
+		"/C/work/e3_ecu/0116_hmi/x86/src/main.cpp",
+		"/C/work/e3_ecu/0116_hmi/Source/Main/src/main.c",
+		"/C/work/e3_ecu/0116_hmi/Source/Main/inc/main_conf.h",
+		"/C/Users/SkbA/Downloads/DHW_HP_Release_2022_49/0082_HPMU/822249.cfg",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11_basic.json",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11/0020_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/bin/meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/bin/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/HPMU_2023_10_basic.json",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/bin/0116_hmi_meta.json",
+		"/C/work/e3_ecu/DHW_release/DHW_2023_10.json",
+		"/C/work/e3_ecu/DHW_release/DHW_2023_10/0082_hpmu_meta.json",
+		"/C/work/e3_ecu/DHW_release/DHW_2023_10/0116_hmi_meta.json",
+		"/C/work/e3_ecu/DHW_release/DHW_2023_10/meta.json",
+		"/C/work/e3_tools/ring-udce/src/setenv.bat",
+		"/C/work/e3_tools/ring-udce/src/start_hmi.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/bin/start_hmi.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/bin/start_dhw.bat",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11/0021_vcmu_meta.json",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11/0040_ehcu_meta.json",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11/start_wifi.bat",
+		"/C/work/e3_ecu/0116_hmi/x86/src/target_related/main_conf.h",
+		"/C/work/e3_ecu/0116_hmi/Source/Main/src/Peri.c",
+		"/C/work/e3_tools/ring-udce/setenv.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/HPMU_2022_11_basic.json",
+		"/C/Users/SkbA/Downloads/HPMU_2022_11/HPMU_2022_11/start_simulation.bat",
+		"/C/work/e3_ecu/DHW_release_test/DHW_2023_10/set_env.bat",
+		"/C/work/e3_ecu/DHW_release/DHW_release.json",
+		"/C/msys64/home/SkbA/openai/wunderfwaffe/self_solving.py",
+		"/C/work/e3_ecu/0002_hmu/Development/Project/Iar/stm32f412xG.icf",
+		"/C/work/e3_ecu/0082_hpmu-project.sublime-project",
+		"/C/work/e3_ecu/0002_hmu/Development/Sources/Firmware/App/main.cpp",
+		"/C/msys64/usr/bin/pipenv",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/db_based_components/VERSION.md",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/db_based_components/DB_Tools/checkSubmoduleVersion.bat",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/db_based_components/CHANGELOG.md",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/db_based_components/README.md",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/output/debug/0082_HPMU_application.map",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/01_ECU_test.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/services/adc_sensors/src/sensors_characteristics.c",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Firmware/App/hpmu/unittest/odx_export.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/odx/include/odx_export_0082.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/services/adc_sensors/inc/sensors_characteristics.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ring_message/ring_message.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Framework/Ring.py",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-29-42.log",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-29-16.log",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-28-52.log",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-27-59.log",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-25-55.log",
+		"/C/Program Files/hterm-windows/output_2023-04-18_12-30-35.log",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/output/debug/0082_HPMU_application.json",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/Debug/Exe/0082_HPMU.out",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Framework/Test.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Framework/Nrpul.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/zmq_connector/zmq_connector_exceptions.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/zmq_connector/zmq_connector.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ring_connector.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/ECU_test.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/zmq_connector/zmq_subscriber.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/zmq_connector/zmq_publisher.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Firmware/Middleware/ucomm/uc_uart.cpp",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Readme.md",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Firmware/Middleware/ucomm/uc_crc.cpp",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/odx/include/odx_export.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/.env",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tests/test_ring.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/odx/include/odx_export_0083.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/libplusbus/Export.h",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Framework/UComm.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Firmware/PrjCfg/db_based_components/MySQL/hpmu_def_unsupported_odx_vdds.sql",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/odx/include/green_odx_export.h",
+		"/C/work/e3_ecu/db_user_settings.bat",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ring_zmq_connector.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/abstract_interfaces/ecu_interface.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ecu.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ring_dll_api/ring_dll_api.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/Sources/Shared/Internal/ring/tools/python/connector/ecu_connector.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/DC_test.py",
+		"/C/work/e3_ecu/0082_hpmu/Readme.md",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/0082_HPMU.ewp",
+		"/C/work/e3_ecu/0082_hpmu/Development/Project/Iar/0082_HPMU.ewt",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/ring.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/self_test_64.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/self_test.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/Pipfile",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/connector/abstract_interfaces/ecu_interface.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/connector/zmq_connector/zmq_connector.py",
+		"/C/work/e3_ecu/0082_hpmu/Development/IntegrationTests/connector/zmq_connector/zmq_publisher.py"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 150.0,
+		"where_history":
+		[
+			"*.h",
+			"*.py",
+			"*.h",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"observed",
+			"ster",
+			"sterole",
+			"solidoro",
+			"rozary",
+			"rozawin",
+			"heigth_cut_prcnt",
+			"];\n",
+			"    \n",
+			"(/\\*flattening_degree=\\*/)1\\.5",
+			"^.*(\\d\\d:\\d\\d:\\d\\d: ).*(bus_state_\\.bus_voltage_10mv:.*)",
+			"^.*(bus_state_\\.bus_voltage_10mv:.*)",
+			"partial_pipe",
+			"resize",
+			"($\\s+\\[)[^,]+,",
+			"$\\s+\\[[^,]+,",
+			".*(0x\\w+).*",
+			"[^`]*`([^']*)'",
+			"^.*in function.*$",
+			"[^`]*`([^']*)'",
+			"TASK_REG_Ctrl",
+			"product_owner_messages",
+			"assisten",
+			"STR_9ByteStrucElectCurreSenso",
+			"inprogress",
+			"^[5\\s]+ 02",
+			"03[\\sF]+",
+			"03 (FF)+",
+			"FF",
+			"03",
+			"77 \\d\\d \\d\\d 43",
+			"5B 10 82",
+			"9C 10 83",
+			"5B 10 82",
+			"5B 01 82",
+			"25B",
+			"5B",
+			"DEBUG_HELPER_VT100SUPPORT",
+			"0x803'7",
+			"0x803'7E",
+			"0x8037E26",
+			"amperAnodeTab",
+			"60500",
+			"InterpretNrpul",
+			"RING_GPIO_IN_LIN_6",
+			"corrosion_diag",
+			"DOP_2ByteIdentInt16Amper",
+			"STR_16ByteStrucThreePhasePerfoWatt",
+			"ThreePhaseInverterCurrent",
+			"power",
+			"RingZmqConnector",
+			",.*",
+			"open_dll",
+			"ring_api",
+			"popen",
+			"msl.loadlib",
+			"EcuInterface",
+			"^.*data: "
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"\\12",
+			"\\1\\2",
+			"\\1",
+			"[",
+			"\\1",
+			"\\1\n",
+			"",
+			"\\1\n",
+			"\\1",
+			"02",
+			"03\n",
+			"\n",
+			""
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": false
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 40.8
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 127.0
+	},
+	"pinned_build_system": "",
+	"project": "stroik.sublime-project",
+	"replace":
+	{
+		"height": 44.8
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"cmake",
+				"CMakeLists.txt"
+			],
+			[
+				"main_con",
+				"Source\\Main\\inc\\main_conf.h"
+			],
+			[
+				"Peri.c",
+				"Source\\Main\\src\\Peri.c"
+			],
+			[
+				"main_conf.h",
+				"Source\\Main\\inc\\main_conf.h"
+			],
+			[
+				"main",
+				"Source\\Main\\src\\main.c"
+			],
+			[
+				"main.c",
+				"x86\\src\\main.cpp"
+			],
+			[
+				"main.cpp",
+				"x86\\src\\main.cpp"
+			],
+			[
+				"checkSubmoduleVersion.bat",
+				"Development\\Sources\\Shared\\Internal\\db_based_components\\DB_Tools\\checkSubmoduleVersion.bat"
+			],
+			[
+				"dbbased/readme",
+				"Development\\Sources\\Shared\\Internal\\db_based_components\\README.md"
+			],
+			[
+				"odxexport0082h",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0082.h"
+			],
+			[
+				"odx00",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0082.h"
+			],
+			[
+				"odx0082",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0082.h"
+			],
+			[
+				"odxexport82h",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0082.h"
+			],
+			[
+				"odx",
+				"Development\\Sources\\Firmware\\App\\hpmu\\unittest\\odx_export.h"
+			],
+			[
+				"sensors_characteristics.c",
+				"Development\\Sources\\Shared\\Internal\\services\\adc_sensors\\src\\sensors_characteristics.c"
+			],
+			[
+				"ring.py",
+				"Development\\IntegrationTests\\Framework\\Ring.py"
+			],
+			[
+				"Project/Iar/0082_HPMU.ewt",
+				"Development\\Project\\Iar\\0082_HPMU.ewt"
+			],
+			[
+				"Project/Iar/0082_HPMU.ewp",
+				"Development\\Project\\Iar\\0082_HPMU.ewp"
+			],
+			[
+				"0082_HPMU.ewp",
+				"Development\\Project\\Iar\\0082_HPMU.ewp"
+			],
+			[
+				"odx export",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export.h"
+			],
+			[
+				"odxexport",
+				"Development\\Sources\\Firmware\\App\\hpmu\\unittest\\odx_export.h"
+			],
+			[
+				"export",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0083.h"
+			],
+			[
+				"UComm",
+				"Development\\IntegrationTests\\Framework\\UComm.py"
+			],
+			[
+				"selfte",
+				"Development\\IntegrationTests\\self_test.py"
+			],
+			[
+				"Middleware/ucomm/uc_uart.cpp",
+				"Development\\Sources\\Firmware\\Middleware\\ucomm\\uc_uart.cpp"
+			],
+			[
+				"crc.",
+				"Development\\Sources\\Firmware\\Middleware\\ucomm\\uc_crc.cpp"
+			],
+			[
+				"odxeport82",
+				"Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export_0082.h"
+			],
+			[
+				"ring_message",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ring_message\\ring_message.py"
+			],
+			[
+				"ring_dll_api",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ring_dll_api\\ring_dll_api.py"
+			],
+			[
+				"ecu_connector.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ecu_connector.py"
+			],
+			[
+				"\\ECU_test.py",
+				"Development\\IntegrationTests\\ECU_test.py"
+			],
+			[
+				"zmq_connector\\zmq_subscriber.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\zmq_connector\\zmq_subscriber.py"
+			],
+			[
+				"connector\\zmq_connector\\zmq_publisher.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\zmq_connector\\zmq_publisher.py"
+			],
+			[
+				"zmq_connector_exceptions",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\zmq_connector\\zmq_connector_exceptions.py"
+			],
+			[
+				"zmq_connector.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\zmq_connector\\zmq_connector.py"
+			],
+			[
+				"Shared\\Internal\\ring\\tools\\python\\connector\\ring_connector.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ring_connector.py"
+			],
+			[
+				"connector\\ring_zmq_connector.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ring_zmq_connector.py"
+			],
+			[
+				"abstract_interfaces\\ecu_interface.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\abstract_interfaces\\ecu_interface.py"
+			],
+			[
+				"python\\connector\\ecu.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ecu.py"
+			],
+			[
+				"ring_dll_api.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ring_dll_api\\ring_dll_api.py"
+			],
+			[
+				"connector/ecu.py",
+				"Development\\Sources\\Shared\\Internal\\ring\\tools\\python\\connector\\ecu.py"
+			],
+			[
+				"rea",
+				"Readme.md"
+			],
+			[
+				"cmakelist",
+				"CMakeLists.txt"
+			],
+			[
+				"consolidator/cmake",
+				"dev\\src\\shared\\int\\consolidator\\unittest\\CMakeLists.txt"
+			],
+			[
+				"CMA",
+				"CMakeLists.txt"
+			],
+			[
+				"cmakelists",
+				"CMakeLists.txt"
+			],
+			[
+				"cop.h",
+				"dev\\src\\firmw\\0002_hmu\\mw\\spare_part_manager\\ut\\mock\\cop.h"
+			],
+			[
+				"src\\shared\\ext\\CANopen\\cop\\include\\cop_global.h",
+				"dev\\src\\shared\\ext\\CANopen\\cop\\include\\cop_global.h"
+			],
+			[
+				"bustopo/cmakelist",
+				"dev\\src\\firmw\\common\\PrjCfg\\bustopology\\CMakeLists.txt"
+			],
+			[
+				"etl",
+				"Development\\Sources\\Firmware\\PrjCfg\\etl\\etl_profile.h"
+			],
+			[
+				"debug_helper_cfg",
+				"Development\\Sources\\Bootloader\\PrjCfg\\debug_helper\\debug_helper_cfg.h"
+			],
+			[
+				"conversions",
+				"Development\\Sources\\Firmware\\PrjCfg\\Global\\conversions.h"
+			],
+			[
+				"vdd.ini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"TZT.c",
+				"Development\\Sources\\Firmware\\Middleware\\Time\\TZT.c"
+			],
+			[
+				"vdd_server_table.h",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\vdd_server_table.h"
+			],
+			[
+				"\\tool\\generator.py",
+				"Development\\Sources\\Shared\\Internal\\nrpul_task\\tool\\generator.py"
+			],
+			[
+				"pre_build.bat",
+				"Development\\Sources\\Shared\\Internal\\nrpul_task\\pre_build.bat"
+			],
+			[
+				"pre_build_script.bat",
+				"Development\\Sources\\Firmware\\PrjCfg\\nrpul_task\\pre_build_script.bat"
+			],
+			[
+				"prebuil",
+				"Development\\Project\\Iar\\pre-build_commands.bat"
+			],
+			[
+				"hdd.ini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"vdd_server.h",
+				"Development\\Sources\\Shared\\Internal\\vdd_server\\inc\\vdd_server.h"
+			],
+			[
+				"vddaccess.cpp",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\VddAccess.cpp"
+			],
+			[
+				"TZT.h",
+				"Development\\Sources\\Firmware\\Middleware\\Time\\TZT.h"
+			],
+			[
+				"PrjCfg/vdd_server/VddAccess.h",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\VddAccess.h"
+			],
+			[
+				"Firmware/PrjCfg/CANopen/PaFCU.c",
+				"Development\\Sources\\Firmware\\PrjCfg\\CANopen\\PaFCU.c"
+			],
+			[
+				"Middleware/Regelung_Datenverarbeitung/TVS.c",
+				"Development\\Sources\\Firmware\\Middleware\\Regelung_Datenverarbeitung\\TVS.c"
+			],
+			[
+				"system_profiling.c",
+				"Development\\Sources\\Shared\\Internal\\system_profiling\\src\\system_profiling.c"
+			],
+			[
+				"systempro.c",
+				"Development\\Sources\\Shared\\Internal\\system_profiling\\src\\system_profiling.c"
+			],
+			[
+				"hmuini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"TKF.c",
+				"Development\\Sources\\Firmware\\Middleware\\EEPROM\\TKF.c"
+			],
+			[
+				"tzt",
+				"Development\\Sources\\Firmware\\Middleware\\Time\\TZT.h"
+			],
+			[
+				"dataacc",
+				"Development\\Sources\\Firmware\\PrjCfg\\schedule\\application_interface_data_access.cpp"
+			],
+			[
+				"VddAccess.h",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\VddAccess.h"
+			],
+			[
+				"application interfac",
+				"Development\\Sources\\Firmware\\PrjCfg\\schedule\\application_interface_data_access.h"
+			],
+			[
+				"vddaccess",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\VddAccess.h"
+			],
+			[
+				"ources\\Shared\\Internal\\vdd_server\\src\\vdd_server.c",
+				"Development\\Sources\\Shared\\Internal\\vdd_server\\src\\vdd_server.c"
+			],
+			[
+				"vddacc",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\VddAccess.h"
+			],
+			[
+				"vddini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"hmu.ini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"cons",
+				"C:\\Users\\SkbA\\Documents\\cmake\\Conspect.md"
+			],
+			[
+				"HMU_MCU_CU410_Debug.json",
+				"Development\\Project\\Iar\\output\\debug\\HMU_MCU_CU410_Debug.json"
+			],
+			[
+				"",
+				"Find Results"
+			],
+			[
+				"uds_cfg.h",
+				"Development\\Sources\\Firmware\\PrjCfg\\Uds\\Inc\\uds_cfg.h"
+			],
+			[
+				"src/VddAccess.cpp",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\src\\VddAccess.cpp"
+			],
+			[
+				"inc/hmu_vdd.ini",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"inc/VddAccess.h",
+				"Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\VddAccess.h"
+			],
+			[
+				"viproje",
+				"Development\\Project\\viproject\\viproject"
+			],
+			[
+				"inc/DataNotification.h",
+				"Development\\Sources\\Shared\\Internal\\nrpul_task\\inc\\DataNotification.h"
+			],
+			[
+				".json",
+				"Development\\Project\\Iar\\output\\debug\\HMU_MCU_CU410_Debug.json"
+			],
+			[
+				"bootloader.ewp",
+				"Development\\Project\\Iar\\NRP_GWG_2018_Bootloader.ewp"
+			],
+			[
+				"standar",
+				"Development\\Project\\viproject\\commands\\standardize-includes"
+			],
+			[
+				"standa",
+				"Development\\Project\\viproject\\commands\\standardize-includes"
+			],
+			[
+				"Datanoti",
+				"Development\\Sources\\Shared\\Internal\\nrpul_task\\inc\\DataNotification.h"
+			],
+			[
+				"CMakelists",
+				"CMakeLists.txt"
+			],
+			[
+				"ut.cmake",
+				"Development\\Project\\GCC_x86\\cmake\\UT.cmake"
+			],
+			[
+				"UT.cmake",
+				"Development\\Project\\GCC_x86\\cmake\\UT.cmake"
+			],
+			[
+				"CodeGen_VV.c",
+				"Development\\Sources\\Shared\\Internal\\MethodKernel_VV\\CodeGen_VV.c"
+			],
+			[
+				"runme.bat",
+				"Development\\Project\\GCC_x86\\run_me.bat"
+			],
+			[
+				"CodeGen_VV_types.h",
+				"Development\\Sources\\Shared\\Internal\\MethodKernel_VV\\CodeGen_VV_types.h"
+			],
+			[
+				"install-ut",
+				"Development\\Project\\viproject\\commands\\install-ut-dependencies"
+			],
+			[
+				"installut",
+				"viproject\\commands\\install-ut-dependencies"
+			],
+			[
+				"common.sh",
+				"viproject\\commands\\common.sh"
+			],
+			[
+				"viproject/common.sh",
+				"e3_ecu\\0002_hmu\\viproject\\commands\\common.sh"
+			],
+			[
+				"multi",
+				"e3_ecu\\0002_hmu\\Tools\\integration_tools\\vars\\multibuild.groovy"
+			],
+			[
+				"viproreadm",
+				"e3_ecu\\0002_hmu\\viproject\\README.md"
+			],
+			[
+				"vipro",
+				"e3_ecu\\0002_hmu\\viproject\\viproject"
+			],
+			[
+				"vip",
+				"e3_ecu\\0002_hmu\\viproject\\viproject.cmd"
+			],
+			[
+				"functionmapping.c",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Firmware\\App\\function_mapping\\src\\function_mapping.cpp"
+			],
+			[
+				"odx_export",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\odx\\include\\odx_export.h"
+			],
+			[
+				"hmu_vdd.ini",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Firmware\\PrjCfg\\vdd_server\\inc\\hmu_vdd.ini"
+			],
+			[
+				"nrpul_task_tool_config.config",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Firmware\\PrjCfg\\nrpul_task\\nrpul_task_tool_config.config"
+			],
+			[
+				"generator.py",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\nrpul_task\\tool\\generator.py"
+			],
+			[
+				"prebuild",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\nrpul_task\\pre_build.bat"
+			],
+			[
+				"nrpultas",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\nrpul_task\\inc\\NrpUl_Task_Imports.h"
+			],
+			[
+				"preb",
+				"e3_ecu\\0002_hmu\\Development\\Project\\Iar\\pre-build_commands.bat"
+			],
+			[
+				"pump/unittestt",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\consumer_functions\\HotWaterController\\PumpManager\\unittest\\CirculationPumpHandlerTest.cpp"
+			],
+			[
+				"heating cir",
+				"e3_ecu\\0002_hmu\\Development\\Sources\\Shared\\Internal\\consumer_functions\\HeatingCircuitController\\HeatingCircuitController\\inc\\HeatingCircuitController.h"
+			],
+			[
+				"services",
+				"e3_ecu\\0002_hmu\\Tools\\integration_tools\\jenkins\\job_scripte\\services_unittests.groovy"
+			],
+			[
+				"buil",
+				"0002_hmu\\build.sh"
+			],
+			[
+				"nrp.h",
+				"0002_hmu\\Development\\Sources\\Shared\\Internal\\nrpul_task\\inc\\NrpUl.h"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 133.0,
+		"last_filter": "OS_DeleteTimer",
+		"selected_items":
+		[
+			[
+				"OS_DeleteTimer",
+				"OS_DeleteTimer"
+			],
+			[
+				"getVddStatusDtcList",
+				"getVddStatusDtcList"
+			],
+			[
+				"nrpul",
+				"NrpUlEncoder"
+			],
+			[
+				"local",
+				"LOCAL_NODE_ID"
+			]
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 430.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

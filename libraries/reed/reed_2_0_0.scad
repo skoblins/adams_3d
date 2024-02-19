@@ -5,7 +5,7 @@ module reed2_base(total_length, end_length, d){
     difference() {
         reed_base(total_length, end_length, d);
         union(){
-            translate([0, 0, -0.1]) cylinder(h = total_length * 0.925, d = d - wall_thickness * 2);
+            translate([0, 0, end_length-0.1]) cylinder(h = total_length * 0.7, d = d - wall_thickness * 2);
             translate([0,0,total_length*0.925]) rotate([0,90,0]) sphere(d=d*0.78);
         }
     }

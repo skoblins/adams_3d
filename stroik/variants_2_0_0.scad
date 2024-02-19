@@ -6,7 +6,7 @@
 
 lengths = [65];
 // diameters = [5, 6, 7];
-diameters = [7];
+diameters = [8];
 
 
 heigth_cut_prcnt = [12];

@@ -29,12 +29,15 @@ module partial_pipe(length, outer_diameter, thickness, completeness_percent=33){
 module reed_ending(total_length, end_length, d) {
     // pogrubienie przy mocowaniu
     translate([0,0,-end_length]){
-        flute_count = 10;
-        difference() { //karbowanie
-            cylinder(h=end_length,r2=d*1.1/2,r1=d*0.9/2,center=false);
-            for(i=[1:flute_count]){
-                translate([0,0,i*end_length/flute_count]){
-                    pipe(length=end_length/flute_count/2, outer_diameter=0.1+d*lerp(0.9, 1.1, i/flute_count), thickness=0.1, center=false);
+        flute_count = 5;
+        union() {
+            difference() { // stożek
+                cylinder(h=end_length,r2=d/2,r1=d/2*0.75,center=false);
+                translate([0,0,-end_length*0.05]) cylinder(h=end_length*1.1,r2=d/2*0.8,r1=d/2*0.65,center=false);
+            }
+            for(i=[1:flute_count]){ //karbowanie
+                translate([0,0,(i-1)*end_length/flute_count]){
+                    pipe(length=end_length/flute_count/2, outer_diameter=d*lerp(0.80, 1.1, i/flute_count), thickness=0.6, center=false);
                     // echo(i*end_length/flute_count);
                 }
             } //karby

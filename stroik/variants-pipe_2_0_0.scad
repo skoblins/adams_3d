@@ -10,7 +10,7 @@ diameters = [8];
 
 
 heigth_cut_prcnt = [12];
-leaf_degrees = [1];
+leaf_degrees = [1.1];
 variants_pipe = [for(l=lengths) for(d=diameters) for(h=heigth_cut_prcnt) for(ld=leaf_degrees) [l, l/80*20, d, h, ld]];
 
 echo(str("There is ", len(variants_pipe), " variants"));

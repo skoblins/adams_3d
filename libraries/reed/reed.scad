@@ -51,8 +51,8 @@ module reed_ending(total_length, end_length, d) {
         flute_count = 5;
         union() {
             difference() { // stożek
-                cylinder(h=end_length,r2=d/2,r1=d/2,center=false);
-                translate([0,0,-end_length*0.05]) cylinder(h=end_length*1.1,r=d-wall_thickness, center=false);
+                cylinder(h=end_length,r1=d/2-wall_thickness+0.4,r2=d/2);
+                translate([0,0,-end_length*0.05]) cylinder(h=end_length*1.1,r1=d/2-wall_thickness,r2=d/2-wall_thickness);
             }
             // for(i=[1:flute_count]){ //karbowanie
             //     translate([0,0,(i-1)*end_length/flute_count]){
@@ -68,6 +68,6 @@ module reed_base(total_length, end_length, d){
     translate([0, 0, end_length]) {
         // główny cylinder
         cylinder(h=total_length - end_length, d=d);
-        reed_burdon_ending(total_length, end_length, d);
+        reed_ending(total_length, end_length, d);
     } // wyrównanie po dodaniu końcówki
 }

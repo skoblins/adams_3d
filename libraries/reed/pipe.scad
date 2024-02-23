@@ -28,43 +28,55 @@ module curbs(l, d1, d2, flute_count) {
     }
 }
 
-module pipe_socket(l, d1, d2) {
+module pipe_plug(l, d1, d2) {
 	base_pipe(l, d1, (d2-d1)/2);
-	curbs(l, d2, d2*1.1, 4);
+	curbs(l, d2, d2*1.05, 6);
 }
 
-module pipe_horn_socket(l, d1, d2) {
+module pipe_horn_plug(l, d1, d2) {
 	base_pipe(l, d1, (d2-d1)/2);
 }
 
 module holes_cutter(l, d, thickness, holes) {
-	translate([0,holes[0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*0.7, d2=d*1.3);
+	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[0][1], d2=d);
 	for(i = [1:2]) {
-		hole_loc = holes[i];
-		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*0.7, d2=d*1.3);
+		hole_loc = holes[i][0];
+		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[i][1], d2=d*holes[i][1]);
 	}
-	translate([0,holes[3]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*0.7, d2=d*1.3);
+	translate([0,holes[3][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[3][1], d2=d*holes[3][1]);
 	for(i = [4:7]) {
-		hole_loc = holes[i];
-		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*0.7, d2=d*1.3);
+		hole_loc = holes[i][0];
+		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes[i][1], d2=d*holes[i][1]);
 	}
-	translate([0,holes[8]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*0.7, d2=d*1.3);
+	translate([0,holes[8][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes[8][1], d2=d*holes[8][1]);
 }
 
-module pipe(l, d, thickness, holes) {
+module horn(length, d_end, thickness, d_sock_in, d_sock_out, l_sock) {
+	echo(str("length=",length,", d_end=",d_end," thickness=",thickness," d_sock_in=",d_sock_in," d_sock_out=",d_sock_out," l_sock=",l_sock));
+	difference() {
+		cylinder(h=length, d1=d_sock_out, d2=d_end);
+		union() {
+			translate([0,0,l_sock+eps/2]) cylinder(h=length-l_sock, d1=d_sock_out-thickness*2, d2=d_end-thickness*2);
+			translate([0,0,-eps/2]) cylinder(h=length, d=d_sock_in);
+		}
+
+	}
+
+}
+
+module pipe(l, d, reed_d_in, thickness, holes) {
 	
 	difference() {
 		base_pipe(l, d, thickness);
 		translate([0, 0, 0]) rotate([90,0,0]) holes_cutter(l, d, thickness, holes);
 	}
-	
-	reed_socket_len = 3*d;
-	pipe_socket_len=36;
-	horn_socket_len=20;
-	horn_pos = -horn_socket_len;
 
-	translate([0,0,l]) pipe_reed_socket(reed_socket_len, 16, 24, 6, 8);
-	translate([0,0,l+reed_socket_len]) pipe_socket(pipe_socket_len, 16, 18);
-	translate([0,0,0]) base_pipe(5, 6, 9);
-	translate([0,0,horn_pos]) pipe_socket(horn_socket_len, 16, 18);
+	reed_gap_eps = 1.4;
+	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d+2*thickness, 24, reed_d_in+reed_gap_eps, reed_d_in*1.2+reed_gap_eps);
+	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, 15, 17);
+	difference() {
+		cylinder(h=d, d1=24, d2=16);
+		translate([0,0,-eps/2]) cylinder(h=d+eps, d=d);
+	}	
+	#translate([0,0,horn_pos]) pipe_plug(horn_plug_len, horn_plug_in_d, horn_plug_out_d);
 }

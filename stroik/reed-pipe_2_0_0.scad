@@ -1,5 +1,5 @@
 include <reed/reed_2_0_0.scad>
-include <variants-pipe_2_0_0.scad>
+include <variants-reed-pipe.scad>
 
 $fn=100;
 

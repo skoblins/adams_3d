@@ -45,29 +45,3 @@ module reed_burdon_ending(total_length, end_length, d) {
     } // pogrubienie
 }
 
-module reed_ending(total_length, end_length, d) {
-    wall_thickness = d * 0.11;
-    translate([0,0,-end_length]){
-        flute_count = 5;
-        union() {
-            difference() { // stożek
-                cylinder(h=end_length,r1=d/2-wall_thickness+0.4,r2=d/2);
-                translate([0,0,-end_length*0.05]) cylinder(h=end_length*1.1,r1=d/2-wall_thickness,r2=d/2-wall_thickness);
-            }
-            // for(i=[1:flute_count]){ //karbowanie
-            //     translate([0,0,(i-1)*end_length/flute_count]){
-            //         pipe(length=end_length/flute_count/2, outer_diameter=d+2*wall_thickness, thickness=0.6, center=false);
-            //         // echo(i*end_length/flute_count);
-            //     }
-            // } //karby
-        } // karbowanie
-    } // pogrubienie
-}
-
-module reed_base(total_length, end_length, d){
-    translate([0, 0, end_length]) {
-        // główny cylinder
-        cylinder(h=total_length - end_length, d=d);
-        reed_ending(total_length, end_length, d);
-    } // wyrównanie po dodaniu końcówki
-}

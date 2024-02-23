@@ -1,13 +1,5 @@
 include <reed/reed_2_0_0.scad>
-include <variants-burdon_2_0_0.scad>
-
-lengths = [85];
-// diameters = [5, 6, 7];
-diameters = [10.5];
-
-
-heigth_cut_prcnt = [12];
-leaf_degrees = [0.95];
+include <variants-reed-burdon.scad>
 
 $fn=100;
 

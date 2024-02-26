@@ -1,7 +1,7 @@
 include <reed.scad>
 
 completeness_percent = 25;
-wall_thickness = 0.6;
+wall_thickness = 0.4;
 reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
@@ -29,7 +29,7 @@ module reed2_base(total_length, end_length, d){
     translate([0, 0, end_length]) {
         difference() {
             cylinder(h=total_length - end_length, d=d_out);
-            translate([0, 0, -0.1]) cylinder(h = total_length, d = d);
+            translate([0, 0, -0.1]) cylinder(h = (total_length - end_length)*0.9, d = d);
         }
     } 
 }
@@ -68,30 +68,18 @@ module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
     }
 }
 
-module reed2_end_cap(total_length, end_length, d, heigth_cut_prcnt, leaf_degree){
-    // filling
-    avg_r = d/2;
-    difference() {
-        translate([0,0,total_length*0.9]) cylinder(h=total_length/10, r=avg_r*1.01);
-        union(){
-            reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree);
-            reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
-        }
-    }
-}
-
 module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coeff_init, stem_heigth_coeff) {
     d_out = d+2*wall_thickness;
     leaf_len = (total_length - end_length)*0.9;
     
     // trunk of the leaf ;)
-    translate([-d*0.1,0,0]) intersection(){
-        cylinder(h=total_length * 0.94, d=d_out*1.1+2);
+    translate([-d*0.15,0,0]) intersection(){
+        cylinder(h=total_length * 0.94, d=d_out*1.25);
         reed2_base_flat_cutting_cube(d_out, heigth_cut_prcnt, total_length);
     }
 
     // support stem
-    translate([d_out/2+leaf_len*stem_heigth_coeff_init/2-d*0.1/2, 0, end_length]) rotate([0,-atan2(0.05-stem_heigth_coeff,1)/2,0]) rotate([0,0,-120]) cylinder(leaf_len, leaf_len*stem_heigth_coeff_init, leaf_len*stem_heigth_coeff, $fn=3);
+    translate([d_out/2+leaf_len*stem_heigth_coeff_init/2-d*0.1/2, 0, end_length]) rotate([0,-atan(stem_heigth_coeff_init-stem_heigth_coeff),0]) rotate([0,0,-120]) cylinder(leaf_len, leaf_len*stem_heigth_coeff_init, leaf_len*stem_heigth_coeff, $fn=3);
     
     // text
     // translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
@@ -139,8 +127,5 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
             }
             reed2_base_flat_cutting_cube(d, 11, total_length);
         }
-
-    // ending
-    reed2_end_cap(total_length, end_length, d, heigth_cut_prcnt, halved_leaf_degree);
 }
 

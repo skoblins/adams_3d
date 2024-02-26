@@ -5,6 +5,9 @@ $fn=100;
 
 max_in_a_row = 2;
 
+// to remove it from loop
+leaf_degrees = [0];
+
 for (i = [0:len(variants_pipe)-1]){
     v = variants_pipe[i];
     echo(str("variant: ", v));

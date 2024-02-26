@@ -78,5 +78,9 @@ module pipe(l, d, reed_d_in, thickness, holes) {
 		cylinder(h=d, d1=24, d2=16);
 		translate([0,0,-eps/2]) cylinder(h=d+eps, d=d);
 	}	
-	#translate([0,0,horn_pos]) pipe_plug(horn_plug_len, horn_plug_in_d, horn_plug_out_d);
+	translate([0,0,horn_pos]) pipe_plug(horn_plug_len, horn_plug_in_d, horn_plug_out_d);
+}
+
+module modular_pipe_base(l, d, reed_d_in, thickness, holes){
+
 }

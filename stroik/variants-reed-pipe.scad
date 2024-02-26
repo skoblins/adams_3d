@@ -10,8 +10,8 @@ diameters = [6];
 
 
 heigth_cut_prcnt = [10];
-leaf_degrees = [1.6];
+leaf_degrees = [1.65];
 variants_pipe = [for(l=lengths) for(d=diameters) for(h=heigth_cut_prcnt) for(ld=leaf_degrees) [l, l/100*25, d, h, ld]];
 
-variants_pipe_leaf_stem_heigth_coeff_init = 0.035;
-variants_pipe_leaf_stem_heigth_coeff = 0.025;
+variants_pipe_leaf_stem_heigth_coeff_init = 0.025;
+variants_pipe_leaf_stem_heigth_coeff = 0.010;

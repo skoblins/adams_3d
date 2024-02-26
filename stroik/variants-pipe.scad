@@ -4,5 +4,5 @@ horn_plug_len=16;
 horn_plug_in_d = 13;
 horn_plug_out_d = 15;
 horn_len = 60;
-horn_d_out_end = 40;
+horn_d_out_end = 60;
 horn_pos = -horn_plug_len;

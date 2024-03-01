@@ -1,2 +1,2 @@
 // miekka podkladka
-color("orange") cube([19,19,1.5]);
+color("orange") cube([19,19,3]);

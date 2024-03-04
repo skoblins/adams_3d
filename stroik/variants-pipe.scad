@@ -2,7 +2,9 @@ include <variants-reed-pipe.scad>
 
 varniants_pipe_len = 160;
 variants_pipe_in_d = 8;
-variants_pipe_thickness = 5;
+variants_pipe_thickness_bottom = 6;
+variants_pipe_thickness_top = 3;
+variants_pipe_plug_in_d = 13;
 reed_socket_len = variants_reed_pipe_end_length;
 pipe_plug_len=25;
 horn_plug_len=15;

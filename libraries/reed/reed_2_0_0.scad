@@ -1,7 +1,7 @@
 include <reed.scad>
 
 completeness_percent = 25;
-wall_thickness = 0.4;
+wall_thickness = 0.8;
 reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
@@ -84,11 +84,11 @@ module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coe
     // text
     // translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
     
-    // round clip
-    difference() {
-        rotate([0,0,180-(90)/2*360/100]) translate([0,0,end_length]) partial_pipe(total_length/10, d_out+0.8, 0.6, completeness_percent=90);
-        rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length]) translate([0,0,-0.05]) partial_pipe(total_length/10+0.1, d_out+0.81, 0.61, completeness_percent=completeness_percent);
-    }
+    // // round clip
+    // difference() {
+    //     rotate([0,0,180-(90)/2*360/100]) translate([0,0,end_length]) partial_pipe(total_length/10, d_out+0.8, 0.6, completeness_percent=90);
+    //     rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length]) translate([0,0,-0.05]) partial_pipe(total_length/10+0.1, d_out+0.81, 0.61, completeness_percent=completeness_percent);
+    // }
 }
 
 module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
@@ -109,15 +109,15 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
         reed2_cut(total_length, d, heigth_cut_prcnt, halved_leaf_degree); // deeper cut, half of the leaf degree is added here
     }
 
-    // grips
+    // // grips
 
-        // vertical grip
-        difference() {
-            rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) partial_pipe(total_length/10, d_out+0.8, 0.41, completeness_percent=completeness_percent);
-            rotate([0,0,180-(completeness_percent-10)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) translate([0,0,-0.005]) partial_pipe(total_length/10+0.01, d_out+0.81, 0.41, completeness_percent=completeness_percent-10);
-        }
+    //     // vertical grip
+    //     difference() {
+    //         rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) partial_pipe(total_length/10, d_out+0.8, 0.41, completeness_percent=completeness_percent);
+    //         rotate([0,0,180-(completeness_percent-10)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) translate([0,0,-0.005]) partial_pipe(total_length/10+0.01, d_out+0.81, 0.41, completeness_percent=completeness_percent-10);
+    //     }
 
-        // horizontal grip
+        // horizontal grip - powstrzymuje klej!!!
         difference() {
             translate([0,0,end_length+reed_plug_overhang_suppressor_len+total_length/10]) {
                 difference() {

@@ -9,9 +9,15 @@ module base_pipe(l, d, thickness_bottom, thickness_top) {
 }
 
 module pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
-	difference(){
-		cylinder(h=l, d1=pipe_plug_in_d + 0.1, d2=pipe_plug_in_d + 0.1);
-		translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
+	intersection() {
+		difference(){
+			cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
+			translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
+		}
+		union() {
+			cylinder(h=l, d=reed_d2+1);
+			cylinder(h=2, d=pipe_plug_in_d);
+		}
 	}
 }
 
@@ -85,10 +91,10 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 		translate([0, 0, 0]) rotate([90,0,0]) holes_cutter(l, d_in, thickness_bottom, holes);
 	}
 
-	reed_gap_eps = 1.4;
+	reed_gap_eps = 0.8;
 
 	// reed socket
-	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, 24, reed_d_in+reed_gap_eps, reed_d_in*1.2+reed_gap_eps, variants_pipe_plug_in_d);
+	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, 24, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
 
 	// pipe plug (to the bag)
 	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, 17);

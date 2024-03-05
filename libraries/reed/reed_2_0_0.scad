@@ -10,7 +10,7 @@ module reed_plug(total_length, end_length, d) {
 
     translate([0,0,-end_length]){
         difference() {
-            cylinder(h=end_length,d2=d_out*1.2,d1=d);
+            cylinder(h=end_length,d2=d_out*1.1,d1=d+0.8);
             translate([0,0,-eps/2]) cylinder(h=end_length+eps,d=d);
         }
     }
@@ -18,7 +18,7 @@ module reed_plug(total_length, end_length, d) {
     // anti overhanger
     translate([0,0,0]) {
         difference() {
-            cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.2,d2=d);
+            cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.1,d2=d+0.8);
             translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
         }
     }
@@ -125,7 +125,7 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
                     translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
                 }
             }
-            reed2_base_flat_cutting_cube(d, 11, total_length);
+            reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
         }
 }
 

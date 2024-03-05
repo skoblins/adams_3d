@@ -72,14 +72,17 @@ module holes_cutter(l, d, thickness, holes) {
 
 module horn(length, d_end, thickness, d_sock_in, d_sock_out, l_sock) {
 	echo(str("length=",length,", d_end=",d_end," thickness=",thickness," d_sock_in=",d_sock_in," d_sock_out=",d_sock_out," l_sock=",l_sock));
-	difference() {
-		cylinder(h=length, d1=d_sock_out, d2=d_end);
-		union() {
-			translate([0,0,l_sock+eps/2]) cylinder(h=length-l_sock, d1=d_sock_out-thickness*2, d2=d_end-thickness*2);
-			translate([0,0,-eps/2]) cylinder(h=length, d=d_sock_in);
-		}
+	// difference() {
+	// 	cylinder(h=length, d1=d_sock_out, d2=d_end);
+	// 	union() {
+	// 		translate([0,0,l_sock+eps/2]) cylinder(h=length-l_sock, d1=d_sock_out-thickness*2, d2=d_end-thickness*2);
+	// 		translate([0,0,-eps/2]) cylinder(h=length, d=d_sock_in);
+	// 	}
 
-	}
+	// }
+	linear_extrude(height = length, center = true, convexity = 10, scale=[1.5,1.7], twist=120, $fn=100)
+	 translate([10, 0, 0])
+	 circle(r = d_sock_out);
 
 }
 

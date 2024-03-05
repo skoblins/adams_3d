@@ -15,13 +15,13 @@ module reed_plug(total_length, end_length, d) {
         }
     }
 
-    // anti overhanger
-    translate([0,0,0]) {
-        difference() {
-            cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.1,d2=d+0.8);
-            translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
-        }
-    }
+    // // anti overhanger
+    // translate([0,0,0]) {
+    //     difference() {
+    //         cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.1,d2=d+0.8);
+    //         translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
+    //     }
+    // }
 }
 
 module reed2_base(total_length, end_length, d){

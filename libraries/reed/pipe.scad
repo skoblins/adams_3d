@@ -61,12 +61,14 @@ module pipe_horn_plug(l, d1, d2) {
 }
 
 module holes_cutter(l, d, thickness, holes) {
-	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[0][1], d2=d);
+	// holes_broadening_coeff = 0.7; // looks good, but... not suitable for my wood working tools.
+	holes_broadening_coeff = 1;
+	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[0][1], d2=d);
 	for(i = [1:2]) {
 		hole_loc = holes[i][0];
-		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[i][1], d2=d*holes[i][1]);
+		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[i][1], d2=d*holes[i][1]);
 	}
-	translate([0,holes[3][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*0.7*holes[3][1], d2=d*holes[3][1]);
+	translate([0,holes[3][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[3][1], d2=d*holes[3][1]);
 	for(i = [4:7]) {
 		hole_loc = holes[i][0];
 		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes[i][1], d2=d*holes[i][1]);
@@ -106,14 +108,14 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	// pipe plug (to the bag)
 	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, 17);
 
-	// ornament before the pipe plug (to the horn)
-	difference() {
-		cylinder(h=d_in, d1=24, d2=16);
-		translate([0,0,-eps/2]) cylinder(h=d_in+eps, d=d_in);
-	}	
+	// // ornament before the pipe plug (to the horn)
+	// difference() {
+	// 	cylinder(h=d_in, d1=24, d2=16);
+	// 	translate([0,0,-eps/2]) cylinder(h=d_in+eps, d=d_in);
+	// }	
 
 	// pipe plug (to the horn)
-	translate([0,0,horn_pos]) pipe_plug(horn_plug_len, horn_plug_in_d, horn_plug_out_d);
+	translate([0,0,horn_pos]) pipe_plug(horn_plug_len, d_in, horn_plug_out_d);
 }
 
 module modular_pipe_base(l, d, reed_d_in, thickness, holes){

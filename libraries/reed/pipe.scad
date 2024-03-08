@@ -63,7 +63,7 @@ module pipe_horn_plug(l, d1, d2) {
 module holes_cutter(l, d, thickness, holes) {
 	// holes_broadening_coeff = 0.7; // looks good, but... not suitable for my wood working tools.
 	holes_broadening_coeff = 1;
-	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[0][1], d2=d);
+	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[0][1], d2=d*holes[0][1]);
 	for(i = [1:2]) {
 		hole_loc = holes[i][0];
 		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[i][1], d2=d*holes[i][1]);
@@ -97,7 +97,7 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	// pipe
 	difference() {
 		base_pipe(l, d_in, thickness_bottom, thickness_top);
-		translate([0, 0, 0]) rotate([90,0,0]) holes_cutter(l, d_in, thickness_bottom, holes);
+		translate([0, 0, -horn_plug_len]) rotate([90,0,0]) holes_cutter(l+horn_plug_len, d_in, thickness_bottom, holes);
 	}
 
 	reed_gap_eps = 1.4;
@@ -118,6 +118,53 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	translate([0,0,horn_pos]) pipe_plug(horn_plug_len, d_in, horn_plug_out_d);
 }
 
-module modular_pipe_base(l, d, reed_d_in, thickness, holes){
+module support_struct() {
+	entire_support_h = variants_pipe_len * 0.66;
+	support_point_start = 0;
+	support_point_distance = entire_support_h/4;
+	support_xy_clearance = 3.2;
+	support_touch_eps = 0.4;
 
+	function calculate_abs_support_horiz_extent(y) = (y - horn_plug_len)/(entire_support_h + horn_plug_len) * (variants_pipe_thickness_bottom - variants_pipe_thickness_top) + support_xy_clearance + support_touch_eps;
+
+	translate([variants_pipe_thickness_bottom+variants_pipe_in_d/2 + support_xy_clearance, 0, -horn_plug_len])
+		rotate([90,0,0])
+			linear_extrude(height=0.4)
+				polygon(
+					points=[
+						[0,0],
+						[entire_support_h/2,0],
+						[-calculate_abs_support_horiz_extent(entire_support_h-horn_plug_len), entire_support_h+horn_plug_len],
+						[0,(entire_support_h+horn_plug_len)*0.75],
+						[-calculate_abs_support_horiz_extent((entire_support_h-horn_plug_len)*0.75), (entire_support_h+horn_plug_len)*0.75],
+						[0,(entire_support_h+horn_plug_len)/2],
+						[-calculate_abs_support_horiz_extent((entire_support_h-horn_plug_len)/2), (entire_support_h+horn_plug_len)/2],
+						[0, (entire_support_h+horn_plug_len)/3],
+						[-calculate_abs_support_horiz_extent((entire_support_h-horn_plug_len)/4), (entire_support_h+horn_plug_len)/4],
+						[0, horn_plug_len],
+						[0,0]
+					]);
+}
+
+module flex_hole_narrowing() {
+	extra_d_for_rant = 4;
+	clearance = 0.8;
+	PLA_shrinking_remedy = 0.09;
+
+	function calculate_h_rel(x = 0) = variants_pipe_thickness_bottom * (variants_pipe_len - x)/variants_pipe_len + x/variants_pipe_len * variants_pipe_thickness_top;
+
+	for(i = [0 : len(variants_pipe_holes) - 1]) {
+		for(j = [4,5,6,7]) {
+			echo(i, j);
+			translate([j * (variants_pipe_in_d + extra_d_for_rant + clearance), i * (variants_pipe_in_d + extra_d_for_rant + clearance), 0]) {
+				difference() {
+					union() {
+						cylinder(h=calculate_h_rel(variants_pipe_holes[i][0] * variants_pipe_len), d=variants_pipe_in_d + PLA_shrinking_remedy);
+						cylinder(h=0.8, d=variants_pipe_in_d+extra_d_for_rant);
+					}
+					translate([0,0,-eps/2]) cylinder(h=variants_pipe_in_d*2, d=j);
+				}
+			}
+		}
+	}
 }

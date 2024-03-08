@@ -36,7 +36,7 @@ module pipe_reed_socket(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
 	// params are local dimensions, not of the entire pipe!
 	assert(pipe_plug_in_d < d1, "The bottom diameter of the pipe reed socket is smaller than the plug inside diameter!)");
 	pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
-	%pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
+	!pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
 }
 
 
@@ -144,27 +144,4 @@ module support_struct() {
 						[0, horn_plug_len],
 						[0,0]
 					]);
-}
-
-module flex_hole_narrowing() {
-	extra_d_for_rant = 4;
-	clearance = 0.8;
-	PLA_shrinking_remedy = 0.09;
-
-	function calculate_h_rel(x = 0) = variants_pipe_thickness_bottom * (variants_pipe_len - x)/variants_pipe_len + x/variants_pipe_len * variants_pipe_thickness_top;
-
-	for(i = [0 : len(variants_pipe_holes) - 1]) {
-		for(j = [4,5,6,7]) {
-			echo(i, j);
-			translate([j * (variants_pipe_in_d + extra_d_for_rant + clearance), i * (variants_pipe_in_d + extra_d_for_rant + clearance), 0]) {
-				difference() {
-					union() {
-						cylinder(h=calculate_h_rel(variants_pipe_holes[i][0] * variants_pipe_len), d=variants_pipe_in_d + PLA_shrinking_remedy);
-						cylinder(h=0.8, d=variants_pipe_in_d+extra_d_for_rant);
-					}
-					translate([0,0,-eps/2]) cylinder(h=variants_pipe_in_d*2, d=j);
-				}
-			}
-		}
-	}
 }

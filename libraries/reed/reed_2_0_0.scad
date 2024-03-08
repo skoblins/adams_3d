@@ -50,16 +50,34 @@ module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
 
 module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
     d_out = d+wall_thickness*2;
-    // polygon(points = [])
+    x0 = d_out/2 - d_out * heigth_cut_prcnt / 100 - 0.4;
+
+    points = [
+        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.2],
+        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0],
+        [-sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0],
+        [-sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.2],
+        [0, total_length * 0.11],
+        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.2]
+    ];
+
+    echo(variants_reed_pipe_end_length=variants_reed_pipe_end_length);
+    translate([x0, 0, variants_reed_pipe_end_length - 0.4]) rotate([90,0,90]) {
+        linear_extrude(height=0.6) {
+            // translate([0,variants_reed_pipe_end_length,0]) {
+                polygon(points = points);
+            // }
+        }
+    }
 }
 
 module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
     difference(){
         union() {
             reed2_base(total_length, end_length, d);
-            reed2_refill_the_cut(total_length, d, heigth_cut_prcnt)
+            reed2_refill_the_cut(total_length, d, heigth_cut_prcnt);
         }
-        translate([0,0,-0.5]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length+2/*a gap for reed fitting*/);
+        translate([0,0,0]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length+2/*a gap for reed fitting*/);
     }
 }
 

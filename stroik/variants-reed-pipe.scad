@@ -20,6 +20,6 @@ echo(str("variants_reed_pipe_end_length: ", variants_reed_pipe_end_length));
 variants_reed_pipe_in_diameter = 7;
 variants_reed_pipe_wall_thickness = 0.8;
 variants_reed_pipe_cut_prcnt = 11;
-variants_reed_pipe_leaf_degree = 1.675;
+variants_reed_pipe_leaf_degree = 1.7;
 variants_pipe_leaf_stem_heigth_coeff_init = 0.025;
 variants_pipe_leaf_stem_heigth_coeff = 0.010;

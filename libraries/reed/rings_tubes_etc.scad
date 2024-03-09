@@ -49,7 +49,7 @@ module box_for_flex_hole_narrowing() {
 	difference() {
 		cube([b_wdth, b_len, b_h]);
 		translate([unit, unit, variants_pipe_in_d * 0.5 ]) union() {
-			for(i = [0 : holes_no - 1]) {
+			for(i = [6, 7, 8]) {
 				for(j = [0 : len(hole_sizes) - 1]) {
 					translate([j * (variants_pipe_in_d + flex_hole_narrowing_extra_d_for_rant + flex_hole_narrowing_clearance), i * (variants_pipe_in_d + flex_hole_narrowing_extra_d_for_rant + flex_hole_narrowing_clearance), 0]) {
 						cylinder(h = variants_pipe_in_d, d = variants_pipe_in_d + flex_hole_narrowing_extra_d_for_rant);

@@ -20,7 +20,7 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
             // connector
             base_pipe(l = variants_pipe_len * connector_len_coeff, d = variants_pipe_in_d + thickness, thickness_bottom = variants_pipe_thickness_bottom, thickness_top = variants_pipe_thickness_bottom);
             // the upper rest
-            translate([0,0,variants_pipe_len * connector_len_coeff - eps]) base_pipe(l = variants_pipe_len, d = variants_pipe_in_d-eps, thickness_bottom = variants_pipe_thickness_bottom, thickness_top = variants_pipe_thickness_bottom);
+            translate([0,0,variants_pipe_len * connector_len_coeff - eps/2]) base_pipe(l = variants_pipe_len, d = variants_pipe_in_d-eps, thickness_bottom = variants_pipe_thickness_bottom + 10, thickness_top = variants_pipe_thickness_bottom + 10);
         }
     }
 }

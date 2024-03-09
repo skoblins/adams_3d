@@ -5,10 +5,4 @@ $fn=100;
 
 max_in_a_row = 2;
 
-for (i = [0:len(variants_burdon)-1]){
-    v = variants_burdon[i];
-    echo(str("variant: ", v));
-    translate([(i%max_in_a_row)*v[1], (i/max_in_a_row)*v[1], 0]){
-        reed2(v[0], v[1], v[2], v[3], v[4]);
-    }
-}
+reed2(variants_reed_pipe_length, variants_reed_pipe_end_length, variants_reed_pipe_in_diameter, variants_reed_pipe_cut_prcnt, variants_reed_pipe_leaf_degree);

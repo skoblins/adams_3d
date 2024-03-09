@@ -77,7 +77,7 @@ module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
             reed2_base(total_length, end_length, d);
             reed2_refill_the_cut(total_length, d, heigth_cut_prcnt);
         }
-        translate([0,0,0]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length+2/*a gap for reed fitting*/);
+        translate([0,0, -4.25 ]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length+2/*a gap for reed fitting*/);
     }
 }
 

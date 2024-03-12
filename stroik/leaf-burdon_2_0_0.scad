@@ -3,12 +3,13 @@ include <variants-reed-burdon.scad>
 
 $fn=100;
 
-max_in_a_row = 2;
+reed2_leaf( variants_reed_pipe_length,
+            variants_reed_pipe_end_length,
+            variants_reed_pipe_in_diameter,
+            variants_reed_pipe_cut_prcnt,
+            variants_pipe_leaf_stem_heigth_coeff_init,
+            variants_pipe_leaf_stem_heigth_coeff
+);
 
-for (i = [0:len(variants_burdon)-1]){
-    v = variants_burdon[i];
-    echo(str("variant: ", v));
-    translate([(i%max_in_a_row)*v[0]*1.2, (i/max_in_a_row)*v[1], 0]){
-        reed2_leaf(v[0], v[1], v[2], v[3], variants_burdon_leaf_stem_heigth_coeff_init, variants_burdon_leaf_stem_heigth_coeff);
-    }
-}
+%reed2(variants_reed_pipe_length, variants_reed_pipe_end_length, variants_reed_pipe_in_diameter, variants_reed_pipe_cut_prcnt, variants_reed_pipe_leaf_degree);
+

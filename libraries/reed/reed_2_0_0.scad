@@ -42,7 +42,7 @@ module reed2_leaf_socket(heigth_cut_prcnt, d, total_length) {
 
 module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
     d_out = d+wall_thickness*2;
-    translate([d_out/2 - d_out * heigth_cut_prcnt / 100, -d_out/2, 0.25 * total_length]) {
+    translate([d_out/2 - d_out * heigth_cut_prcnt / 100, -d_out/2, variants_reed_pipe_end_length]) {
         cube(size=[d_out, d_out, total_length * 0.80]);
         // reed2_leaf_socket(heigth_cut_prcnt, d, total_length);
     }

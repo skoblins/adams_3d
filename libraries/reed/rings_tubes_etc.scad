@@ -72,3 +72,37 @@ module box_for_flex_hole_narrowing() {
 		cube([b_wdth - 1.6, b_len - 1.6, 1.6]);
 	}
 }
+
+module pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
+	intersection() {
+		difference(){
+			cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
+			translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
+		}
+		union() {
+			cylinder(h=l, d=reed_d2+1.4);
+			cylinder(h=2, d1=pipe_plug_in_d-0.8, d2=pipe_plug_in_d);
+		}
+	}
+	translate([0,0,2-eps/2]) difference() {
+		cylinder(h = pipe_plug_len * 0.75, d1 = pipe_plug_in_d, d2 = pipe_plug_in_d + 0.1);
+		translate([0,0,-eps / 2]) cylinder(h = pipe_plug_len - 2 + eps, d = pipe_plug_in_d - 0.8);
+	}
+}
+
+module just_a_box(h, l, w, wall_thickness) {
+	clearance = 0.4;
+	union() {
+		cube([l - wall_thickness - clearance, w, wall_thickness]);
+		cube([l + wall_thickness + clearance, wall_thickness, h]);
+		translate([0, w - wall_thickness, 0]) cube([l + wall_thickness + clearance, wall_thickness, h]);
+		translate([0, 0, h - wall_thickness]) cube([l + wall_thickness + clearance, w, wall_thickness]);
+		cube([wall_thickness, w, h]);
+		translate([l + clearance, 0 , 0]) cube([wall_thickness, wall_thickness * 3, h]);
+		translate([l + clearance, w - 3 * wall_thickness , 0]) cube([wall_thickness, wall_thickness * 3, h]);
+	}
+
+	%translate([l - wall_thickness, wall_thickness + clearance, - clearance])
+		cube([wall_thickness, w - 2 * wall_thickness - clearance, h - wall_thickness - clearance]);
+
+}

@@ -43,7 +43,7 @@ module reed2_leaf_socket(heigth_cut_prcnt, d, total_length) {
 module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
     d_out = d+wall_thickness*2;
     translate([d_out/2 - d_out * heigth_cut_prcnt / 100, -d_out/2, variants_reed_pipe_end_length]) {
-        cube(size=[d_out, d_out, total_length * 0.80]);
+        cube(size=[d_out, d_out, total_length]);
         // reed2_leaf_socket(heigth_cut_prcnt, d, total_length);
     }
 }
@@ -115,6 +115,50 @@ module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coe
     //     rotate([0,0,180-(90)/2*360/100]) translate([0,0,end_length]) partial_pipe(total_length/10, d_out+0.8, 0.6, completeness_percent=90);
     //     rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length]) translate([0,0,-0.05]) partial_pipe(total_length/10+0.1, d_out+0.81, 0.61, completeness_percent=completeness_percent);
     // }
+}
+
+module reed21_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coeff_init, stem_heigth_coeff) {
+    d_out = d + 2 * wall_thickness;
+    leaf_len = (total_length - end_length) * 0.94;
+
+    // trunk of the leaf ;)
+    intersection(){
+        translate([-d_out * variants_leaf_enforcement_thickness_ratio, 0, end_length]) rotate([0, -variants_leaf_enforcement_decrease_ratio, 0]) cylinder(h = leaf_len, d = d_out * 1.25);
+        reed2_base_flat_cutting_cube(d_out, heigth_cut_prcnt, total_length);
+    }
+
+    w_trunk = cos(heigth_cut_prcnt/100 * 360) * d_out;
+    translate([d_out * (1/2 - heigth_cut_prcnt / 100) + variants_leaf_thickness, -w_trunk / 2, end_length]) cube([variants_leaf_thickness + 0.001, w_trunk, leaf_len]);
+
+    // text
+    // #translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
+}
+
+module leaf21() {
+    d_out = variants_reed_pipe_in_diameter + 4 * variants_reed_pipe_wall_thickness;
+    step_size = 1;
+    length = (variants_reed_pipe_length - variants_reed_pipe_end_length) * 0.96;
+    l_width = d_out;/*sin(variants_reed_pipe_cut_prcnt / 100 * 180) * d_out * 2.5*/;
+
+
+    function thickness(z) = variants_leaf_enforcement_square_coeff * pow(length - z - variants_leaf_enforcement_zoffset, 2) + variants_leaf_enforcement_linear_coeff * (length - z - variants_leaf_enforcement_zoffset) + variants_leaf_enforcement_const_coeff;
+
+        intersection() {
+            translate([-sin((variants_reed_pipe_cut_prcnt) / 100 * 180) * l_width, l_width / 2, 0]) cylinder(h = length, d = l_width);
+            union() {
+                for(z = [0 : step_size : length]) {
+                    hull() {
+                        translate([0, 0, z]) cube([thickness(z), l_width, 1]);
+                        translate([0, 0, z - step_size]) cube([thickness(z - step_size), l_width, 1]);
+                    }
+                    echo(z, l_width, thickness(z));
+                }
+                hull() {
+                    translate([0, 0, length]) cube([thickness(length), l_width, 1]);
+                    translate([0, 0, length - step_size]) cube([thickness(length - step_size), l_width, 1]);
+                }
+            }
+        }
 }
 
 module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {

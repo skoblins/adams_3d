@@ -8,23 +8,6 @@ module base_pipe(l, d, thickness_bottom, thickness_top) {
 	}
 }
 
-module pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
-	intersection() {
-		difference(){
-			cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
-			translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
-		}
-		union() {
-			cylinder(h=l, d=reed_d2+1.4);
-			cylinder(h=2, d1=pipe_plug_in_d-0.8, d2=pipe_plug_in_d);
-		}
-	}
-	translate([0,0,2-eps/2]) difference() {
-		cylinder(h=pipe_plug_len-2, d1=pipe_plug_in_d, d2=pipe_plug_in_d+0.1);
-		translate([0,0,-eps/2]) cylinder(h=pipe_plug_len-2+eps, d=pipe_plug_in_d-0.8);
-	}
-}
-
 module pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
 	difference() {
 		cylinder(h=l, d1=d1, d2=d2);
@@ -36,7 +19,7 @@ module pipe_reed_socket(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
 	// params are local dimensions, not of the entire pipe!
 	assert(pipe_plug_in_d < d1, "The bottom diameter of the pipe reed socket is smaller than the plug inside diameter!)");
 	pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
-	!pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
+	// pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
 }
 
 
@@ -76,21 +59,27 @@ module holes_cutter(l, d, thickness, holes) {
 	translate([0,holes[8][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes[8][1], d2=d*holes[8][1]);
 }
 
-module horn(length, d_end, thickness, d_sock_in, d_sock_out, l_sock) {
+module horn() {
 	eps = 0.1;
-	echo(str("length=",length,", d_end=",d_end," thickness=",thickness," d_sock_in=",d_sock_in," d_sock_out=",d_sock_out," l_sock=",l_sock));
-	difference() {
-		cylinder(h=length, d1=d_sock_out, d2=d_end);
-		union() {
-			translate([0,0,l_sock+eps/2]) cylinder(h=length-l_sock, d1=d_sock_out-thickness*2, d2=d_end-thickness*2);
-			translate([0,0,-eps/2]) cylinder(h=length, d=d_sock_in);
+	unit = 5;
+
+	function diameter(z) = variants_pipe_bottom_d + z / horn_len * variants_pipe_bottom_d;
+	function rotation(z) = z / horn_len * 90;
+	function scale_x(z) = 1 + 0.33 * z / horn_len;
+	function big_rotation(z) = z / horn_len * 110;
+
+	// difference() {
+		for(z = [0 : unit : horn_len - unit]) {
+			hull() {
+				rotate([big_rotation(z), 0, 0])        rotate([0, 0, rotation(z)])        scale([scale_x(z), 1])         translate([diameter(z) * 0.4, 0, z])               cylinder(h=1, d = diameter(z), center = true);
+				rotate([big_rotation(z + unit), 0, 0]) rotate([0, 0, rotation(z + unit)]) scale([scale_x(z + unit), 1])  translate([diameter(z + unit) * 0.4, 0, z + unit]) cylinder(h=1, d = diameter(z + unit), center = true);
+			}
 		}
-
-	}
-	// linear_extrude(height = length, center = true, convexity = 10, scale=[1.5,1.7], twist=120, $fn=100)
-	//  translate([10, 0, 0])
-	//  circle(r = d_sock_out);
-
+		// hull() {
+		// 	translate([0, 0, -eps / 2]) cylinder(h = 1 + eps, d = variants_pipe_bottom_d - 2);
+		// 	translate([0, 0, -unit]) translate([0, 0, -eps / 2]) rotate([0, 5, 10]) scale([1.5, 1]) cylinder(h = 1 + eps, d = variants_pipe_bottom_d - 2);
+		// }
+	// }
 }
 
 module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
@@ -107,7 +96,7 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
 
 	// pipe plug (to the bag)
-	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, 17);
+	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, variants_pipe_plug_out_d);
 
 	// // ornament before the pipe plug (to the horn)
 	// difference() {

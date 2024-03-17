@@ -67,24 +67,28 @@ module holes_cutter(l, d, thickness, holes) {
 module horn() {
 	eps = 0.1;
 	unit = 5;
+	grow_coeff = 1.5;
 
-	function diameter(z) = variants_pipe_bottom_d + z / horn_len * variants_pipe_bottom_d;
+	function diameter(z)    = variants_pipe_bottom_d + grow_coeff * z / horn_len * variants_pipe_bottom_d;
+	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95;
 	function rotation(z) = z / horn_len * 90;
 	function scale_x(z) = 1 + 0.33 * z / horn_len;
-	function big_rotation(z) = z / horn_len * 110;
+	function big_rotation(z) = z / horn_len * 100;
 
-	// difference() {
+	difference() {
 		for(z = [0 : unit : horn_len - unit]) {
 			hull() {
-				rotate([big_rotation(z), 0, 0])        rotate([0, 0, rotation(z)])        scale([scale_x(z), 1])         translate([diameter(z) * 0.4, 0, z])               cylinder(h=1, d = diameter(z), center = true);
-				rotate([big_rotation(z + unit), 0, 0]) rotate([0, 0, rotation(z + unit)]) scale([scale_x(z + unit), 1])  translate([diameter(z + unit) * 0.4, 0, z + unit]) cylinder(h=1, d = diameter(z + unit), center = true);
+				rotate([big_rotation(z), 0, rotation(z)])  translate([0, sin(big_rotation(z)) * z, z]) scale([scale_x(z), 1]) cylinder(h=1, d = diameter(z), center = true);
+				rotate([big_rotation(z + unit), 0, rotation(z + unit)])  translate([0, sin(big_rotation(z + unit)) * (z + unit), z + unit]) scale([scale_x(z  + unit), 1]) cylinder(h=1, d = diameter(z + unit), center = true);
 			}
 		}
-		// hull() {
-		// 	translate([0, 0, -eps / 2]) cylinder(h = 1 + eps, d = variants_pipe_bottom_d - 2);
-		// 	translate([0, 0, -unit]) translate([0, 0, -eps / 2]) rotate([0, 5, 10]) scale([1.5, 1]) cylinder(h = 1 + eps, d = variants_pipe_bottom_d - 2);
-		// }
-	// }
+		for(z = [0 : unit : horn_len - unit]) {
+			hull() {
+				rotate([big_rotation(z), 0, rotation(z)])  translate([-eps / 2, sin(big_rotation(z)) * z, z]) scale([scale_x(z), 1]) cylinder(h = 1 + eps, d = in_diameter(z), center = true);
+				rotate([big_rotation(z + unit), 0, rotation(z + unit)])  translate([-eps / 2, sin(big_rotation(z + unit)) * (z + unit), z + unit]) scale([scale_x(z  + unit), 1]) cylinder(h = 1 + eps, d = in_diameter(z + unit), center = true);
+			}
+		}
+	}
 }
 
 module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
@@ -98,7 +102,7 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	reed_gap_eps = 1.4;
 
 	// reed socket
-	#translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
+	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
 
 	// pipe plug (to the bag)
 	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, variants_pipe_plug_out_d);

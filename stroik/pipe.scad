@@ -42,4 +42,4 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
 // rotate([0,0,270]) support_struct();
 
 
-//translate([0, 0, -40]) horn();
+!translate([0, 0, -40]) horn();

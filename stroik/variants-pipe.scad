@@ -18,13 +18,13 @@ horn_d_out_end = 60;
 horn_pos = -horn_plug_len;
 
 variants_pipe_holes=[
-                        [0.12125, 6/variants_reed_pipe_in_diameter],
-                        [0.2425, 8/variants_reed_pipe_in_diameter],
-                        [0.36375, 6/variants_reed_pipe_in_diameter],
-                        [0.424375, 7/variants_reed_pipe_in_diameter],
-                        [0.485, 7/variants_reed_pipe_in_diameter],
-                        [0.62, 7/variants_reed_pipe_in_diameter],
-                        [0.7275, 5/variants_reed_pipe_in_diameter],
-                        [0.83, 4/variants_reed_pipe_in_diameter],
+                        [0.07, 6/variants_reed_pipe_in_diameter],
+                        [0.2, 8/variants_reed_pipe_in_diameter],
+                        [0.33, 6/variants_reed_pipe_in_diameter],
+                        [0.40, 6/variants_reed_pipe_in_diameter],
+                        [0.46, 7/variants_reed_pipe_in_diameter],
+                        [0.6, 7/variants_reed_pipe_in_diameter],
+                        [0.71, 5/variants_reed_pipe_in_diameter],
+                        [0.82, 4/variants_reed_pipe_in_diameter],
                         [0.90, 4/variants_reed_pipe_in_diameter],
                     ];

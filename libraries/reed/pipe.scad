@@ -1,7 +1,6 @@
 eps = 0.02;
 
 module base_pipe(l, d, thickness_bottom, thickness_top) {
-	echo(str(thickness_bottom, ", ", thickness_top));
 	difference() {
 		cylinder(h=l, d1=d+thickness_bottom*2, d2=d+thickness_top*2);
 		translate([0,0,-l*0.01]) cylinder(h=l*1.1, d=d);
@@ -44,18 +43,24 @@ module pipe_horn_plug(l, d1, d2) {
 }
 
 module holes_cutter(l, d, thickness, holes) {
+	// echo(l = l, d = d, thickness = thickness, holes = holes);
 	// holes_broadening_coeff = 0.7; // looks good, but... not suitable for my wood working tools.
 	holes_broadening_coeff = 1;
+	echo(holes[0][0]*l);
 	translate([0,holes[0][0]*l,0]) rotate([0,-20,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[0][1], d2=d*holes[0][1]);
 	for(i = [1:2]) {
 		hole_loc = holes[i][0];
+		echo(hole_loc*l);
 		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[i][1], d2=d*holes[i][1]);
 	}
+	echo(holes[3][0]*l);
 	translate([0,holes[3][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes_broadening_coeff*holes[3][1], d2=d*holes[3][1]);
 	for(i = [4:7]) {
+		echo(hole_loc*l);
 		hole_loc = holes[i][0];
 		translate([0,hole_loc*l,0]) cylinder(h=d+thickness+eps, d1=d*holes[i][1], d2=d*holes[i][1]);
 	}
+	echo(holes[8][0]*l);
 	translate([0,holes[8][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes[8][1], d2=d*holes[8][1]);
 }
 
@@ -83,17 +88,17 @@ module horn() {
 }
 
 module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
-	echo(str(thickness_bottom, ", ", thickness_top));
+	echo(str("length = ", l, ", thickness bottom = ", thickness_bottom, ", thickness top = ", thickness_top));
 	// pipe
 	difference() {
 		base_pipe(l, d_in, thickness_bottom, thickness_top);
-		translate([0, 0, -horn_plug_len]) rotate([90,0,0]) holes_cutter(l+horn_plug_len, d_in, thickness_bottom, holes);
+		rotate([90,0,0]) holes_cutter(l, d_in, thickness_bottom, holes);
 	}
 
 	reed_gap_eps = 1.4;
 
 	// reed socket
-	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
+	#translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
 
 	// pipe plug (to the bag)
 	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, variants_pipe_plug_out_d);

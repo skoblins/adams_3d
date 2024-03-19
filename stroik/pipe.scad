@@ -32,7 +32,7 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
 }
 
 // second / upper half of the pipe
-%intersection() {
+intersection() {
     my_pipe();
     cutting_operator(where_coeff = 0.48, connector_len_coeff = 0.2, thickness = 4);
 }
@@ -42,4 +42,4 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
 // rotate([0,0,270]) support_struct();
 
 
-!translate([0, 0, -40]) horn();
+// translate([0, 0, -40]) rotate([180, 0, -90]) horn();

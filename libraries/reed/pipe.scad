@@ -66,8 +66,8 @@ module holes_cutter(l, d, thickness, holes) {
 
 module horn() {
 	eps = 0.1;
-	unit = 5;
-	grow_coeff = 1.5;
+	unit = 2;
+	grow_coeff = 1.25;
 
 	function diameter(z)    = variants_pipe_bottom_d + grow_coeff * z / horn_len * variants_pipe_bottom_d;
 	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95;

@@ -28,3 +28,5 @@ variants_pipe_holes=[
                         [0.86, 4/variants_reed_pipe_in_diameter],
                         [0.95, 4/variants_reed_pipe_in_diameter],
                     ];
+
+variants_breath_pipe_len = 100;

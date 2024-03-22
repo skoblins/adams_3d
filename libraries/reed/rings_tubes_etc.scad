@@ -68,26 +68,41 @@ module box_for_flex_hole_narrowing() {
 	translate([0, b_len - 1.6, variants_pipe_in_d - eps/2]) {
 		cube([b_wdth, 1.6, variants_pipe_in_d + 3.2]);
 	}
-	!translate([0.8, 0.8, 2 * variants_pipe_in_d - eps/2]) {
+	// cover
+	translate([0.8, 0.8, 2 * variants_pipe_in_d - eps/2]) {
 		cube([b_wdth - 1.6, b_len - 1.6, 1.6]);
 	}
 }
 
-module pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
+module pipe_reed_socket_flex_part(l, reed_d1, reed_d2, pipe_plug_in_d) {
 	intersection() {
 		difference(){
 			cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
-			translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
+			#translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
 		}
 		union() {
 			cylinder(h=l, d=reed_d2+1.4);
 			cylinder(h=2, d1=pipe_plug_in_d-0.8, d2=pipe_plug_in_d);
 		}
 	}
-	translate([0,0,2-eps/2]) difference() {
-		cylinder(h = pipe_plug_len * 0.75, d1 = pipe_plug_in_d, d2 = pipe_plug_in_d + 0.1);
-		translate([0,0,-eps / 2]) cylinder(h = pipe_plug_len - 2 + eps, d = pipe_plug_in_d - 0.8);
+	translate([0,0,2-eps/2])
+		difference() {
+			cylinder(h = pipe_plug_len * 0.66, d1 = pipe_plug_in_d, d2 = pipe_plug_in_d + 0.1);
+			translate([0,0,-eps / 2]) cylinder(h = pipe_plug_len - 2 + eps, d = pipe_plug_in_d - 0.8);
+		}
+}
+
+module pipe_reed_socket_flex_part_replacement_tool() {
+	difference() {
+		translate([0,0,-eps/2]) difference() {
+			cylinder(h = 2 * pipe_plug_len, d = pipe_plug_in_d - 1.2);
+			translate([0,0,-eps / 2])
+				cylinder(h = 1.8 * pipe_plug_len, d = pipe_plug_in_d - 1.2 - 1.2);
+		}
+		translate([-pipe_plug_in_d/2, -pipe_plug_in_d/4, -eps])
+			cube([pipe_plug_in_d, pipe_plug_in_d / 2, 1.8 * pipe_plug_len]);
 	}
+	cylinder(h = 1.8 * pipe_plug_len + eps, d = reed_d1 - 0.4);
 }
 
 module just_a_box(h, l, w, wall_thickness) {
@@ -105,4 +120,28 @@ module just_a_box(h, l, w, wall_thickness) {
 	%translate([l - wall_thickness, wall_thickness + clearance, - clearance])
 		cube([wall_thickness, w - 2 * wall_thickness - clearance, h - wall_thickness - clearance]);
 
+}
+
+module flex_part_in_just_a_box(h, l, w, wall_thickness) {
+	clearance = 0.4;
+	union() {
+		// 4 main walls
+		translate([wall_thickness + clearance, wall_thickness + clearance, -wall_thickness + 2 * 0.8 + clearance]) cube([l - 2 * (wall_thickness  + clearance), 0.8, h - 2 * clearance - 0.8]);
+		translate([wall_thickness + clearance, w - wall_thickness - 0.8 - clearance, -wall_thickness + 2 * 0.8 + clearance]) cube([l - 2 * (wall_thickness  + clearance), 0.8, h - 2 * clearance - 0.8]);
+		translate([wall_thickness + clearance, wall_thickness + 0.8 + clearance, h - wall_thickness - clearance]) cube([l - 2* (wall_thickness + clearance), w - 2 * (wall_thickness + 0.8 + clearance), 0.8]);
+		translate([wall_thickness + clearance, wall_thickness + clearance, 0]) cube([0.8, w - 2 * (wall_thickness + clearance), h - 2 * clearance - 0.8]);
+		// inside walls - horizontal
+		for(i = [1 : 34]) {
+			translate([0, 0, h - (22 + 2.5 * i + i * i / 18)])
+				rotate([0, -45, 0])
+				translate([wall_thickness, 0, -h + wall_thickness + clearance])
+					translate([wall_thickness + clearance, wall_thickness + 0.8 + clearance, h - wall_thickness - clearance])
+						cube([(l - 2* (wall_thickness + clearance))/2, w - 2 * (wall_thickness + 0.8), 0.8]);
+		}
+		// inside walls - vertical
+		for(i = [1 : 9]){
+			translate([wall_thickness + clearance, wall_thickness + 0.8 + 6 * i + i * i / 3, 0])
+				cube([(l - 2* (wall_thickness + clearance))/2 * sin(45), 0.8, h - wall_thickness]);
+		}
+	}
 }

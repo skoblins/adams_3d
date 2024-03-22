@@ -94,6 +94,19 @@ module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
     }
 }
 
+module reed2_cut2(total_length, d, heigth_cut_prcnt, leaf_degree_init, leaf_degree_finish = 0) {
+    d_out = d+2*wall_thickness;
+    translate([d_out/2 - d_out * heigth_cut_prcnt / 100 + 0.1/*<- fill the little gap between leaf and reed*/, -d_out/2, 0.35 * total_length]) {
+        rotate([0, -leaf_degree_init, 0]) rotate([180, 90, -90]) {
+            rotate_extrude(angle = leaf_degree_init, $fn=100) {
+                rotate([0, 0, 90]) {
+                    square([d_out, total_length * 0.70]);
+                }
+            }
+        }
+    }
+}
+
 module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coeff_init, stem_heigth_coeff) {
     d_out = d+2*wall_thickness;
     leaf_len = (total_length - end_length)*0.9;
@@ -134,31 +147,47 @@ module reed21_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_co
     // #translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
 }
 
-module leaf21() {
+module leaf21_text(l, w) {
+    my_text = str("L", l, " W", w, "HC", variants_reed_pipe_cut_prcnt);
+    my_text2 = str("A", variants_leaf_enforcement_square_coeff, "B", variants_leaf_enforcement_linear_coeff, "C", variants_leaf_enforcement_const_coeff);
+    linear_extrude(0.26) {
+        text(my_text, size = l/12, font="Arial:style=Bold");
+        translate([0, -l/11, 0]) text(my_text2, size = l/12, font="Arial:style=Bold");
+    }
+}
+
+module leaf21(leaf_enforcement_square_coeff, leaf_enforcement_linear_coeff, leaf_enforcement_const_coeff, leaf_enforcement_support_stem_height) {
     d_out = variants_reed_pipe_in_diameter + 4 * variants_reed_pipe_wall_thickness;
     step_size = 1;
     length = (variants_reed_pipe_length - variants_reed_pipe_end_length) * 0.96;
     l_width = d_out;/*sin(variants_reed_pipe_cut_prcnt / 100 * 180) * d_out * 2.5*/;
 
 
-    function thickness(z) = variants_leaf_enforcement_square_coeff * pow(length - z - variants_leaf_enforcement_zoffset, 2) + variants_leaf_enforcement_linear_coeff * (length - z - variants_leaf_enforcement_zoffset) + variants_leaf_enforcement_const_coeff;
+    function thickness(z) = leaf_enforcement_square_coeff * pow(length - z, 2) + leaf_enforcement_linear_coeff * (length - z) + leaf_enforcement_const_coeff;
 
-        intersection() {
-            translate([-sin((variants_reed_pipe_cut_prcnt) / 100 * 180) * l_width, l_width / 2, 0]) cylinder(h = length, d = l_width);
-            union() {
-                for(z = [0 : step_size : length]) {
-                    hull() {
-                        translate([0, 0, z]) cube([thickness(z), l_width, 1]);
-                        translate([0, 0, z - step_size]) cube([thickness(z - step_size), l_width, 1]);
+    difference() {
+        union() {
+            intersection() {
+                translate([-sin((variants_reed_pipe_cut_prcnt) / 100 * 180) * l_width, l_width / 2, 0]) cylinder(h = length, d = l_width);
+                union() {
+                    for(z = [0 : step_size : length]) {
+                        hull() {
+                            translate([0, 0, z]) cube([thickness(z), l_width, 1]);
+                            translate([0, 0, z - step_size]) cube([thickness(z - step_size), l_width, 1]);
+                        }
+                        echo(z, l_width, thickness(z));
                     }
-                    echo(z, l_width, thickness(z));
-                }
-                hull() {
-                    translate([0, 0, length]) cube([thickness(length), l_width, 1]);
-                    translate([0, 0, length - step_size]) cube([thickness(length - step_size), l_width, 1]);
+                    hull() {
+                        translate([0, 0, length]) cube([thickness(length), l_width, 1]);
+                        translate([0, 0, length - step_size]) cube([thickness(length - step_size), l_width, 1]);
+                    }
                 }
             }
+            translate([eps, d_out/2, 0]) cube([leaf_enforcement_support_stem_height, 0.4, length]);
         }
+        // text
+        translate([0.125, l_width/2, 0.4]) rotate([0, -90, 0]) leaf21_text(l = length, w = l_width);
+    }
 }
 
 module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {

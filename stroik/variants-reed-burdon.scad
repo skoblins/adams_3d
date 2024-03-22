@@ -9,8 +9,7 @@ variants_pipe_leaf_stem_heigth_coeff_init = 0.025;
 variants_pipe_leaf_stem_heigth_coeff = 0.010;
 
 // leaf only
-variants_leaf_thickness = 0.4;
-variants_leaf_enforcement_square_coeff = 0.00045;
-variants_leaf_enforcement_linear_coeff = 0.01;
-variants_leaf_enforcement_const_coeff = 0.4;
-variants_leaf_enforcement_zoffset = 0/*-length * 0.2*/;
+variants_leaf_enforcement_square_coeff = 0.000;
+variants_leaf_enforcement_linear_coeff = 0.04;
+variants_leaf_enforcement_const_coeff = 0.45;
+variants_leaf_enforcement_support_stem_height = 0;

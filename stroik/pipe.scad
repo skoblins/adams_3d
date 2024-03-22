@@ -26,15 +26,19 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
 }
 
 // first / bottom half of the pipe
+
+where_cut = 0.53;
+my_connector_len_coeff = 0.16;
+
 %difference() {
     my_pipe();
-    cutting_operator(where_coeff = 0.48, connector_len_coeff = 0.2, thickness = 4);
+    cutting_operator(where_coeff = where_cut, connector_len_coeff = my_connector_len_coeff, thickness = 4);
 }
 
 // second / upper half of the pipe
 intersection() {
     my_pipe();
-    cutting_operator(where_coeff = 0.48, connector_len_coeff = 0.2, thickness = 4);
+    cutting_operator(where_coeff = where_cut, connector_len_coeff = my_connector_len_coeff, thickness = 4);
 }
 // support_struct();
 // rotate([0,0,90]) support_struct();

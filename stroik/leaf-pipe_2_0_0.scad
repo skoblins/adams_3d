@@ -79,8 +79,8 @@ module arrange(spacing=50, n=5) {
     rotate([0, -90, 0]) {
        leaf21(
             leaf_enforcement_square_coeff = 0.000,
-            leaf_enforcement_linear_coeff = 0.04,
-            leaf_enforcement_const_coeff = 0.45,
+            leaf_enforcement_linear_coeff = 0.035,
+            leaf_enforcement_const_coeff = 0.40,
             leaf_enforcement_support_stem_height = 0
         );
     }

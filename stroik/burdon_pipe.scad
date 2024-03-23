@@ -74,6 +74,14 @@ arrange(spacing = 150, n = 3) {
         for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
     }
 
+    // middle part
+    burdon_pipe_segment(lengths = [0, 40, variants_burdon_segment_l - 40, 40]) {
+        burdon_plug(l = 40, d_in = variants_burdon_d_in, d_out = 17);
+        base_pipe(l = variants_burdon_segment_l - 80, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_socket(l = 40, d_in = 19, d_out = variants_burdon_d_out);
+        for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
+    }
+
     // second part
     burdon_pipe_segment(lengths = [0, 40, variants_burdon_segment_l - 20, 20]) {
         burdon_plug(l = 40, d_in = variants_burdon_d_in, d_out = 17);
@@ -83,5 +91,5 @@ arrange(spacing = 150, n = 3) {
     }
 
     // horn at the end
-    horn(length = 80, d_end = 40, thickness = 4, d_sock_in = 19, d_sock_out = variants_burdon_d_out, l_sock = 20);
+    // horn();
 }

@@ -95,14 +95,14 @@ module pipe_reed_socket_flex_part(l, reed_d1, reed_d2, pipe_plug_in_d) {
 module pipe_reed_socket_flex_part_replacement_tool() {
 	difference() {
 		translate([0,0,-eps/2]) difference() {
-			cylinder(h = 2 * pipe_plug_len, d = pipe_plug_in_d - 1.2);
+			cylinder(h = 3 * pipe_plug_len, d = pipe_plug_in_d - 1.2);
 			translate([0,0,-eps / 2])
-				cylinder(h = 1.8 * pipe_plug_len, d = pipe_plug_in_d - 1.2 - 1.2);
+				cylinder(h = 2.5 * pipe_plug_len, d = pipe_plug_in_d - 1.2 - 1.2);
 		}
-		translate([-pipe_plug_in_d/2, -pipe_plug_in_d/4, -eps])
-			cube([pipe_plug_in_d, pipe_plug_in_d / 2, 1.8 * pipe_plug_len]);
+		translate([-pipe_plug_in_d/2, -pipe_plug_in_d/6, -eps])
+			cube([pipe_plug_in_d, pipe_plug_in_d / 3, 2.5 * pipe_plug_len]);
 	}
-	cylinder(h = 1.8 * pipe_plug_len + eps, d = reed_d1 - 0.4);
+	cylinder(h = 2.5 * pipe_plug_len + eps, d = reed_d1 - 0.4);
 }
 
 module just_a_box(h, l, w, wall_thickness) {

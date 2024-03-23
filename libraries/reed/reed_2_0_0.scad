@@ -6,12 +6,31 @@ reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
 module reed_plug(total_length, end_length, d) {
-    d_out = d+wall_thickness*2;
+    d_out = d + wall_thickness * 2;
 
-    translate([0,0,-end_length]){
+    translate([0, 0, -end_length]){
         difference() {
-            cylinder(h=end_length,d2=d_out*1.1,d1=d+0.8);
-            translate([0,0,-eps/2]) cylinder(h=end_length+eps,d=d);
+            cylinder(h = end_length, d2 = d_out * 1.1, d1 = d + 0.8);
+            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d = d);
+        }
+    }
+
+    // // anti overhanger
+    // translate([0,0,0]) {
+    //     difference() {
+    //         cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.1,d2=d+0.8);
+    //         translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
+    //     }
+    // }
+}
+
+module reed_plug_equal(total_length, end_length, d) {
+    d_out = d + wall_thickness * 2;
+
+    translate([0, 0, -end_length]){
+        difference() {
+            cylinder(h = end_length, d = d_out);
+            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d = d);
         }
     }
 
@@ -192,7 +211,7 @@ module leaf21(leaf_enforcement_square_coeff, leaf_enforcement_linear_coeff, leaf
 
 module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
     my_text = str("L", total_length, " EL", end_length, " D", d, " HC", heigth_cut_prcnt, " LD", leaf_degree);
-    linear_extrude(wall_thickness) text(my_text, size = (total_length - end_length)/24);
+    linear_extrude(wall_thickness * 1.3) text(my_text, size = (total_length - end_length)/22);
 }
 
 module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
@@ -200,7 +219,8 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
     d_out = d+2*wall_thickness;
 
     // first part: plug
-    translate([0,0,end_length]) reed_plug(total_length, end_length, d);
+    // translate([0,0,end_length]) reed_plug(total_length, end_length, d);
+    translate([0,0,end_length]) reed_plug_equal(total_length, end_length, d);
 
     // main part
     difference() {
@@ -226,5 +246,9 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
             }
             reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
         }
+
+    translate([-d / 2, -(total_length - end_length)/22/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
+        rotate([0, -90, 0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+
 }
 

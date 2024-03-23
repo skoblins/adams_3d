@@ -2,6 +2,9 @@ include <variants-pipe.scad>
 
 $fn = 100;
 
+// mod for my old pipe!
+variants_pipe_plug_out_d = 9.5;
+
 cutting_block_w = variants_pipe_plug_out_d + 2;
 
 eps = 0.1;
@@ -22,9 +25,9 @@ module  breath_vent(){
     difference() {
         difference() {
             outside_shape();
-            inside_shape(extrusion = -2);
+            inside_shape(extrusion = -1.2);
         }
-        cutting_block(thickness = cutting_block_w, pos_offset = 1);
+        cutting_block(thickness = variants_breath_pipe_len, pos_offset = 1);
     }
 
     intersection() {
@@ -46,6 +49,6 @@ module breath_vent_flap() {
     }
 }
 
-breath_vent();
+%breath_vent();
 translate([10, 0, 0]) breath_vent_flap();
 

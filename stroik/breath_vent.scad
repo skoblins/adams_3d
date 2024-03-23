@@ -1,9 +1,11 @@
 include <variants-pipe.scad>
+include <reed/basic_shapes.scad>
+include <reed/tools.scad>
 
 $fn = 100;
 
 // mod for my old pipe!
-variants_pipe_plug_out_d = 9.5;
+variants_pipe_plug_out_d = 19;
 
 cutting_block_w = variants_pipe_plug_out_d + 2;
 
@@ -49,6 +51,21 @@ module breath_vent_flap() {
     }
 }
 
-%breath_vent();
+module plug_to_old_mouth_pipe() {
+    base_pipe_b(l = plug_to_old_mouth_pipe_len + eps, d_in = 8.5, d_out = 9.5);
+}
+
+module connection_between_2_diameters() {
+    base_pipe_b(l = 1 + eps, d_in = 8.5, d_out = 19);
+}
+
+plug_to_old_mouth_pipe_len = 15;
+
+stack(heights = [plug_to_old_mouth_pipe_len, plug_to_old_mouth_pipe_len + 1, plug_to_old_mouth_pipe_len + 1 + variants_breath_pipe_len]) {
+    #plug_to_old_mouth_pipe();
+    connection_between_2_diameters();
+    breath_vent();
+}
+
 translate([10, 0, 0]) breath_vent_flap();
 

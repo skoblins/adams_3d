@@ -12,7 +12,7 @@ cutting_block_w = variants_pipe_plug_out_d + 2;
 eps = 0.1;
 
 module cutting_block(thickness = 1, pos_offset = 0) {
-    rotate([0, -10, 0]) translate([cutting_block_w/2 + pos_offset, -cutting_block_w / 2, 0]) cube([thickness, cutting_block_w, variants_breath_pipe_len]);
+    rotate([0, -12, 0]) translate([cutting_block_w/2 + pos_offset, -cutting_block_w / 2, 0]) cube([thickness, cutting_block_w, variants_breath_pipe_len]);
 }
 
 module outside_shape() {
@@ -27,7 +27,7 @@ module  breath_vent(){
     difference() {
         difference() {
             outside_shape();
-            inside_shape(extrusion = -1.2);
+            inside_shape(extrusion = -5);
         }
         cutting_block(thickness = variants_breath_pipe_len, pos_offset = 1);
     }
@@ -37,7 +37,7 @@ module  breath_vent(){
             cutting_block();
             inside_shape();
         }
-        for(z = [30 : 10 : 90]) {
+        for(z = [30 : 15 : 90]) {
             translate([-10, -10, z]) cube([20 , 20, 1]);
         }
     }
@@ -67,5 +67,5 @@ stack(heights = [plug_to_old_mouth_pipe_len, plug_to_old_mouth_pipe_len + 1, plu
     breath_vent();
 }
 
-translate([10, 0, 0]) breath_vent_flap();
+translate([10, 0, plug_to_old_mouth_pipe_len + 1]) breath_vent_flap();
 

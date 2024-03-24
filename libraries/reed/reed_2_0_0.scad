@@ -209,9 +209,13 @@ module leaf21(leaf_enforcement_square_coeff, leaf_enforcement_linear_coeff, leaf
     }
 }
 
-module reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
-    my_text = str("L", total_length, " EL", end_length, " D", d, " HC", heigth_cut_prcnt, " LD", leaf_degree);
-    linear_extrude(wall_thickness * 1.3) text(my_text, size = (total_length - end_length)/22);
+module reed2_text1(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
+    my_text = str("L", total_length, " EL", end_length, " D", d);
+    linear_extrude(wall_thickness * 1.3) text(my_text, size = (total_length - end_length)/12);
+}
+module reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
+    my_text = str(" HC", heigth_cut_prcnt, " LD", leaf_degree);
+    linear_extrude(wall_thickness * 1.3) text(my_text, size = (total_length - end_length)/12);
 }
 
 module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
@@ -247,8 +251,12 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
             reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
         }
 
-    translate([-d / 2, -(total_length - end_length)/22/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
-        rotate([0, -90, 0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+    translate([-d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
+        rotate([0, -90, 0]) reed2_text1(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+
+    rotate([0, 0, 45])
+        translate([-d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
+            rotate([0, -90, 0]) reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
 
 }
 

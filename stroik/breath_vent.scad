@@ -52,7 +52,7 @@ module breath_vent_flap() {
 }
 
 module plug_to_old_mouth_pipe() {
-    base_pipe_b(l = plug_to_old_mouth_pipe_len + eps, d_in = 8.5, d_out = 9.5);
+    base_pipe_b(l = plug_to_old_mouth_pipe_len + eps, d_in = 8.0, d_out = 9.5);
 }
 
 module connection_between_2_diameters() {
@@ -67,5 +67,5 @@ stack(heights = [plug_to_old_mouth_pipe_len, plug_to_old_mouth_pipe_len + 1, plu
     breath_vent();
 }
 
-translate([10, 0, plug_to_old_mouth_pipe_len + 1]) breath_vent_flap();
+%translate([10, 0, plug_to_old_mouth_pipe_len + 1]) breath_vent_flap();
 

@@ -5,7 +5,7 @@ include <reed/tools.scad>
 $fn = 100;
 
 // mod for my old pipe!
-variants_pipe_plug_out_d = 19;
+variants_pipe_plug_out_d = 17;
 
 cutting_block_w = variants_pipe_plug_out_d + 2;
 
@@ -56,7 +56,7 @@ module plug_to_old_mouth_pipe() {
 }
 
 module connection_between_2_diameters() {
-    base_pipe_b(l = 1 + eps, d_in = 8.5, d_out = 19);
+    base_pipe_b(l = 2 + eps, d_in = 8.5, d_out = variants_pipe_plug_out_d);
 }
 
 plug_to_old_mouth_pipe_len = 15;

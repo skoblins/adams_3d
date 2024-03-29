@@ -1,4 +1,5 @@
 include <reed/reed_2_0_0.scad>
+include <reed/tools.scad>
 include <variants-reed-pipe.scad>
 
 $fn=100;
@@ -11,75 +12,12 @@ $fn=100;
 //             variants_pipe_leaf_stem_heigth_coeff
 // );
 
-module arrange(spacing=50, n=5) {
-    nparts = $children;
-    for(i=[0:1:n-1], j=[0:nparts/n])
-        if (i+n*j < nparts)
-            translate([spacing*(i+1), spacing*j, 0])
-                children(i+n*j);
- }
-
- arrange(spacing = 38, n = 3){
-    // rotate([0, -90, 0]) {
-    //     leaf21(
-    //         leaf_enforcement_square_coeff = 0.0014,
-    //         leaf_enforcement_linear_coeff = 0.01,
-    //         leaf_enforcement_const_coeff = 0.4,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //     leaf21(
-    //         leaf_enforcement_square_coeff = 0.0014,
-    //         leaf_enforcement_linear_coeff = 0.0,
-    //         leaf_enforcement_const_coeff = 0.4,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //     leaf21(
-    //         leaf_enforcement_square_coeff = 0.0014,
-    //         leaf_enforcement_linear_coeff = 0.01,
-    //         leaf_enforcement_const_coeff = 0.2,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //     leaf21(
-    //         leaf_enforcement_square_coeff = 0.0010,
-    //         leaf_enforcement_linear_coeff = 0.01,
-    //         leaf_enforcement_const_coeff = 0.4,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //    leaf21(
-    //         leaf_enforcement_square_coeff = 0.0010,
-    //         leaf_enforcement_linear_coeff = 0.015,
-    //         leaf_enforcement_const_coeff = 0.4,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //     leaf21(
-    //         leaf_enforcement_square_coeff = 0.0010,
-    //         leaf_enforcement_linear_coeff = 0.01,
-    //         leaf_enforcement_const_coeff = 0.6,
-    //         leaf_enforcement_support_stem_height = 1.2
-    //     );
-    // }
-    // rotate([0, -90, 0]) {
-    //    leaf21(
-    //         leaf_enforcement_square_coeff = 0.0010,
-    //         leaf_enforcement_linear_coeff = 0.015,
-    //         leaf_enforcement_const_coeff = 0.4,
-    //         leaf_enforcement_support_stem_height = 0.8
-    //     );
-    // }
+arrange(spacing = 38, n = 3){
     rotate([0, -90, 0]) {
        leaf21(
+            l = 49,
             leaf_enforcement_square_coeff = 0.000,
-            leaf_enforcement_linear_coeff = 0.035,
+            leaf_enforcement_linear_coeff = 0.04,
             leaf_enforcement_const_coeff = 0.40,
             leaf_enforcement_support_stem_height = 0
         );

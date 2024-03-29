@@ -14,13 +14,13 @@ module my_pipe(){
     );
 }
 
-module cutting_operator(where_coeff, connector_len_coeff, thickness) {
+module cutting_operator(where_coeff, connector_len, thickness) {
     translate([0,0,variants_pipe_len * where_coeff]) {
         union() {
             // connector
-            base_pipe(l = variants_pipe_len * connector_len_coeff, d = variants_pipe_in_d + thickness, thickness_bottom = variants_pipe_thickness_bottom, thickness_top = variants_pipe_thickness_bottom);
+            base_pipe(l = connector_len, d = variants_pipe_in_d + thickness, thickness_bottom = variants_pipe_thickness_bottom, thickness_top = variants_pipe_thickness_bottom);
             // the upper rest
-            translate([0,0,variants_pipe_len * connector_len_coeff - eps/2]) base_pipe(l = variants_pipe_len, d = variants_pipe_in_d-eps, thickness_bottom = variants_pipe_thickness_bottom + 10, thickness_top = variants_pipe_thickness_bottom + 10);
+            translate([0,0,connector_len - eps/2]) base_pipe(l = variants_pipe_len, d = variants_pipe_in_d-eps, thickness_bottom = variants_pipe_thickness_bottom + 10, thickness_top = variants_pipe_thickness_bottom + 10);
         }
     }
 }
@@ -28,17 +28,17 @@ module cutting_operator(where_coeff, connector_len_coeff, thickness) {
 // first / bottom half of the pipe
 
 where_cut = 0.53;
-my_connector_len_coeff = 0.16;
+my_connector_len = 18   ;
 
 %difference() {
     my_pipe();
-    cutting_operator(where_coeff = where_cut, connector_len_coeff = my_connector_len_coeff, thickness = 4);
+    cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
 
 // second / upper half of the pipe
 intersection() {
     my_pipe();
-    cutting_operator(where_coeff = where_cut, connector_len_coeff = my_connector_len_coeff, thickness = 4);
+    cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
 // support_struct();
 // rotate([0,0,90]) support_struct();

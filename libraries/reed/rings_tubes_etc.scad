@@ -75,21 +75,42 @@ module box_for_flex_hole_narrowing() {
 }
 
 module pipe_reed_socket_flex_part(l, reed_d1, reed_d2, pipe_plug_in_d) {
+
+	module supporting_stem() {
+		stem_l = pipe_plug_in_d;
+		stem_w = 0.8;
+		stem_h = 0.8;
+		translate([-stem_l / 2, -stem_w / 2, l - stem_h]) cube([stem_l, stem_w, stem_h]);
+		rotate([0, 0, 90]) translate([-stem_l / 2, -stem_w / 2, l - stem_h]) cube([stem_l, stem_w, stem_h]);
+	}
+
+	module outer_wall() {
+		// difference() {
+			cylinder(h = pipe_plug_len + 10, d1 = pipe_plug_in_d, d2 = pipe_plug_in_d + 0.1);
+		// 	union(){
+		// 		translate([0, 0, -eps / 2]) cylinder(h = pipe_plug_len + 10 + eps, d = pipe_plug_in_d - 0.8);
+		// 		translate([-(pipe_plug_in_d / 2 + eps / 2), -pipe_plug_in_d * 0.66 / 2 + eps / 2, l]) cube([pipe_plug_in_d + eps, pipe_plug_in_d * 0.66, pipe_plug_len + 10]);
+		// 	}
+		// }
+	}
+
 	intersection() {
 		difference(){
-			cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
-			#translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
+			union() {
+				cylinder(h=l, d1=pipe_plug_in_d, d2=pipe_plug_in_d);
+			}
+			translate([0,0,-eps/2]) cylinder(h=l+eps, d1=reed_d1, d2=reed_d2);
 		}
 		union() {
+			supporting_stem();
 			cylinder(h=l, d=reed_d2+1.4);
 			cylinder(h=2, d1=pipe_plug_in_d-0.8, d2=pipe_plug_in_d);
 		}
 	}
-	translate([0,0,2-eps/2])
-		difference() {
-			cylinder(h = pipe_plug_len * 0.66, d1 = pipe_plug_in_d, d2 = pipe_plug_in_d + 0.1);
-			translate([0,0,-eps / 2]) cylinder(h = pipe_plug_len - 2 + eps, d = pipe_plug_in_d - 0.8);
-		}
+	translate([0,0,2-eps/2]) {
+		outer_wall();
+	}
+
 }
 
 module pipe_reed_socket_flex_part_replacement_tool() {

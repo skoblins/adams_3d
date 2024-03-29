@@ -11,9 +11,8 @@ module pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
 }
 
 module pipe_reed_socket(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
-	// params are local dimensions, not of the entire pipe!
-	assert(pipe_plug_in_d < d1, "The bottom diameter of the pipe reed socket is smaller than the plug inside diameter!)");
-	pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
+	left_space = variants_pipe_len * (1 - variants_pipe_holes[8][0]) - variants_reed_pipe_in_diameter * variants_pipe_holes[8][1];
+	translate([0, 0, -left_space]) pipe_reed_socket_hard_part(l + left_space, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
 	// pipe_reed_socket_flex_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d);
 }
 

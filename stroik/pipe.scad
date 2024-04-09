@@ -30,13 +30,13 @@ module cutting_operator(where_coeff, connector_len, thickness) {
 where_cut = 0.53;
 my_connector_len = 18   ;
 
-%difference() {
+difference() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
 
 // second / upper half of the pipe
-intersection() {
+%intersection() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }

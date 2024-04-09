@@ -13,13 +13,20 @@ $fn=100;
 // );
 
 arrange(spacing = 38, n = 3){
-    rotate([0, -90, 0]) {
+        rotate([0, -90, 0]) {
        leaf21(
-            l = 49,
-            leaf_enforcement_square_coeff = 0.000,
-            leaf_enforcement_linear_coeff = 0.04,
-            leaf_enforcement_const_coeff = 0.40,
+            l = 48,
+            leaf_enforcement_square_coeff = -0.0005,
+            leaf_enforcement_linear_coeff = 0.025,
+            leaf_enforcement_const_coeff = 0.4,
             leaf_enforcement_support_stem_height = 0
         );
     }
+    // reed2(
+    //     48,
+    //     variants_reed_pipe_end_length,
+    //     variants_reed_pipe_in_diameter,
+    //     variants_reed_pipe_cut_prcnt,
+    //     variants_reed_pipe_leaf_degree
+    // );
 }

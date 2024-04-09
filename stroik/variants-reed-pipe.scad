@@ -1,5 +1,5 @@
 variants_reed_pipe_length = 49;
-variants_reed_pipe_fastener_length = variants_reed_pipe_length * 0.13;
+variants_reed_pipe_fastener_length = variants_reed_pipe_length * 0.14;
 variants_reed_pipe_end_length = 15;
 variants_reed_pipe_in_diameter = 8;
 variants_reed_pipe_wall_thickness = 0.8;

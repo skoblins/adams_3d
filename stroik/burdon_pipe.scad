@@ -6,6 +6,7 @@ $fn = 100;
 variants_burdon_segment_l = 210;
 variants_burdon_d_out = 24;
 variants_burdon_d_in = 8;
+variants_burdon_plug_d_in = 10;
 
 // Arrange its children in a regular rectangular array
  //      spacing - the space between children origins
@@ -21,6 +22,8 @@ variants_burdon_d_in = 8;
 module burdon_socket(l = 40, d_in = 19, d_out = 28) {
     thickness = (d_out - d_in) / 2;
     base_pipe(l = l, d = d_in, thickness_bottom = thickness, thickness_top = thickness);
+    thickness2 = (variants_burdon_plug_d_in - variants_burdon_d_in) / 2;
+    translate([0, 0, -eps])base_pipe(l = l + eps, d = variants_burdon_d_in, thickness_bottom = thickness2, thickness_top = thickness2);
 }
 
 module burdon_plug(l = 40, d_in = 8, d_out = 17) {
@@ -41,7 +44,7 @@ module support_struct() {
     support_point_start = 40;
     support_width = entire_support_h/6;
     support_xy_clearance = 6.4;
-    support_touch_eps = 0.5;
+    support_touch_eps = 0.75;
     horn_plug_len = 40;
 
     translate([variants_burdon_d_out / 2 + support_xy_clearance, 0, -horn_plug_len])
@@ -51,10 +54,10 @@ module support_struct() {
                     points = [
                         [0, 0],
                         [support_width, 0],
-                        [2, entire_support_h + horn_plug_len],
-                        [-support_xy_clearance - support_touch_eps, entire_support_h + horn_plug_len],
-                        [0, (entire_support_h + horn_plug_len) * 0.75],
-                        [-support_xy_clearance - support_touch_eps, (entire_support_h + horn_plug_len) * 0.75],
+                        // [2, entire_support_h + horn_plug_len],
+                        // [-support_xy_clearance - support_touch_eps, entire_support_h + horn_plug_len],
+                        // [0, (entire_support_h + horn_plug_len) * 0.75],
+                        // [-support_xy_clearance - support_touch_eps, (entire_support_h + horn_plug_len) * 0.75],
                         [0,(entire_support_h + horn_plug_len)/2],
                         [-support_xy_clearance - support_touch_eps, (entire_support_h + horn_plug_len) / 2],
                         // [0, (entire_support_h + horn_plug_len)/3],
@@ -67,27 +70,44 @@ module support_struct() {
 arrange(spacing = 150, n = 3) {
 
     // first part
-    burdon_pipe_segment(lengths = [0, 40, variants_burdon_segment_l - 40, 40]) {
-        burdon_plug(l = 40, d_in = 13, d_out = 17);
-        base_pipe(l = variants_burdon_segment_l - 80, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
-        burdon_socket(l = 40, d_in = 19, d_out = variants_burdon_d_out);
+    burdon_pipe_segment(lengths = [0, 40 - eps, 40 - eps, variants_burdon_segment_l - 40 - eps, 40 - eps]) {
+        burdon_plug(l = 40  + eps, d_in = 15, d_out = 19);
+        base_pipe(l = 20  + eps, d = variants_burdon_d_in, thickness_bottom = 12, thickness_top = 8);
+        base_pipe(l = variants_burdon_segment_l - 80 /*- 20*/  + eps, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_socket(l = 40  + eps, d_in = 19, d_out = variants_burdon_d_out);
         for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
     }
 
     // middle part
-    burdon_pipe_segment(lengths = [0, 40, variants_burdon_segment_l - 40, 40]) {
-        burdon_plug(l = 40, d_in = variants_burdon_d_in, d_out = 17);
-        base_pipe(l = variants_burdon_segment_l - 80, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
-        burdon_socket(l = 40, d_in = 19, d_out = variants_burdon_d_out);
+    burdon_pipe_segment(lengths = [0, 40 - eps, variants_burdon_segment_l - 40 - eps, 40 - eps]) {
+        burdon_plug(l = 40  + eps, d_in = variants_burdon_plug_d_in, d_out = 17);
+        base_pipe(l = variants_burdon_segment_l - 80  + eps, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_socket(l = 40  + eps, d_in = 19, d_out = variants_burdon_d_out);
         for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
     }
 
+    //  2nd middle part
+    burdon_pipe_segment(lengths = [0, 40 - eps, variants_burdon_segment_l * 0.66 - 40 - eps, 40 - eps]) {
+        burdon_plug(l = 40 + eps, d_in = variants_burdon_plug_d_in, d_out = 17);
+        base_pipe(l = variants_burdon_segment_l * 0.66 - 80  + eps, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_socket(l = 40  + eps, d_in = 19, d_out = variants_burdon_d_out);
+        // for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
+    }
+
+    //  3rd middle part
+    burdon_pipe_segment(lengths = [0, 40 - eps, variants_burdon_segment_l * 0.5 - 40 - eps, 40 - eps]) {
+        burdon_plug(l = 40  + eps, d_in = variants_burdon_plug_d_in, d_out = 17);
+        base_pipe(l = variants_burdon_segment_l * 0.5 - 80  + eps, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_socket(l = 40  + eps, d_in = 19, d_out = variants_burdon_d_out);
+        // for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
+    }
+
     // second part
-    burdon_pipe_segment(lengths = [0, 40, variants_burdon_segment_l - 20, 20]) {
-        burdon_plug(l = 40, d_in = variants_burdon_d_in, d_out = 17);
-        base_pipe(l = variants_burdon_segment_l - 60, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
-        burdon_plug(l = 20, d_in = variants_burdon_d_in, d_out = 17);
-        translate([0, 0, 20]) for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
+    burdon_pipe_segment(lengths = [0, 40 - eps, variants_burdon_segment_l / 2 - 20 - eps, 20 - eps]) {
+        burdon_plug(l = 40  + eps, d_in = variants_burdon_d_in, d_out = 17);
+        base_pipe(l = variants_burdon_segment_l / 2 - 60  + eps, d = variants_burdon_d_in, thickness_bottom = 8, thickness_top = 8);
+        burdon_plug(l = 20  + eps, d_in = variants_burdon_d_in, d_out = 17);
+        // translate([0, 0, 20]) for (i=[0, 90, 180, 270]) rotate([0, 0, i]) support_struct();
     }
 
     // horn at the end

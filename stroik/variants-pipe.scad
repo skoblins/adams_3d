@@ -1,6 +1,6 @@
 include <variants-reed-pipe.scad>
 
-variants_pipe_len = 215;
+variants_pipe_len = 214;
 variants_pipe_in_d = 8;
 variants_pipe_thickness_top = 4;
 variants_pipe_thickness_bottom = 10;
@@ -10,7 +10,7 @@ variants_pipe_plug_out_d = 19;
 variants_pipe_plug_stopper_d = 32;
 reed_socket_len = variants_reed_pipe_end_length;
 pipe_plug_len=25;
-horn_plug_len=18;
+horn_plug_len=17;
 horn_plug_in_d = 13;
 horn_plug_out_d = 15;
 horn_len = 85;
@@ -22,10 +22,10 @@ variants_pipe_holes=[
                         [0.24, 8/variants_reed_pipe_in_diameter],
                         [0.36, 6/variants_reed_pipe_in_diameter],
                         [0.41, 7/variants_reed_pipe_in_diameter],
-                        [0.49, 7/variants_reed_pipe_in_diameter],
+                        [0.485, 7/variants_reed_pipe_in_diameter],
                         [0.64, 7/variants_reed_pipe_in_diameter],
-                        [0.7325, 6/variants_reed_pipe_in_diameter],
-                        [0.8225, 5/variants_reed_pipe_in_diameter],
+                        [0.735, 6/variants_reed_pipe_in_diameter],
+                        [0.835, 5/variants_reed_pipe_in_diameter],
                         [0.94, 5/variants_reed_pipe_in_diameter],
                     ];
 

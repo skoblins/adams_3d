@@ -3,8 +3,9 @@ include <variants-pipe.scad>
 // include <variants-reed-burdon.scad>
 include <variants-reed-pipe.scad>
 include <reed/tools.scad>
+include <reed/basic_shapes.scad>
 
-$fn = 100;
+$fn = 1000;
 
 arrange(spacing = 40, n = 3) {
 
@@ -31,7 +32,7 @@ arrange(spacing = 40, n = 3) {
 
 	// color(alpha = 0.2) just_a_box(h = 170, l = 40, w = 100, wall_thickness = 2);
 	// flex_part_in_just_a_box(h = 170, l = 40, w = 100, wall_thickness = 2);
-	box_for_leafs(h = 170, l = 40, w = 100, wall_thickness = 2);
+	// box_for_leafs(h = 170, l = 40, w = 100, wall_thickness = 2);
 
 	// translate([60, 0, 0]) pipe_reed_socket_flex_part_replacement_tool(
 	// 	l = reed_socket_len,
@@ -40,6 +41,7 @@ arrange(spacing = 40, n = 3) {
 	// 	pipe_plug_in_d = variants_pipe_plug_in_d
 	// );
 
+	base_pipe_b(l = 40, d_in = 20, d_out = 24);
 
 }
 

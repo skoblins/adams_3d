@@ -16,7 +16,7 @@ arrange(spacing = 38, n = 3){
         rotate([0, -90, 0]) {
        leaf21(
             l = 48,
-            leaf_enforcement_square_coeff = -0.0005,
+            leaf_enforcement_square_coeff = 0,
             leaf_enforcement_linear_coeff = 0.025,
             leaf_enforcement_const_coeff = 0.4,
             leaf_enforcement_support_stem_height = 0

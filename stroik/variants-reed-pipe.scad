@@ -4,7 +4,7 @@ variants_reed_pipe_end_length = 15;
 variants_reed_pipe_in_diameter = 8;
 variants_reed_pipe_wall_thickness = 0.8;
 variants_reed_pipe_cut_prcnt = 11;
-variants_reed_pipe_leaf_degree = 1.64; // had a case when the leaf curled up, and become too difficult to play. 1.66 gives lower tone!
+variants_reed_pipe_leaf_degree = 1.62; // had a case when the leaf curled up, and become too difficult to play. 1.66 gives lower tone! 16.4 was ok, + some sandpaper work
 
 
 // leaf only

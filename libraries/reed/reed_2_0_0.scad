@@ -1,7 +1,7 @@
 include <reed.scad>
 
 completeness_percent = 25;
-wall_thickness = 0.8;
+wall_thickness = 1;
 reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
@@ -47,8 +47,8 @@ module reed2_base(total_length, end_length, d){
     d_out = d+wall_thickness*2;
     translate([0, 0, end_length]) {
         difference() {
-            cylinder(h=total_length - end_length, d=d_out);
-            translate([0, 0, -0.1]) cylinder(h = (total_length - end_length)*0.9, d = d);
+            cylinder(h=total_length - end_length + 8, d=d_out);
+            translate([0, 0, -0.1]) cylinder(h = (total_length - end_length) - 0.8 + 8, d = d);
         }
     } 
 }
@@ -69,15 +69,16 @@ module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
 
 module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
     d_out = d+wall_thickness*2;
-    x0 = d_out/2 - d_out * heigth_cut_prcnt / 100 - 0.4;
+    x0 = d_out/2 - d_out * heigth_cut_prcnt / 100 - 0.6;
+    xs = sin(heigth_cut_prcnt*180/100) * d;
+    ys = total_length * 0.375;
 
+    // lower refill
     points = [
-        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.15],
-        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0],
-        [-sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0],
-        [-sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.15],
-        // [0, total_length * 0.11],
-        [sin(heigth_cut_prcnt*180/100) * d_out, total_length * 0.15]
+        [xs, ys],
+        [xs, 0],
+        [-xs, 0],
+        [-xs, ys],
     ];
 
     echo(variants_reed_pipe_end_length=variants_reed_pipe_end_length);
@@ -85,6 +86,25 @@ module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
         linear_extrude(height=0.8) {
             // translate([0,variants_reed_pipe_end_length,0]) {
                 polygon(points = points);
+            // }
+        }
+    }
+
+    // upper refill
+    ys2 = total_length * 0.15;
+
+    points2 = [
+        [xs, ys2],
+        [xs, 0],
+        [-xs, 0],
+        [-xs, ys2],
+        // [0, total_length * 0.11],
+        // [xs, total_length * 0.3]
+    ];
+    translate([x0 - sin(variants_reed_pipe_leaf_degree / 100 * 90)*(total_length * 0.9 - variants_reed_pipe_end_length) + 0.5, 0, total_length*0.956]) rotate([90,0,90]) {
+        linear_extrude(height=0.8) {
+            // translate([0,variants_reed_pipe_end_length,0]) {
+                polygon(points = points2);
             // }
         }
     }
@@ -106,7 +126,7 @@ module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
         rotate([0, -leaf_degree, 0]) rotate([180, 90, -90]) {
             rotate_extrude(angle = leaf_degree, $fn=100) {
                 rotate([0, 0, 90]) {
-                    square([d_out, total_length * 0.70]);
+                    square([d_out, total_length]);
                 }
             }
         }
@@ -242,15 +262,15 @@ module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
     //     }
 
         // horizontal grip - powstrzymuje klej!!!
-        difference() {
-            translate([0,0,end_length+reed_plug_overhang_suppressor_len+total_length/10]) {
-                difference() {
-                    cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.2,d2=d);
-                    translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
-                }
-            }
-            reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
-        }
+        // difference() {
+        //     translate([0,0,end_length+reed_plug_overhang_suppressor_len+total_length/10]) {
+        //         difference() {
+        //             cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.2,d2=d);
+        //             translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
+        //         }
+        //     }
+        //     reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
+        // }
 
     // Text
     translate([-d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])

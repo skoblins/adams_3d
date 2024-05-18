@@ -61,15 +61,15 @@ module holes_cutter(l, d, thickness, holes) {
 
 module horn() {
 	eps = 0.1;
-	unit = 2;
+	unit = 1;
 	grow_coeff = 1.25;
 
 	function diameter(z)    = variants_pipe_bottom_d + grow_coeff * z / horn_len * variants_pipe_bottom_d;
-	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95;
+	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95 + 0.2/*in the beginning it's too tight*/;
 	function rotation(z) = z / horn_len * 90;
 	function scale_x(z) = 1 + 0.15 * z / horn_len;
 	function scale_y(z) = 1 - 0.15 * z / horn_len;
-	function big_rotation(z) = z / horn_len * 100;
+	function big_rotation(z) = z / horn_len * 85;
 
 	difference() {
 		for(z = [0 : unit : horn_len - unit]) {

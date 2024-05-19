@@ -1,9 +1,9 @@
 //include <Round-Anything/polyround.scad>
 use <smooth-prim/smooth_prim.scad>
 
-x_in_size = 82;
-y_in_size = 90;
-z_in_size = 17;
+x_in_size = 85;
+y_in_size = 80;
+z_in_size = 16;
 
 thickness = 6;
 holder_stripe_w = 5;

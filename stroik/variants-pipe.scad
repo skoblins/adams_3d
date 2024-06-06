@@ -24,9 +24,9 @@ variants_pipe_holes=[
                         [0.39, 7/variants_reed_pipe_in_diameter],  // f#
                         [0.485, 7/variants_reed_pipe_in_diameter], // g
                         [0.64, 7/variants_reed_pipe_in_diameter],  // a
-                        [0.72, 6/variants_reed_pipe_in_diameter], // b
+                        [0.725, 6/variants_reed_pipe_in_diameter], // b
                         [0.84, 5/variants_reed_pipe_in_diameter], // c
                         [0.94, 5/variants_reed_pipe_in_diameter],  // d
                     ];
 
-variants_breath_pipe_len = 55;
+variants_breath_pipe_len = 60;

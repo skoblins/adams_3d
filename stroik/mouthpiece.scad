@@ -27,7 +27,7 @@ hull() {
 module inside() {
 cylinder(h = h1 + 1, d1 = d_out2 - 4, d2 = d_out1 - 4);
 
-translate ([0, 0, -(h2 - 1)]) {
+translate ([0, 0, -(h2 * 0.75 + d_out3/2 - 3)]) {
 hull() {
     translate([0, 0, h2 * 0.75]) sphere(d = d_out3 - 4);
     translate([0, 0, pipe_plug_len]) cube([variants_pipe_plug_stopper_d - 4, variants_pipe_plug_stopper_d - 4, 10], true);

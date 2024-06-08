@@ -2,8 +2,8 @@
 use <smooth-prim/smooth_prim.scad>
 
 x_in_size = 85;
-y_in_size = 80;
-z_in_size = 16;
+y_in_size = 79;
+z_in_size = 17;
 
 thickness = 6;
 holder_stripe_w = 5;
@@ -28,6 +28,18 @@ module outside() {
     translate([-thickness/2, -thickness/2, -thickness/2]) SmoothCube([x_in_size + thickness, y_in_size + thickness, z_in_size + thickness], 5);
 }
 
+module extension_upwards() {
+    // we have to leave the opening for the finger authorization sensor
+    difference() {
+        // a normal extension
+        translate([x_in_size / 4, y_in_size - 5, -thickness/2])
+            SmoothXYCube([x_in_size / 2, y_in_size, thickness/2], 5);
+        // opening is between 11cm and 13 cm from the bottom of the smartphone, and 20mm wide
+        translate([(x_in_size - 20) / 2, 105, -thickness/2 - 0.1])
+            SmoothXYCube([20, 20, thickness], 4);
+        }
+}
+
 module holder_box() {
     difference() {
         outside();
@@ -36,23 +48,22 @@ module holder_box() {
         opening_for_charger();
         opening_for_loudspeakers();
     }
-    // extension upwards
-    translate([x_in_size / 4, y_in_size - 5, -thickness/2])
-        SmoothXYCube([x_in_size / 2, y_in_size, thickness/2], 5);
+    extension_upwards();
 }
 
 rod_width = 10;
-rod_heigth = 6;
-rod_size = 45;
+rod_breadth = 6;
+rod_len = 45;
+rod_degree = 60;
 
-module rod(){
+module rod(rod_len){
     rotate([90, 180, 90]) {
         linear_extrude(rod_width) {
             polygon([
                 [0, 0],
-                [rod_heigth, 0],
-                [rod_size, rod_size],
-                [rod_size, rod_size + rod_heigth],
+                [rod_breadth, 0],
+                [cos(rod_degree) * rod_len + rod_breadth, sin(rod_degree) * rod_len],
+                [cos(rod_degree) * rod_len, sin(rod_degree) * rod_len],
                 [0, 0]
             ]);
         }
@@ -60,14 +71,21 @@ module rod(){
 }
 
 module clips() {
-    rod();
+    rod(rod_len);
     translate([x_in_size / 3, 0, 0])
-        rod();
+        rod(rod_len);
+
+    // second row
+    translate([0, -10   , 0]) {
+        rod(rod_len/3);
+        translate([x_in_size / 3, 0, 0])
+            rod(rod_len/3);
+    }
 }
 
 module clips_with_plate() {
     plate_x_siz = x_in_size / 2;
-    plate_y_siz = y_in_size * 0.45;
+    plate_y_siz = y_in_size * 0.33;
     translate([-2/*don't know why*/, -plate_y_siz, -thickness/4 /*thickness of the upper part*/]) SmoothXYCube([plate_x_siz, plate_y_siz, thickness/4], 5);
     clips();
 }

@@ -59,17 +59,17 @@ module holes_cutter(l, d, thickness, holes) {
 	translate([0,holes[8][0]*l,0]) rotate([0,180,0]) cylinder(h=d+thickness+eps, d1=d*holes[8][1], d2=d*holes[8][1]);
 }
 
-module horn() {
+module horn(horn_len = 85, horn_degree = 80, horn_twist = 90, horn_d_out_end = 60, resolution = 2) {
 	eps = 0.1;
-	unit = 1;
+	unit = resolution;
 	grow_coeff = 1.25;
 
 	function diameter(z)    = variants_pipe_bottom_d + grow_coeff * z / horn_len * variants_pipe_bottom_d;
 	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95 + 0.2/*in the beginning it's too tight*/;
-	function rotation(z) = z / horn_len * 130;
+	function rotation(z) = z / horn_len * horn_twist;
 	function scale_x(z) = 1 + 0.15 * z / horn_len;
 	function scale_y(z) = 1 - 0.15 * z / horn_len;
-	function big_rotation(z) = z / horn_len * 65;
+	function big_rotation(z) = z / horn_len * horn_degree;
 
 	difference() {
 		for(z = [0 : unit : horn_len - unit]) {

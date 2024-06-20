@@ -12,6 +12,6 @@ assemble() {
     // Arms
     pieces(4) turnXY(every(90)) stack(TOLEFT) {
         TOLEFT() box(x = 125, y = 15, z = 15)
-        linear_bearing_housing(d=19, l=29, wall=2, tab=6, screwsize=2.5);
+        box(x = 25, y = 25, z = 25);
     }
 }

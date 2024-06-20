@@ -18,7 +18,7 @@ assemble() {
             h = (1st_in_height + 2nd_h + 3rd_h) * 1.1;
             d = 1st_in_diameter * 1.3;
             tube(h = h, d = d, solid = true)
-            tube(h = pipe_plug_len, d = variants_pipe_plug_in_d - eps, solid = true)
+            tube(h = pipe_plug_len + reed_socket_len, d = variants_pipe_plug_in_d - eps, solid = true)
             tube(h = h, d = variants_pipe_in_d - eps, solid = true);
         }
     }

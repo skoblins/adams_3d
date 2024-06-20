@@ -87,6 +87,23 @@ module horn(horn_len = 85, horn_degree = 80, horn_twist = 90, horn_d_out_end = 6
 	}
 }
 
+module horn_cap(cap_in_d = 60, cap_out_d = 62, scale_x_coeff = 1.15, scale_y_coeff = 0.85, hole_d = 16) {
+	eps = 0.1;
+	grow_coeff = 1.25;
+
+	difference() {
+		scale([scale_x_coeff, scale_y_coeff]) cylinder(h = 4, d = cap_out_d + 1, center = true);
+		scale([scale_x_coeff, scale_y_coeff]) cylinder(h = 5, d = cap_out_d, center = true);
+	}
+
+	translate([0, 0, 1]) {
+		difference() {
+			scale([scale_x_coeff, scale_y_coeff]) cylinder(h = 1, d = cap_out_d + 1, center = true);
+			cylinder(h = 3, d = hole_d, center = true);
+		}
+	}
+}
+
 module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	echo(str("length = ", l, ", thickness bottom = ", thickness_bottom, ", thickness top = ", thickness_top));
 	// pipe

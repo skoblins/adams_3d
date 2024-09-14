@@ -1,0 +1,1 @@
+rotate_extrude(angle=40, $fn=50) translate([2,0,0]) square([4, 4]);

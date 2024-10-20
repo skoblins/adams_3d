@@ -2,23 +2,6 @@ include <bearings/tooth_linear.scad>
 include <connectors/lin_screw.scad>
 include <BOSL2/std.scad>
 
-// Example values
-// rail
-rail_length = 100;
-rail_width = 30;
-rail_height = 10;
-rail_tooth_length = 2;
-tooth_height_coeff = 0.66;
-
-// snap
-snap_length = 35;
-snap_width = rail_width * 1.5;
-snap_height = rail_height * 1.5;
-
-// general
-clearance = 0.6;
-eps = 0.1;
-
 module posfix_crossbar_rail(length, width, height, tooth_length, tooth_height_coeff = 0.5, anchor = CENTER, spin = 0, orient = UP) {
     clearance = 1;
     attachable() {
@@ -29,13 +12,13 @@ module posfix_crossbar_rail(length, width, height, tooth_length, tooth_height_co
     }
 }
 
-module posfix_crosbar_snap() {
+module posfix_crosbar_snap(center_connector_length = 80, snap_length = 35, snap_width = 45, snap_height = 15, rail_length = 100, rail_width = 30, rail_height = 10, rail_tooth_length = 2, tooth_height_coeff = 0.66, clearance = 0.6, eps = 0.1) {
     diff("remove", "keep")
         cuboid([snap_width, snap_length, snap_height]) {
-            align(RIGHT) antibend_rod_conn(length = 80, width = snap_length, heigth = snap_height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5)
+            align(RIGHT) antibend_rod_conn(length = center_connector_length, width = snap_length, heigth = snap_height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5)
             align(TOP,CENTER+LEFT, inside=true) {
-                tag("keep")cuboid([80/3, 10, (snap_height-rail_height)/2])
-                tag("remove") left((snap_width-rail_width)/2+eps) align(TOP, RIGHT, inside=true) cuboid([80/3, 10+1, snap_height/4+eps]);
+                tag("keep")cuboid([center_connector_length/3, 10, (snap_height-rail_height)/2])
+                tag("remove") left((snap_width-rail_width)/2+eps) align(TOP, RIGHT, inside=true) cuboid([center_connector_length/3, 10+1, snap_height/4+eps]);
             }
             
             align(LEFT, TOP) cuboid([snap_width/2, snap_length, (snap_height-rail_height)/2]);
@@ -76,12 +59,12 @@ module posfix_crosbar_snap() {
                         align(BOTTOM, inside=true) cuboid([5.5 + clearance, 5.5 + clearance, 2 + clearance]);
                     }
                 // crossbar
-                tag("remove") back(snap_length/8) right(80-((snap_width-rail_width)/4-3/2)) align(TOP, RIGHT+FRONT, inside=true)
+                tag("remove") back(snap_length/8) right(center_connector_length-((snap_width-rail_width)/4-3/2)) align(TOP, RIGHT+FRONT, inside=true)
                     zcyl(d = 3 + clearance, h = snap_height + eps, $fn = 50) {
                         align(TOP, inside=true) zcyl(d = 5.5 + clearance, h = 3 + eps, $fn = 50);
                         align(BOTTOM, inside=true) cuboid([5.5 + clearance, 5.5 + clearance, 2 + clearance]);
                     }
-                tag("remove") fwd(snap_length/8) right(80-((snap_width-rail_width)/4-3/2)) align(TOP, RIGHT+BACK, inside=true)
+                tag("remove") fwd(snap_length/8) right(center_connector_length-((snap_width-rail_width)/4-3/2)) align(TOP, RIGHT+BACK, inside=true)
                     zcyl(d = 3 + clearance, h = snap_height + eps, $fn = 50) {
                         align(TOP, inside=true) zcyl(d = 5.5 + clearance, h = 3 + eps, $fn = 50);
                         align(BOTTOM, inside=true) cuboid([5.5 + clearance, 5.5 + clearance, 2 + clearance]);
@@ -91,14 +74,32 @@ module posfix_crosbar_snap() {
         }
 }
 
+// Example values
+_center_connector_length = 80;
+// rail
+_rail_length = 100;
+_rail_width = 30;
+_rail_height = 10;
+_rail_tooth_length = 2;
+_tooth_height_coeff = 0.66;
+
+// snap
+_snap_length = 35;
+_snap_width = _rail_width * 1.5;
+_snap_height = _rail_height * 1.5;
+
+// general
+_clearance = 0.6;
+_eps = 0.1;
+
 intersect("mask") {
-    posfix_crosbar_snap();
-    tag("mask") up(snap_height/4) right(snap_width) cuboid([4*snap_width+80+eps, snap_length+eps, snap_height/2+eps]);
+    posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
+    tag("mask") up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 }
 
-!down(25) difference() {
-    posfix_crosbar_snap();
-    up(snap_height/4) right(snap_width) cuboid([4*snap_width+80+eps, snap_length+eps, snap_height/2+eps]);
+down(25) difference() {
+    posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
+    up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 }
 
-back(50) posfix_crossbar_rail(length = rail_length, width = rail_width, height = rail_height, tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff);
+back(50) posfix_crossbar_rail(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff);

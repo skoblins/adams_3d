@@ -4,7 +4,7 @@ include <BOSL2/std.scad>
 
 module posfix_crossbar_rail(length, width, height, tooth_length, tooth_height_coeff = 0.5, anchor = CENTER, spin = 0, orient = UP) {
     clearance = 1;
-    attachable() {
+    attachable(cp = [0, -(0.25+0.5)/2*width, 0], size = [length, width, height], anchor = anchor, spin = spin, orient = orient) {
         cuboid([length, 0.25*width, height])
             fwd(width/4) align(FRONT) linear_tooth_bearing(length, 0.5*width, height, tooth_length, tooth_height_coeff)
                 fwd(width/8)align(FRONT) cuboid([length, 0.25*width, height]);
@@ -92,14 +92,14 @@ _snap_height = _rail_height * 1.5;
 _clearance = 0.6;
 _eps = 0.1;
 
-intersect("mask") {
+up(15) intersect("mask") {
     posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
     tag("mask") up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 }
 
-down(25) difference() {
+    down(15) difference() {
     posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
     up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 }
 
-back(50) posfix_crossbar_rail(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff);
+zrot(90) posfix_crossbar_rail(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff);

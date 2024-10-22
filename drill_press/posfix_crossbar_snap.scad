@@ -4,7 +4,7 @@ include <BOSL2/std.scad>
 
 module posfix_crossbar_rail(length, width, height, tooth_length, tooth_height_coeff = 0.5, anchor = CENTER, spin = 0, orient = UP) {
     clearance = 1;
-    attachable(cp = [tooth_length + clearance/2, -(0.25+0.5)/2*width, 0], size = [length, width, height], anchor = anchor, spin = spin, orient = orient) {
+    attachable(cp = [(tooth_length + clearance/2)/2, -(0.25+0.5)/2*width, 0], size = [length + tooth_length + clearance/2, width, height], anchor = anchor, spin = spin, orient = orient) {
         cuboid([length, 0.25*width, height])
             fwd(width/4) align(FRONT) linear_tooth_bearing(length, 0.5*width, height, tooth_length, tooth_height_coeff)
                 fwd(width/8)align(FRONT) cuboid([length, 0.25*width, height]);
@@ -14,11 +14,25 @@ module posfix_crossbar_rail(length, width, height, tooth_length, tooth_height_co
 
 module posfix_crossbar_rail_right(length, width, height, tooth_length, tooth_height_coeff = 0.5, anchor = CENTER, spin = 0, orient = UP) {
     clearance = 1;
-    attachable(cp = [tooth_length + clearance/2, -(0.25+0.5)/2*width, 0], size = [length, width, height], anchor = anchor, spin = spin, orient = orient) {
-        zrot(180, cp = [0, -(0.25+0.5)/2*width, 0]) cuboid([length, 0.25*width, height])
+    attachable(cp = [(tooth_length + clearance/2)/2, -(0.25+0.5)/2*width, 0], size = [length + tooth_length + clearance/2, width, height], anchor = anchor, spin = spin, orient = orient) {
+        cuboid([length, 0.25*width, height])
             fwd(width/4) align(FRONT) linear_tooth_bearing(length, 0.5*width, height, tooth_length, tooth_height_coeff)
                 fwd(width/8)align(FRONT) cuboid([length, 0.25*width, height]);
         children();
+    }
+}
+
+module posfix_crossbar_rail_with_connector(length = 100, width = 30, height = 10, tooth_length = 2, tooth_height_coeff = 0.66, connector_length = 50, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.4) {
+    fwd(50) posfix_crossbar_rail(length = length, width = width, height = height, tooth_length = tooth_length, tooth_height_coeff = tooth_height_coeff) {
+        fwd(width/4) up(height/4) align(RIGHT+CENTER) segment_with_square_nuts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = 0.2);
+        align(LEFT+CENTER) segment_compliment_with_bolts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = 0.2);
+    }
+}
+
+module posfix_crossbar_rail_right_with_connector(length = 100, width = 30, height = 10, tooth_length = 2, tooth_height_coeff = 0.66, connector_length = 50, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.4) {
+    posfix_crossbar_rail_right(length = length, width = width, height = height, tooth_length = tooth_length, tooth_height_coeff = tooth_height_coeff) {
+        right(tooth_length+clearance+_eps) fwd(width/4) up(height/4) align(LEFT+CENTER) segment_with_square_nuts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = 0.2);
+        left(tooth_length+clearance+_eps)align(RIGHT+CENTER) segment_compliment_with_bolts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = 0.2);
     }
 }
 
@@ -146,20 +160,6 @@ module posfix_crosbar_snap_right(center_connector_length = 80, snap_length = 35,
         }
 }
 
-module posfix_crossbar_rail_with_connector(length = 100, width = 30, height = 10, tooth_length = 2, tooth_height_coeff = 0.66, connector_length = 50, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.2) {
-    fwd(50) posfix_crossbar_rail(length = length, width = width, height = height, tooth_length = tooth_length, tooth_height_coeff = tooth_height_coeff) {
-        align(RIGHT+CENTER) segment_with_square_nuts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = clearance);
-        align(LEFT+CENTER) segment_compliment_with_bolts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = clearance);
-    }
-}
-
-module posfix_crossbar_rail_right_with_connector(length = 100, width = 30, height = 10, tooth_length = 2, tooth_height_coeff = 0.66, connector_length = 50, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.2) {
-    posfix_crossbar_rail_right(length = length, width = width, height = height, tooth_length = tooth_length, tooth_height_coeff = tooth_height_coeff) {
-        align(RIGHT+CENTER) segment_with_square_nuts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = clearance);
-        align(LEFT+CENTER) segment_compliment_with_bolts(length = connector_length, height = height, width = width, screw_head_h = screw_head_h, screw_head_d = screw_head_d, screw_d = screw_d, nut_height = nut_height, nut_width = nut_width, clearance = clearance);
-    }
-}
-
 module posfix_crossbar_snap_upper(center_connector_length, snap_length, snap_width, snap_height, rail_length, rail_width, rail_height, rail_tooth_length, tooth_height_coeff, clearance, eps) {
     intersect("mask") {
         posfix_crosbar_snap(center_connector_length = center_connector_length, snap_length = snap_length, snap_width = snap_width, snap_height = snap_height, rail_length = rail_length, rail_width = rail_width, rail_height = rail_height, rail_tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff, clearance = clearance, eps = eps);
@@ -238,6 +238,6 @@ _eps = 0.1;
 
 // rails
 down(50) {
-    posfix_crossbar_rail_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.2);
-    posfix_crossbar_rail_right_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = 0.2);
+    posfix_crossbar_rail_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
+    posfix_crossbar_rail_right_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
 }

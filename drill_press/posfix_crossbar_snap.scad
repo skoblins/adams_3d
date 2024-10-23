@@ -36,7 +36,7 @@ module posfix_crossbar_rail_right_with_connector(length = 100, width = 30, heigh
     }
 }
 
-module posfix_crosbar_snap(center_connector_length = 80, snap_length = 35, snap_width = 45, snap_height = 15, rail_length = 100, rail_width = 30, rail_height = 10, rail_tooth_length = 2, tooth_height_coeff = 0.66, clearance = 0.6, eps = 0.1) {
+module posfix_crosbar_snap(center_connector_length = 80, snap_length = 35, snap_width = 45, snap_height = 15, rail_length = 100, rail_width = 30, rail_height = 10, rail_tooth_length = 2, tooth_height_coeff = 0.66, clearance = 0.6, eps = 0.01) {
     diff("remove", "keep")
         cuboid([snap_width, snap_length, snap_height]) {
             align(RIGHT) antibend_rod_conn(length = center_connector_length, width = snap_length, heigth = snap_height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5)
@@ -98,7 +98,7 @@ module posfix_crosbar_snap(center_connector_length = 80, snap_length = 35, snap_
         }
 }
 
-module posfix_crosbar_snap_right(center_connector_length = 80, snap_length = 35, snap_width = 45, snap_height = 15, rail_length = 100, rail_width = 30, rail_height = 10, rail_tooth_length = 2, tooth_height_coeff = 0.66, clearance = 0.6, eps = 0.1) {
+module posfix_crosbar_snap_right(center_connector_length = 80, snap_length = 35, snap_width = 45, snap_height = 15, rail_length = 100, rail_width = 30, rail_height = 10, rail_tooth_length = 2, tooth_height_coeff = 0.66, clearance = 0.6, eps = 0.01) {
     diff("remove", "keep")
         cuboid([snap_width, snap_length, snap_height]) {
             align(RIGHT) antibend_rod_conn(length = center_connector_length, width = snap_length, heigth = snap_height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5)
@@ -162,20 +162,20 @@ module posfix_crosbar_snap_right(center_connector_length = 80, snap_length = 35,
 
 module posfix_crossbar_snap_upper(center_connector_length, snap_length, snap_width, snap_height, rail_length, rail_width, rail_height, rail_tooth_length, tooth_height_coeff, clearance, eps) {
     intersect("mask") {
-        posfix_crosbar_snap(center_connector_length = center_connector_length, snap_length = snap_length, snap_width = snap_width, snap_height = snap_height, rail_length = rail_length, rail_width = rail_width, rail_height = rail_height, rail_tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff, clearance = clearance, eps = eps);
+        posfix_crosbar_snap(center_connector_length = center_connector_length, snap_length = snap_length, snap_width = snap_width, snap_height = snap_height, rail_length = rail_length, rail_width = rail_width, rail_height = rail_height, rail_tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff, clearance = clearance);
         tag("mask") up(snap_height/4) right(snap_width) cuboid([4*snap_width+80+eps, snap_length+eps, snap_height/2+eps]);
     }
 }
 
 module posfix_crossbar_snap_right_upper(center_connector_length, snap_length, snap_width, snap_height, rail_length, rail_width, rail_height, rail_tooth_length, tooth_height_coeff, clearance, eps) {
     intersect("mask") {
-        posfix_crosbar_snap_right(center_connector_length = center_connector_length, snap_length = snap_length, snap_width = snap_width, snap_height = snap_height, rail_length = rail_length, rail_width = rail_width, rail_height = rail_height, rail_tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff, clearance = clearance, eps = eps);
+        posfix_crosbar_snap_right(center_connector_length = center_connector_length, snap_length = snap_length, snap_width = snap_width, snap_height = snap_height, rail_length = rail_length, rail_width = rail_width, rail_height = rail_height, rail_tooth_length = rail_tooth_length, tooth_height_coeff = tooth_height_coeff, clearance = clearance);
         tag("mask") up(snap_height/4) right(snap_width) cuboid([4*snap_width+80+eps, snap_length+eps, snap_height/2+eps]);
     }
 }
 
 // Example values
-_center_connector_length = 80;
+_center_connector_length = 40;
 // rail
 _rail_length = 100;
 _rail_width = 30;
@@ -194,50 +194,50 @@ _eps = 0.1;
 
 
 // upper part
-// up(15) {
-//     fwd(50) posfix_crossbar_snap_upper(
-//         center_connector_length = _center_connector_length,
-//         snap_length = _snap_length,
-//         snap_width = _snap_width,
-//         snap_height = _snap_height,
-//         rail_length = _rail_length,
-//         rail_width = _rail_width,
-//         rail_height = _rail_height,
-//         rail_tooth_length = _rail_tooth_length,
-//         tooth_height_coeff = _tooth_height_coeff,
-//         clearance = _clearance,
-//         eps = _eps
-//     );
+up(15) {
+    fwd(50) posfix_crossbar_snap_upper(
+        center_connector_length = _center_connector_length,
+        snap_length = _snap_length,
+        snap_width = _snap_width,
+        snap_height = _snap_height,
+        rail_length = _rail_length,
+        rail_width = _rail_width,
+        rail_height = _rail_height,
+        rail_tooth_length = _rail_tooth_length,
+        tooth_height_coeff = _tooth_height_coeff,
+        clearance = _clearance,
+        eps = _eps
+    );
 
-//     posfix_crossbar_snap_right_upper(
-//         center_connector_length = _center_connector_length,
-//         snap_length = _snap_length,
-//         snap_width = _snap_width,
-//         snap_height = _snap_height,
-//         rail_length = _rail_length,
-//         rail_width = _rail_width,
-//         rail_height = _rail_height,
-//         rail_tooth_length = _rail_tooth_length,
-//         tooth_height_coeff = _tooth_height_coeff,
-//         clearance = _clearance,
-//         eps = _eps
-//     );
-// }
+    posfix_crossbar_snap_right_upper(
+        center_connector_length = _center_connector_length,
+        snap_length = _snap_length,
+        snap_width = _snap_width,
+        snap_height = _snap_height,
+        rail_length = _rail_length,
+        rail_width = _rail_width,
+        rail_height = _rail_height,
+        rail_tooth_length = _rail_tooth_length,
+        tooth_height_coeff = _tooth_height_coeff,
+        clearance = _clearance,
+        eps = _eps
+    );
+}
 
 // // bottom part
 // down(15) {
 //     fwd(50) difference() {
-//         posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
+//         posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = 0.2);
 //         up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 //     }
 //     difference() {
-//         posfix_crosbar_snap(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = _clearance, eps = _eps);
+//         posfix_crosbar_snap_right(center_connector_length = _center_connector_length, snap_length = _snap_length, snap_width = _snap_width, snap_height = _snap_height, rail_length = _rail_length, rail_width = _rail_width, rail_height = _rail_height, rail_tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, clearance = 0.2);
 //         up(_snap_height/4) right(_snap_width) cuboid([4*_snap_width+80+_eps, _snap_length+_eps, _snap_height/2+_eps]);
 //     }
 // }
 
-// rails
-down(50) {
-    posfix_crossbar_rail_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
-    posfix_crossbar_rail_right_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
-}
+// // rails
+// down(50) {
+//     posfix_crossbar_rail_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
+//     posfix_crossbar_rail_right_with_connector(length = _rail_length, width = _rail_width, height = _rail_height, tooth_length = _rail_tooth_length, tooth_height_coeff = _tooth_height_coeff, connector_length = 25, nut_height = 8, nut_width = 3, screw_d = 5, screw_head_h = 5, screw_head_d = 8.5, clearance = _clearance);
+// }

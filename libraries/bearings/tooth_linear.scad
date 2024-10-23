@@ -40,10 +40,10 @@ module linear_tooth_complement(length, width, height, tooth_length, tooth_height
     clearance = 0.8;
     tooth_no = floor(length / tooth_length);
     attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, height]) {
-        up(0) {
+        up(0.1) {
             if (tooth_no > 0) {
                 difference() {
-                    cube([(tooth_no - 0.5) * tooth_length - eps, 0.5*width - eps - clearance, height - eps], anchor = anchor, spin = spin, orient = orient);
+                    up(tooth_height_coeff*height/2) cube([(tooth_no - 0.5) * tooth_length - eps, 0.5*width - eps - clearance, height * tooth_height_coeff/2 - eps], anchor = anchor, spin = spin, orient = orient);
                     linear_tooth_bearing(length, 0.5*width, height, tooth_length, tooth_height_coeff, anchor = anchor, spin = spin, orient = orient);
                 }
             } else {

@@ -53,7 +53,7 @@ module posfix_crosbar_snap(center_connector_length = 80, snap_length = 35, snap_
                     tag("remove") cuboid([10+1 , snap_width+1, (snap_height-rail_height-clearance+eps)/2]);
                 align(TOP) cuboid([snap_length*0.75, rail_width/2, (snap_height-rail_height-clearance)/2, rail_tooth_length])
                     up(eps) tag("remove") cuboid([snap_length*0.75+1, rail_width/2+1, (snap_height-rail_height)/2]);
-                align(TOP, FRONT) cuboid([10, (snap_width+rail_width)/2 + 2, (snap_height-rail_height-clearance)/2]) {
+                #align(TOP, FRONT) cuboid([10, (snap_width+rail_width)/2 + 2, (snap_height-rail_height-clearance)/2]) {
                     tag("remove") cuboid([10+1, (snap_width+rail_width)/2 + 2, (snap_height-rail_height+eps)/2]);
                     back(1) down(clearance/4) align(CENTER,BACK) cuboid([snap_length, 2, (snap_height-rail_height)/2])
                         tag("remove") align(BACK, inside=true) cuboid([snap_length+1, 2+1, (snap_height-rail_height)/2+eps]);

@@ -35,13 +35,22 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
                         [length * 1/9, width * 2/3],
                         [0, width]
                     ]);
-                    up(height/2 - clearance/2)linear_extrude(clearance)
+                    #up(height/2 - clearance/2)linear_extrude(clearance)
                     polygon(points = [
                         [0,0],
                         [length, 0],
                         [length, 0],
                         [length * 8/9, width * 1/3],
-                        [length * 1/9, width * 1/3],
+                        [length * 15/18, width * 1/2],
+                        [length * 7/9, width * 1/3],
+                        [length * 6/9, width * 1/3],
+                        [length * 11/18, width * 1/2],
+                        [length * 5/9, width * 1/3],
+                        [length * 4/9, width * 1/3],
+                        [length * 7/18, width * 1/2],
+                        [length * 3/9, width * 1/3],
+                        [length * 2/9, width * 1/3],
+                        [length * 3/18, width * 1/2],
                         [0, 0]
                     ]);
                     up(height/2 + clearance/2)linear_extrude(height/2 - clearance/2)
@@ -100,7 +109,16 @@ module segment_compliment_with_bolts(length, height, width, screw_head_h, screw_
                         [length, 0],
                         [length, 0],
                         [length * 8/9, width * 1/3],
-                        [length * 1/9, width * 1/3],
+                        [length * 15/18, width * 1/2],
+                        [length * 7/9, width * 1/3],
+                        [length * 6/9, width * 1/3],
+                        [length * 11/18, width * 1/2],
+                        [length * 5/9, width * 1/3],
+                        [length * 4/9, width * 1/3],
+                        [length * 7/18, width * 1/2],
+                        [length * 3/9, width * 1/3],
+                        [length * 2/9, width * 1/3],
+                        [length * 3/18, width * 1/2],
                         [0, 0]
                     ]);
                     up(height/2 + clearance/2)linear_extrude(height/2 - clearance/2)

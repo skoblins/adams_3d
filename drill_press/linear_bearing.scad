@@ -63,21 +63,21 @@ module linear_bearing_complementary(
             X(drill_ball_bearing_embedding_d/2 - (4+1.2)/2) Z(drill_ball_bearing_embedding_h/2 - eps/2) TOUP() snap_round_complement(4 + eps, 3, 1.2);
             X(drill_ball_bearing_embedding_d/2 - (4+1.2)/2) Z(-drill_ball_bearing_embedding_h/2 + eps) TODOWN() turnYZ(180) snap_round_complement(4 + eps, 3, 1.2);
         }
-        #segment_with_square_nuts(length = 25, height = 10, width = 30, screw_head_h = 5, screw_head_d = 8.5, screw_d = 5, nut_height = 8, nut_width = 3);
+        // #segment_with_square_nuts(length = 25, height = 10, width = 30, screw_head_h = 5, screw_head_d = 8.5, screw_d = 5, nut_height = 8, nut_width = 3);
     }
 
 }
 
-// linear_bearing(
-//     drill_ball_bearing_embedding_d = drill_ball_bearing_embedding_d,
-//     latch_l = latch_l,
-//     drill_ball_bearing_embedding_h = drill_ball_bearing_embedding_h,
-//     linear_bearing_d = linear_bearing_d
-// );
-
-linear_bearing_complementary(
+linear_bearing(
     drill_ball_bearing_embedding_d = drill_ball_bearing_embedding_d,
     latch_l = latch_l,
     drill_ball_bearing_embedding_h = drill_ball_bearing_embedding_h,
     linear_bearing_d = linear_bearing_d
 );
+
+// linear_bearing_complementary(
+//     drill_ball_bearing_embedding_d = drill_ball_bearing_embedding_d,
+//     latch_l = latch_l,
+//     drill_ball_bearing_embedding_h = drill_ball_bearing_embedding_h,
+//     linear_bearing_d = linear_bearing_d
+// );

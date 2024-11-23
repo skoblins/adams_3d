@@ -24,32 +24,32 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, width],
-                        [length * 8/9, width * 2/3],
-                        [length * 7/9, width * 1/3],
-                        [length * 6/9, width * 1/3],
-                        [length * 5/9, width * 2/3],
-                        [length * 4/9, width * 2/3],
-                        [length * 3/9, width * 1/3],
-                        [length * 2/9, width * 1/3],
-                        [length * 1/9, width * 2/3],
-                        [0, width]
+                        [length, width * 1/2],
+                        [length * 8/9, width * 3/4],
+                        [length * 7/9, width * 1/4],
+                        [length * 6/9, width * 1/4],
+                        [length * 5/9, width * 3/4],
+                        [length * 4/9, width * 3/4],
+                        [length * 3/9, width * 1/4],
+                        [length * 2/9, width * 1/4],
+                        [length * 1/9, width * 3/4],
+                        [0, width * 1/2]
                     ]);
                     #up(height/2 - clearance/2)linear_extrude(clearance)
                     polygon(points = [
                         [0,0],
                         [length, 0],
                         [length, 0],
-                        [length * 8/9, width * 1/3],
+                        [length * 8/9, width * 1/4],
                         [length * 15/18, width * 1/2],
-                        [length * 7/9, width * 1/3],
-                        [length * 6/9, width * 1/3],
+                        [length * 7/9, width * 1/4],
+                        [length * 6/9, width * 1/4],
                         [length * 11/18, width * 1/2],
-                        [length * 5/9, width * 1/3],
-                        [length * 4/9, width * 1/3],
+                        [length * 5/9, width * 1/4],
+                        [length * 4/9, width * 1/4],
                         [length * 7/18, width * 1/2],
-                        [length * 3/9, width * 1/3],
-                        [length * 2/9, width * 1/3],
+                        [length * 3/9, width * 1/4],
+                        [length * 2/9, width * 1/4],
                         [length * 3/18, width * 1/2],
                         [0, 0]
                     ]);
@@ -57,16 +57,16 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, 0],
-                        [length * 8/9, width * 1/3],
-                        [length * 7/9, width * 2/3],
-                        [length * 6/9, width * 2/3],
-                        [length * 5/9, width * 1/3],
-                        [length * 4/9, width * 1/3],
-                        [length * 3/9, width * 2/3],
-                        [length * 2/9, width * 2/3],
-                        [length * 1/9, width * 1/3],
-                        [0, 0]
+                        [length, width * 1/2],
+                        [length * 8/9, width * 1/4],
+                        [length * 7/9, width * 3/4],
+                        [length * 6/9, width * 3/4],
+                        [length * 5/9, width * 1/4],
+                        [length * 4/9, width * 1/4],
+                        [length * 3/9, width * 3/4],
+                        [length * 2/9, width * 3/4],
+                        [length * 1/9, width * 1/4],
+                        [0, width * 1/2]
                     ]);
                 }
                 union(){
@@ -92,49 +92,51 @@ module segment_compliment_with_bolts(length, height, width, screw_head_h, screw_
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, 0],
-                        [length * 8/9, width * 1/3],
-                        [length * 7/9, width * 2/3],
-                        [length * 6/9, width * 2/3],
-                        [length * 5/9, width * 1/3],
-                        [length * 4/9, width * 1/3],
-                        [length * 3/9, width * 2/3],
-                        [length * 2/9, width * 2/3],
-                        [length * 1/9, width * 1/3],
-                        [0, 0],
+                        [length, width * 1/2],
+                        [length * 8/9, width * 1/4],
+                        [length * 7/9, width * 3/4],
+                        [length * 6/9, width * 3/4],
+                        [length * 5/9, width * 1/4],
+                        [length * 4/9, width * 1/4],
+                        [length * 3/9, width * 3/4],
+                        [length * 2/9, width * 3/4],
+                        [length * 1/9, width * 1/4],
+                        [0, width * 1/2],
                     ]);
                     #up(height/2 - clearance/2)linear_extrude(clearance)
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, 0],
-                        [length * 8/9, width * 1/3],
+                        [length, width * 1/2],
+                        [length * 8/9, width * 1/4],
                         [length * 15/18, width * 1/2],
-                        [length * 7/9, width * 1/3],
-                        [length * 6/9, width * 1/3],
+                        [length * 7/9, width * 1/4],
+                        [length * 6/9, width * 1/4],
                         [length * 11/18, width * 1/2],
-                        [length * 5/9, width * 1/3],
-                        [length * 4/9, width * 1/3],
+                        [length * 5/9, width * 1/4],
+                        [length * 4/9, width * 1/4],
                         [length * 7/18, width * 1/2],
-                        [length * 3/9, width * 1/3],
-                        [length * 2/9, width * 1/3],
+                        [length * 3/9, width * 1/4],
+                        [length * 2/9, width * 1/4],
                         [length * 3/18, width * 1/2],
+                        [length * 1/9, width * 1/4],
+                        [0, width * 1/2],
                         [0, 0]
                     ]);
                     up(height/2 + clearance/2)linear_extrude(height/2 - clearance/2)
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, width],
-                        [length * 8/9, width * 2/3],
-                        [length * 7/9, width * 1/3],
-                        [length * 6/9, width * 1/3],
-                        [length * 5/9, width * 2/3],
-                        [length * 4/9, width * 2/3],
-                        [length * 3/9, width * 1/3],
-                        [length * 2/9, width * 1/3],
-                        [length * 1/9, width * 2/3],
-                        [0, width],
+                        [length, width * 1/2],
+                        [length * 8/9, width * 3/4],
+                        [length * 7/9, width * 1/4],
+                        [length * 6/9, width * 1/4],
+                        [length * 5/9, width * 3/4],
+                        [length * 4/9, width * 3/4],
+                        [length * 3/9, width * 1/4],
+                        [length * 2/9, width * 1/4],
+                        [length * 1/9, width * 3/4],
+                        [0, width * 1/2],
                     ]);
                 }
                 union(){
@@ -149,24 +151,24 @@ module segment_compliment_with_bolts(length, height, width, screw_head_h, screw_
     }
 }
 
-// down(50){
-//     segment_with_square_nuts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
-//     down(20) zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
+// %down(50){
+    // segment_with_square_nuts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
+    // zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
 // }
 
-module antibend_rod_conn(length, width, heigth, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5, anchor = CENTER, spin = 0, orient = UP) {
+module antibend_rod_conn(length, width, height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5, anchor = CENTER, spin = 0, orient = UP) {
     eps = 0.01;
     clearance = 0.4;
     if(screw_head_d > screw_d) {
-        echo("screw recommended length (with the head): ", heigth);
+        echo("screw recommended length (with the head): ", height);
     } else {
-        echo("screw recommended length (with the head): ", heigth + screw_head_h);
+        echo("screw recommended length (with the head): ", height + screw_head_h);
     }
-    attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, heigth]) {
+    attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, height]) {
         diff("hole") {
-            cuboid([length, width, heigth])
-            tag("hole") cuboid([length + eps, width/2, heigth/2])
-            tag("hole") cyl(d = screw_d + clearance, h = heigth + eps, teardrop = true, $fn = 50)
+            cuboid([length, width, height])
+            tag("hole") cuboid([length + eps, width/2, height/2])
+            tag("hole") cyl(d = screw_d + clearance, h = height + eps, teardrop = true, $fn = 50)
             attach(TOP, TOP, inside = true) tag("hole") cyl(d = screw_head_d + clearance, h = screw_head_h, teardrop = true, $fn = 50);
             attach(BOTTOM, BOTTOM, inside = true) down(eps) tag("hole") cube([nut_d + clearance, nut_d + clearance, nut_h + clearance]);
         }
@@ -174,13 +176,13 @@ module antibend_rod_conn(length, width, heigth, screw_d = 3, screw_head_h = 3, s
     }
 }
 
-module antibend_rod_conn_inside(length, width, heigth, screw_d = 3, anchor = CENTER, spin = 0, orient = UP) {
+module antibend_rod_conn_inside(length, width, height, screw_d = 3, anchor = CENTER, spin = 0, orient = UP) {
     eps = 0.01;
     clearance = 0.4;
-    attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, heigth]) {
+    attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, height]) {
         diff() {
-            cuboid([length, width/2 - clearance, heigth/2 - clearance])
-            tag("remove") cyl(d = screw_d + clearance, h = heigth + eps, teardrop = true, $fn = 50);
+            cuboid([length, width/2 - clearance, height/2 - clearance])
+            tag("remove") cyl(d = screw_d + clearance, h = height + eps, teardrop = true, $fn = 50);
         }
         children();
     }

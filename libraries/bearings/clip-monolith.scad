@@ -29,7 +29,7 @@ module linear_bearing_with_tightening_clip(h=10, dInner=5, dOuter=10, dInnerLoos
     overlapCorrectionAxleBearing = (mainAxleBearingSizeCoeff-0.1)*dOuter;
 
     attachable(anchor = anchor, spin = spin, orient = orient, size = [dOuter, dOuter, h]) {
-        tag_diff("clip", "bearingInner gap axleHole axleHole2", "axle") {
+        tag_diff(tag="clip", remove="bearingInner gap axleHole axleHole2", keep="axle") {
             tag("bearingOuter") ycyl(h = h, d = dOuter) {
                 tag("bearingInner") ycyl(h = h+eps, d = dInner, chamfer = -0.5);
                 tag("gap") align(TOP, inside=true) cube([clearance, h+eps, thickness*5], center = true);
@@ -99,7 +99,7 @@ test=0;
 // test
 if(test == 1){
     $fn=200;
-    linear_bearing_with_tightening_clip(h=10, dInner=25, dOuter=35, dInnerLoose=24);
+    linear_bearing_with_tightening_clip(h=10, dInner=25, dOuter=35, dInnerLoose=26);
 }
 
 // alignment test

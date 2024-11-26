@@ -1,6 +1,8 @@
 include <bearings/clip-monolith.scad>
 include <connectors/lin_screw.scad>
 
+$align_msg=false;
+
 module linear_bearings(selection = 0, h=10, dInner=25, dOuter=35, dInnerLoose=26) {
 
     if(selection == 0 || selection == 1) {
@@ -19,4 +21,11 @@ module linear_bearings(selection = 0, h=10, dInner=25, dOuter=35, dInnerLoose=26
                     back(dOuter) xrot(180) fillet(l=h, r=dOuter/2, spin=0, orient=TOP);
                 }
     }
-}   
+}
+
+linear_bearings_test = 0;
+if(linear_bearings_test == 1) {
+    linear_bearings(selection=1, h=10, dInner=25, dOuter=35, dInnerLoose=26);
+    right(70) linear_bearings(selection=2, h=10, dInner=25, dOuter=35, dInnerLoose=26);
+    echo("The bottom of the linear bearings should reach: ", 35/2 + 25);
+}

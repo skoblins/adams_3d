@@ -151,6 +151,16 @@ module segment_compliment_with_bolts(length, height, width, screw_head_h, screw_
     }
 }
 
+module segment_with_square_nuts_correctly_aligned(length, height, width, screw_head_h, screw_head_d, screw_d, nut_height, nut_width, clearance = 0.2, anchor = CENTER, spin = 0, orient = UP) {
+    left(1/2*length) right(13/72 * length) up(1/3*height - 1/2*height-2*clearance) segment_with_square_nuts(length, height, width, screw_head_h, screw_head_d, screw_d, nut_height, nut_width, clearance, anchor, spin, orient)
+    children();
+}
+
+module segment_compliment_with_bolts_correctly_aligned(length, height, width, screw_head_h, screw_head_d, screw_d, nut_height, nut_width, clearance = 0.2, anchor = CENTER, spin = 0, orient = UP) {
+    left(1/2*length) right(13/72 * length) up(1/3*height - 1/2*height-2*clearance) segment_compliment_with_bolts(length, height, width, screw_head_h, screw_head_d, screw_d, nut_height, nut_width, clearance, anchor, spin, orient)
+    children();
+}
+
 // %down(50){
     // segment_with_square_nuts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
     // zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);

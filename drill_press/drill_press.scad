@@ -2,8 +2,8 @@ include <linear_bearing-2.0.scad>
 include <posfix_crossbar_snap.scad>
 include <crossbar.scad>
 include <base_plate.scad>
+include <top_mount.scad>
 
-$fn=25;
 $align_msg=false;
 
 // general
@@ -131,3 +131,5 @@ claw_height = pipe_hose_height-base_plate_height/2;
 }
 
 // Top plate
+// top_plate_height = 50;
+// top_mount(pipe_bearing_outer_diameter, pipe_bearing_inner_diameter, top_plate_height, entire_rail_length_relative_to_pipe_center);

@@ -18,7 +18,7 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
     eps = 0.01;
     attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, height]) {
         union() {
-            right(-_length/2) back(-_width/2) up(-_height/2) difference() {
+            right(-length/2) back(-width/2) up(-height/2) difference() {
                 union() {
                     linear_extrude(height/2 - clearance/2)
                     polygon(points = [
@@ -39,7 +39,7 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
                     polygon(points = [
                         [0,0],
                         [length, 0],
-                        [length, 0],
+                        [length, width * 1/2],
                         [length * 8/9, width * 1/4],
                         [length * 15/18, width * 1/2],
                         [length * 7/9, width * 1/4],
@@ -51,7 +51,7 @@ module segment_with_square_nuts(length, height, width, screw_head_h, screw_head_
                         [length * 3/9, width * 1/4],
                         [length * 2/9, width * 1/4],
                         [length * 3/18, width * 1/2],
-                        [0, 0]
+                        [0, width * 1/2]
                     ]);
                     up(height/2 + clearance/2)linear_extrude(height/2 - clearance/2)
                     polygon(points = [
@@ -161,10 +161,10 @@ module segment_compliment_with_bolts_correctly_aligned(length, height, width, sc
     children();
 }
 
-// %down(50){
-    // segment_with_square_nuts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
-    // zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
-// }
+down(0){
+    segment_with_square_nuts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
+    zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
+}
 
 module antibend_rod_conn(length, width, height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5, anchor = CENTER, spin = 0, orient = UP) {
     eps = 0.01;

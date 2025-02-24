@@ -19,6 +19,7 @@ module linear_tooth_bearing(length, width, height, tooth_length, tooth_height_co
     eps = 0.01;
     tooth_no = floor(length / tooth_length);
     len_reminder = length - tooth_no * tooth_length;
+    echo("tooth_linear.scad, linear_tooth_bearing: len_reminder: ", len_reminder);
     // attachable() {
         right(-length/2 + 1/tooth_no * length/2 + len_reminder/2) {
             for (i = [0:tooth_no-1]) {

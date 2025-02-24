@@ -3,7 +3,7 @@ include <BOSL2/screws.scad>
 
 $fn=100;
 
-diff() {
+projection(cut=true) xrot(-90) diff() {
     tag("remove") zcyl(h = 210, d = 10)
     tag("") zcyl(h = 100, d1 = 100, d2 = 50)
         align(BOTTOM)
@@ -23,11 +23,11 @@ diff() {
                             }
                         }
                     }
-                align(BOTTOM, inside=true, overlap=-1)
-                    zcyl(h = 160, d = 160);
+                    align(BOTTOM, inside=true, overlap=-1)
+                        zcyl(h = 160, d = 160);
                 }
     // bearing 1
-    tag("remove") up(40) zcyl(h = 10, d = 22);
-    down(10) zcyl(h = 10, d = 22);
+    tag("remove") up(40) zcyl(h = 10, d = 22)
+    down(60) zcyl(h = 10, d = 22)
     down(60) zcyl(h = 10, d = 22);
 }

@@ -1,9 +1,10 @@
 //include <Round-Anything/polyround.scad>
 use <smooth-prim/smooth_prim.scad>
+include <BOSL2/std.scad>
 
-x_in_size = 85;
-y_in_size = 79;
-z_in_size = 17;
+x_in_size = 86;
+y_in_size = 150;
+z_in_size = 20;
 
 thickness = 6;
 holder_stripe_w = 5;
@@ -22,6 +23,10 @@ module opening_for_charger() {
 
 module opening_for_loudspeakers() {
     translate ([x_in_size * 0.75 / 6, 10, - thickness]) SmoothXYCube([x_in_size * 0.75, 18, thickness + 2], 5);
+}
+
+module opening_for_the_finger() {
+    right(x_in_size - 10) up(z_in_size/8) back(80) SmoothCube([20, 56, 0.75 * z_in_size], 5);
 }
 
 module outside() {
@@ -47,8 +52,9 @@ module holder_box() {
         opening_for_te_screen();
         opening_for_charger();
         opening_for_loudspeakers();
+        opening_for_the_finger();
     }
-    extension_upwards();
+    // extension_upwards();
 }
 
 rod_width = 10;

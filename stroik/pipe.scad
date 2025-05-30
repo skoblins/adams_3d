@@ -30,7 +30,7 @@ module cutting_operator(where_coeff, connector_len, thickness) {
 where_cut = 0.53;
 my_connector_len = 18   ;
 
-%difference() {
+difference() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
@@ -46,4 +46,4 @@ intersection() {
 // rotate([0,0,270]) support_struct();
 
 
-// translate([0, 0, -40]) rotate([180, 0, -90]) horn();
+translate([0, 0, -40]) rotate([180, 0, -90]) horn();

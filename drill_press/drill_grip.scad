@@ -1,25 +1,34 @@
 include <BOSL2/std.scad>
 include <BOSL2/screws.scad>
+include <connectors/lin_screw.scad>
 
-$fn=50;
+$fn=600;
 
-outer_d = 190;
-inner_d = 145;
+outer_d = 175;
+inner_d = 130;
+
+// pipe bearing
+pipe_bearing_outer_diameter = 40;
+pipe_bearing_inner_diameter = 26;
+
+bearing_stem_length = 20;
+
+bearing_h = 60;
 
 module drill_grip1() {
+    stem_support_dirs=[LEFT+FRONT, RIGHT+FRONT, RIGHT + BACK, LEFT + BACK];
+    main_directions = [LEFT, FRONT, RIGHT, BACK];
     /*projection(cut=true) xrot(-90) */diff() {
                 zcyl(h = 200, d = outer_d) {
                     attach(TOP) {
-                        tag("remove") zrot(90) screw_hole("M100,42",anchor=TOP, orient=TOP, thread=true/*, bevel1="reverse"*/);
+                        tag("remove") zrot(90) screw_hole("M100,42", tolerance="8G", anchor=TOP, orient=TOP, thread=true/*, bevel1="reverse"*/);
                     };
                     tag("remove") {
                         down(20) {
-                            directions = [LEFT, LEFT+FRONT, FRONT, RIGHT+FRONT, RIGHT, RIGHT + BACK, BACK, LEFT + BACK];
-                            xnum = 3;
                             xspacing = 50;
-                            for(dir = directions) {
+                            for(dir = [main_directions,stem_support_dirs]) {
                                 attach(dir) {
-                                    ycopies(spacing=xspacing, n=xnum) screw_hole("M24,50",anchor=TOP,thread=true,bevel1="reverse",teardrop=true, spin=180);
+                                    ycopies(spacing=xspacing, n=3) screw_hole("M24,50", tolerance="8G", anchor=TOP,thread=true,bevel1="reverse",teardrop=true, spin=180);
                                 }
                             }
                         }
@@ -27,10 +36,36 @@ module drill_grip1() {
                             zcyl(h = 160, d = inner_d);
                     }
                     {
-                        stem_support_dirs=[LEFT+FRONT, RIGHT+FRONT, RIGHT + BACK, LEFT + BACK];
-                        for(dir = stem_support_dirs) {
+                        zrot(22.5) for(dir = stem_support_dirs) {
+                                up(70) attach(dir) {
+                                    cube([25,60,5], anchor=CENTER) attach(UP) antibend_rod_conn(35, 60, 25, orient=RIGHT, anchor=RIGHT);
+                                }
+                            }
+                    }
+                }
+        }
+}
+
+module drill_grip2() {
+    stem_support_dirs=[LEFT+FRONT, RIGHT+FRONT, RIGHT + BACK, LEFT + BACK];
+    main_directions = [LEFT, FRONT, RIGHT, BACK];
+    /*projection(cut=true) xrot(-90) */diff() {
+                zcyl(h = 60, d = outer_d) {
+                    tag("remove") {
+                        down(0) {
+                            for(dir = [main_directions,stem_support_dirs]) {
                                 attach(dir) {
-                                    cube([20, 20, 10]);
+                                    screw_hole("M24,50", tolerance="8G", anchor=TOP,thread=true,bevel1="reverse",teardrop=true);
+                                }
+                            }
+                        }
+                        align(BOTTOM, inside=true, overlap=-1)
+                            zcyl(h = 62, d = inner_d);
+                    }
+                    {
+                        zrot(22.5) for(dir = stem_support_dirs) {
+                                up(0) attach(dir) {
+                                    cube([25,60,5], anchor=CENTER) attach(UP) antibend_rod_conn(35, 60, 25, orient=RIGHT, anchor=RIGHT);
                                 }
                             }
                     }
@@ -83,11 +118,27 @@ module solid_2_test(){
     }
 }
 
-diff(remove="remove_main"){
-    solid_1();
-     tag("remove_main") zcyl(h=height_of_segment*2, d=10);
-     down(150) solid_2();
-     down(400) drill_grip1();
+module bearing() {
+    diff() {
+        zcyl(h=bearing_h, d=pipe_bearing_outer_diameter)
+        attach(LEFT, overlap=2.5) cube([25, bearing_h, 5], anchor=CENTER) attach(UP) antibend_rod_conn(35, bearing_h, 25, orient=RIGHT, anchor=RIGHT);
+        tag("remove") zcyl(h = bearing_h+1, d = pipe_bearing_inner_diameter) {
+            attach(RIGHT, overlap=2) zrot(90) screw_hole("M10,12", tolerance="8G", anchor=TOP, orient=BOTTOM, thread=true, bevel1=true, bevel2=true);
+        }
+    }
+}
+
+diff(remove="remove_main") {
+    // solid_1();
+    //  tag("remove_main") zcyl(h=height_of_segment*2, d=10);
+    //  down(150) solid_2();
+    //  down(400) drill_grip1();
+     down(800) drill_grip2();
+    //  up(100) {
+//        left(100) antibend_rod_conn_inside(35, bearing_h, 25, orient = FRONT)
+//        align(LEFT) cube([bearing_stem_length, bearing_h, 25]) align(LEFT) antibend_rod_conn_inside(35, bearing_h, 25);
+        // bearing();
+    //  }
     //solid_2_test();
 }
 //attach(BOTTOM) {

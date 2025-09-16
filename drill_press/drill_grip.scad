@@ -42,6 +42,13 @@ module drill_grip1() {
                                 }
                             }
                     }
+                    {
+                        zrot(22.5) for(dir = stem_support_dirs) {
+                                up(-70) attach(dir) {
+                                    cuboid([25,60,5], anchor=CENTER) attach(UP) antibend_rod_conn(35, 60, 25, orient=RIGHT, anchor=RIGHT) attach(BACK) left(2.5) prismoid(size1=[40,25],size2=[0,25], shift=[-20,0], h=50, anchor=BOTTOM);
+                                }
+                            }
+                    }
                 }
         }
 }
@@ -121,7 +128,7 @@ module solid_2_test(){
 module bearing() {
     diff() {
         zcyl(h=bearing_h, d=pipe_bearing_outer_diameter)
-        attach(LEFT, overlap=2.5) cube([25, bearing_h, 5], anchor=CENTER) attach(UP) antibend_rod_conn(35, bearing_h, 25, orient=RIGHT, anchor=RIGHT);
+        attach(LEFT, overlap=2.5) cube([25, bearing_h, 5], anchor=CENTER) attach(UP) antibend_rod_conn(length = 35, width = bearing_h, height = 25, orient=RIGHT, anchor=RIGHT);
         tag("remove") zcyl(h = bearing_h+1, d = pipe_bearing_inner_diameter) {
             attach(RIGHT, overlap=2) zrot(90) screw_hole("M10,12", tolerance="8G", anchor=TOP, orient=BOTTOM, thread=true, bevel1=true, bevel2=true);
         }
@@ -133,12 +140,12 @@ diff(remove="remove_main") {
     //  tag("remove_main") zcyl(h=height_of_segment*2, d=10);
     //  down(150) solid_2();
     //  down(400) drill_grip1();
-     down(800) drill_grip2();
-    //  up(100) {
-//        left(100) antibend_rod_conn_inside(35, bearing_h, 25, orient = FRONT)
-//        align(LEFT) cube([bearing_stem_length, bearing_h, 25]) align(LEFT) antibend_rod_conn_inside(35, bearing_h, 25);
-        // bearing();
-    //  }
+    //  down(800) drill_grip2();
+     up(100) {
+       left(100) antibend_rod_conn_inside(length = 35, width = bearing_h, height = 25, clearance = 0.8, orient = FRONT)
+       align(LEFT) cube([38, 29.5, 25]) align(LEFT) antibend_rod_conn_inside(length = 35, width = bearing_h, height = 25, clearance = 0.8);
+        bearing();
+     }
     //solid_2_test();
 }
 //attach(BOTTOM) {

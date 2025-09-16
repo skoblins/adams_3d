@@ -1,6 +1,9 @@
 include <BOSL2/std.scad>
 include <BOSL2/screws.scad>
 include <stroik/variants-reed-pipe.scad>
+
+working_area_height = 50;
+
 module rail(length=220, tolerance = 0, spin=0) {
     attachable(CENTER, spin, UP, size=[17.5 + tolerance,length,10]) {
         prismoid(size1=[22.5 + tolerance,length], h=10, xang=[90,45], yang=90, anchor=CENTER) {
@@ -12,7 +15,7 @@ module rail(length=220, tolerance = 0, spin=0) {
 }
 
 module slider(length=30, spin) {
-    attachable(CENTER, spin, UP, size=[31.25,length, 40]) {
+    attachable(CENTER, spin, UP, size=[30, 5/3*length, 40]) {
         diff(){
             fwd(5) left(12.5) up(0.05)back(0.05)right(0.624)cube([27.50,length,2.5]) {
                 align(TOP)
@@ -36,7 +39,8 @@ cube([100, 220, 5], anchor = CENTER) {
 }
             
 back(250) slider() {
-    align(LEFT, UP+BACK) cube([30,30,10], anchor=BOTTOM);
-    align(RIGHT) cube([30,40,10], anchor=BOTTOM);
+    align(LEFT, UP+BACK) back(0) cube([30,30,10], anchor=BOTTOM);
+    //align(RIGHT) cube([30,40,10], anchor=BOTTOM);
 }
-back(300) screw("M8,20", thread=true) align(TOP+LEFT, inside=true) cuboid([20, 8, 2.5], anchor = BOTTOM, rounding=2, edges=[LEFT,RIGHT], except=[TOP, BOTTOM]);
+
+%back(300) screw("M8,20", thread=true) align(TOP+LEFT, inside=true) cuboid([20, 8, 2.5], anchor = BOTTOM, rounding=2, edges=[LEFT,RIGHT], except=[TOP, BOTTOM]);

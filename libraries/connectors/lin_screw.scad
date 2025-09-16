@@ -166,9 +166,8 @@ module segment_compliment_with_bolts_correctly_aligned(length, height, width, sc
 //     zrot(180) %segment_compliment_with_bolts(length = _length, height = _height, width = _width, screw_head_h = _screw_head_h, screw_head_d = _screw_head_d, screw_d = _screw_d, nut_height = _nut_height, nut_width = _nut_width, clearance = _clearance);
 // }
 
-module antibend_rod_conn(length, width, height, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5, anchor = CENTER, spin = 0, orient = UP) {
+module antibend_rod_conn(length, width, height, clearance = 0.4, screw_d = 3, screw_head_h = 3, screw_head_d = 5.5, nut_h = 2, nut_d = 5.5, anchor = CENTER, spin = 0, orient = UP) {
     eps = 0.01;
-    clearance = 0.4;
     if(screw_head_d > screw_d) {
         echo("screw recommended length (with the head): ", height);
     } else {
@@ -186,9 +185,8 @@ module antibend_rod_conn(length, width, height, screw_d = 3, screw_head_h = 3, s
     }
 }
 
-module antibend_rod_conn_inside(length, width, height, screw_d = 3, anchor = CENTER, spin = 0, orient = UP) {
+module antibend_rod_conn_inside(length, width, height, clearance = 0.4, screw_d = 3, anchor = CENTER, spin = 0, orient = UP) {
     eps = 0.01;
-    clearance = 0.4;
     attachable(anchor = anchor, spin = spin, orient = orient, size = [length, width, height]) {
         diff() {
             cuboid([length, width/2 - clearance, height/2 - clearance])

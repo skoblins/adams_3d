@@ -2,25 +2,26 @@ include <reed/reed_2_0_0.scad>
 include <reed/tools.scad>
 include <variants-reed-burdon.scad>
 
-$fn=100;
+$fn=600;
 
 max_in_a_row = 2;
-
+//end_length, d, heigth_cut_prcnt, leaf_degree
 arrange(spacing = 15, n = 3){
     reed2(
-        70,
-        variants_reed_pipe_end_length,
-        variants_reed_pipe_in_diameter,
-        variants_reed_pipe_cut_prcnt,
-        1.55
+        total_length = variants_reed_pipe_length,
+        end_length = variants_reed_pipe_end_length,
+        entry_d = variants_reed_pipe_in_diameter-2,
+        main_d = variants_reed_pipe_in_diameter,
+        heigth_cut_prcnt = variants_reed_pipe_cut_prcnt,
+        leaf_degree = 1.55
     );
-    // reed2(
-    //     70,
-    //     variants_reed_pipe_end_length,
-    //     variants_reed_pipe_in_diameter,
-    //     variants_reed_pipe_cut_prcnt,
-    //     1.5
-    // );
+    translate([0,0,variants_reed_pipe_end_length]) leaf21(
+            l = variants_reed_pipe_length,
+            leaf_enforcement_square_coeff = variants_leaf_enforcement_square_coeff,
+            leaf_enforcement_linear_coeff = variants_leaf_enforcement_linear_coeff,
+            leaf_enforcement_const_coeff = variants_leaf_enforcement_const_coeff,
+            leaf_enforcement_support_stem_height = variants_leaf_enforcement_support_stem_height
+        );
     // reed2(
     //     74,
     //     variants_reed_pipe_end_length,

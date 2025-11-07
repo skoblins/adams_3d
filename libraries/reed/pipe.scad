@@ -4,9 +4,13 @@ eps = 0.02;
 
 
 module pipe_reed_socket_hard_part(l, d1, d2, reed_d1, reed_d2, pipe_plug_in_d) {
+	left_space = variants_pipe_len * (1 - variants_pipe_holes[8][0]) - variants_reed_pipe_in_diameter * variants_pipe_holes[8][1];
 	difference() {
 		cylinder(h=l, d1=d1, d2=d2);
-		translate([0,0,-eps/2]) cylinder(h=l+eps, d=pipe_plug_in_d);
+		union(){
+			translate([0,0,left_space]) cylinder(h=l+eps, d=pipe_plug_in_d);
+			translate([0,0,-eps/2])cylinder(h=l+eps, d=variants_pipe_in_d);
+		}
 	}
 }
 

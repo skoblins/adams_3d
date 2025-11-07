@@ -1,27 +1,18 @@
-include <reed.scad>
-
 completeness_percent = 25;
 wall_thickness = 1;
 reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
-module reed_plug(total_length, end_length, d) {
-    d_out = d + wall_thickness * 2;
+module reed_plug(end_length, entry_d_in, main_d) {
+    entry_d_out = entry_d_in + 1; // minimal wall thickness at the entry
+    main_d_out = main_d + wall_thickness * 2;
 
     translate([0, 0, -end_length]){
         difference() {
-            cylinder(h = end_length, d2 = d_out * 1.1, d1 = d + 0.8);
-            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d = d);
+            cylinder(h = end_length, d2 = main_d_out, d1 = entry_d_out);
+            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d1 = entry_d_in, d2 = entry_d_out);
         }
     }
-
-    // // anti overhanger
-    // translate([0,0,0]) {
-    //     difference() {
-    //         cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.1,d2=d+0.8);
-    //         translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
-    //     }
-    // }
 }
 
 module reed_plug_equal(total_length, end_length, d) {
@@ -47,8 +38,8 @@ module reed2_base(total_length, end_length, d){
     d_out = d+wall_thickness*2;
     translate([0, 0, end_length]) {
         difference() {
-            cylinder(h=total_length - end_length + 8, d=d_out);
-            translate([0, 0, -0.1]) cylinder(h = (total_length - end_length) - 0.8 + 8, d = d);
+            cylinder(h=total_length - end_length, d=d_out);
+            translate([0, 0, -0.1]) cylinder(h = (total_length - end_length) *0.9, d = d);
         }
     } 
 }
@@ -91,23 +82,23 @@ module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
     }
 
     // upper refill
-    ys2 = total_length * 0.15;
+    // ys2 = total_length * 0.1;
 
-    points2 = [
-        [xs, ys2],
-        [xs, 0],
-        [-xs, 0],
-        [-xs, ys2],
-        // [0, total_length * 0.11],
-        // [xs, total_length * 0.3]
-    ];
-    translate([x0 - sin(variants_reed_pipe_leaf_degree / 100 * 90)*(total_length * 0.9 - variants_reed_pipe_end_length) + 0.5, 0, total_length*0.956]) rotate([90,0,90]) {
-        linear_extrude(height=0.8) {
-            // translate([0,variants_reed_pipe_end_length,0]) {
-                polygon(points = points2);
-            // }
-        }
-    }
+    // points2 = [
+    //     [xs, ys2],
+    //     [xs, 0],
+    //     [-xs, 0],
+    //     [-xs, ys2],
+    //     // [0, total_length * 0.11],
+    //     // [xs, total_length * 0.3]
+    // ];
+    // translate([x0 - sin(variants_reed_pipe_leaf_degree / 100 * 90)*(total_length * 0.9 - variants_reed_pipe_end_length) + 0.5, 0, total_length*0.956]) rotate([90,0,90]) {
+    //     linear_extrude(height=0.8) {
+    //         // translate([0,variants_reed_pipe_end_length,0]) {
+    //             polygon(points = points2);
+    //         // }
+    //     }
+    // }
 }
 
 module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
@@ -116,7 +107,7 @@ module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
             reed2_base(total_length, end_length, d);
             reed2_refill_the_cut(total_length, d, heigth_cut_prcnt);
         }
-        translate([0,0, -4.25 ]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length+2/*a gap for reed fitting*/);
+        translate([0,0, -end_length+eps]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
     }
 }
 
@@ -196,9 +187,9 @@ module leaf21_text(l, w, leaf_enforcement_square_coeff, leaf_enforcement_linear_
 }
 
 module leaf21(l = variants_reed_pipe_length, leaf_enforcement_square_coeff, leaf_enforcement_linear_coeff, leaf_enforcement_const_coeff, leaf_enforcement_support_stem_height) {
-    d_out = variants_reed_pipe_in_diameter + 4 * variants_reed_pipe_wall_thickness;
+    d_out = variants_reed_pipe_in_diameter + 2 * variants_reed_pipe_wall_thickness;
     step_size = 1;
-    length = (l - variants_reed_pipe_end_length) * 0.96;
+    length = l - variants_reed_pipe_end_length;
     l_width = d_out;/*sin(variants_reed_pipe_cut_prcnt / 100 * 180) * d_out * 2.5*/;
 
 
@@ -239,46 +230,27 @@ module reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, w
     linear_extrude(wall_thickness * 1.3) text(my_text, size = d/2.5);
 }
 
-module reed2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree) {
+module reed2(total_length, end_length, entry_d, main_d, heigth_cut_prcnt, leaf_degree) {
     halved_leaf_degree = leaf_degree/2;
-    d_out = d+2*wall_thickness;
+    d_out = entry_d+2*wall_thickness;
 
     // first part: plug
-    translate([0,0,end_length]) reed_plug(total_length, end_length, d);
+    translate([0,0,end_length]) reed_plug(end_length, entry_d, main_d);
     // translate([0,0,end_length]) reed_plug_equal(total_length, end_length, d);
 
     // main part
     difference() {
-        reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt); // just a flat cut
-        reed2_cut(total_length, d, heigth_cut_prcnt, halved_leaf_degree); // deeper cut
+        reed2_base_flat_cut(total_length, end_length, main_d, heigth_cut_prcnt); // just a flat cut
+        reed2_cut(total_length, main_d, heigth_cut_prcnt, halved_leaf_degree); // deeper cut
     }
 
-    // // grips
-
-    //     // vertical grip
-    //     difference() {
-    //         rotate([0,0,180-(completeness_percent)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) partial_pipe(total_length/10, d_out+0.8, 0.41, completeness_percent=completeness_percent);
-    //         rotate([0,0,180-(completeness_percent-10)/2*360/100]) translate([0,0,end_length+reed_plug_overhang_suppressor_len]) translate([0,0,-0.005]) partial_pipe(total_length/10+0.01, d_out+0.81, 0.41, completeness_percent=completeness_percent-10);
-    //     }
-
-        // horizontal grip - powstrzymuje klej!!!
-        // difference() {
-        //     translate([0,0,end_length+reed_plug_overhang_suppressor_len+total_length/10]) {
-        //         difference() {
-        //             cylinder(h=reed_plug_overhang_suppressor_len,d1=d_out*1.2,d2=d);
-        //             translate([0,0,-eps/2]) cylinder(h=2+eps,d=d);
-        //         }
-        //     }
-        //     reed2_base_flat_cutting_cube(d, variants_reed_pipe_cut_prcnt, total_length);
-        // }
-
     // Text
-    translate([-d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
-        rotate([0, -90, 0]) reed2_text1(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+    translate([-main_d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
+        rotate([0, -90, 0]) reed2_text1(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, wall_thickness);
 
     rotate([0, 0, 55])
-        translate([-d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
-            rotate([0, -90, 0]) reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+        translate([-main_d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
+            rotate([0, -90, 0]) reed2_text2(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, wall_thickness);
 
 }
 

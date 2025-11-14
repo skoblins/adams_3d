@@ -1,22 +1,21 @@
 completeness_percent = 25;
-wall_thickness = 1;
 reed_plug_overhang_suppressor_len = 2;
 eps = 0.01;
 
 module reed_plug(end_length, entry_d_in, main_d) {
     entry_d_out = entry_d_in + 1; // minimal wall thickness at the entry
-    main_d_out = main_d + wall_thickness * 2;
+    main_d_out = main_d + variants_reed_pipe_wall_thickness * 2 + variants_reed_pipe_entry_end_out_extra_diameter;
 
     translate([0, 0, -end_length]){
         difference() {
-            cylinder(h = end_length, d2 = main_d_out, d1 = entry_d_out);
-            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d1 = entry_d_in, d2 = entry_d_out);
+            cylinder(h = end_length, d1 = entry_d_out, d2 = main_d_out);
+            translate([0, 0, -eps / 2]) cylinder(h = end_length + eps, d1 = entry_d_in, d2 = main_d);
         }
     }
 }
 
 module reed_plug_equal(total_length, end_length, d) {
-    d_out = d + wall_thickness * 2;
+    d_out = d + variants_reed_pipe_wall_thickness * 2;
 
     translate([0, 0, -end_length]){
         difference() {
@@ -35,7 +34,7 @@ module reed_plug_equal(total_length, end_length, d) {
 }
 
 module reed2_base(total_length, end_length, d){
-    d_out = d+wall_thickness*2;
+    d_out = d+variants_reed_pipe_wall_thickness*2;
     translate([0, 0, end_length]) {
         difference() {
             cylinder(h=total_length - end_length, d=d_out);
@@ -45,13 +44,13 @@ module reed2_base(total_length, end_length, d){
 }
 
 module reed2_leaf_socket(heigth_cut_prcnt, d, total_length) {
-    d_out = d+wall_thickness*2;
+    d_out = d+variants_reed_pipe_wall_thickness*2;
     // deepens the cut, for more secure leaf hold
     translate([-heigth_cut_prcnt/120 * d_out, 0, 0]) cube(size=[heigth_cut_prcnt/50 * d_out * 1.1, d_out*1.1, total_length * 0.1]);
 }
 
 module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
-    d_out = d+wall_thickness*2;
+    d_out = d+variants_reed_pipe_wall_thickness*2;
     translate([d_out/2 - d_out * heigth_cut_prcnt / 100, -d_out/2, variants_reed_pipe_end_length]) {
         cube(size=[d_out, d_out, total_length]);
         // reed2_leaf_socket(heigth_cut_prcnt, d, total_length);
@@ -59,9 +58,9 @@ module reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length) {
 }
 
 module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
-    d_out = d+wall_thickness*2;
-    x0 = d_out/2 - d_out * heigth_cut_prcnt / 100 - 0.6;
-    xs = sin(heigth_cut_prcnt*180/100) * d;
+    d_out = d+variants_reed_pipe_wall_thickness*2;
+    x0 = d_out/2 - d_out * heigth_cut_prcnt / 100;
+    xs = sin(heigth_cut_prcnt*180/100) * d - variants_reed_pipe_cut_compensation;
     ys = total_length * 0.375;
 
     // lower refill
@@ -74,7 +73,7 @@ module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
 
     echo(variants_reed_pipe_end_length=variants_reed_pipe_end_length);
     translate([x0, 0, variants_reed_pipe_end_length - 0.4]) rotate([90,0,90]) {
-        linear_extrude(height=0.8) {
+        linear_extrude(height=variants_reed_pipe_cut_compensation) {
             // translate([0,variants_reed_pipe_end_length,0]) {
                 polygon(points = points);
             // }
@@ -103,17 +102,14 @@ module reed2_refill_the_cut(total_length, d, heigth_cut_prcnt) {
 
 module reed2_base_flat_cut(total_length, end_length, d, heigth_cut_prcnt) {
     difference(){
-        union() {
-            reed2_base(total_length, end_length, d);
-            reed2_refill_the_cut(total_length, d, heigth_cut_prcnt);
-        }
-        translate([0,0, -end_length+eps]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
+        reed2_base(total_length, end_length, d);
+        translate([variants_reed_pipe_cut_compensation,0, -end_length+eps]) reed2_base_flat_cutting_cube(d, heigth_cut_prcnt, total_length);
     }
 }
 
 module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
-    d_out = d+2*wall_thickness;
-    translate([d_out/2 - d_out * heigth_cut_prcnt / 100 + 0.1/*<- fill the little gap between leaf and reed*/, -d_out/2, 0.35 * total_length]) {
+    d_out = d+2*variants_reed_pipe_wall_thickness;
+    translate([d_out/2 - d_out * heigth_cut_prcnt / 100 + variants_reed_pipe_cut_compensation + 0.1/*<- fill the little gap between leaf and reed*/, -d_out/2, 0.35 * total_length]) {
         rotate([0, -leaf_degree, 0]) rotate([180, 90, -90]) {
             rotate_extrude(angle = leaf_degree, $fn=100) {
                 rotate([0, 0, 90]) {
@@ -125,7 +121,7 @@ module reed2_cut(total_length, d, heigth_cut_prcnt, leaf_degree) {
 }
 
 module reed2_cut2(total_length, d, heigth_cut_prcnt, leaf_degree_init, leaf_degree_finish = 0) {
-    d_out = d+2*wall_thickness;
+    d_out = d+2*variants_reed_pipe_wall_thickness;
     translate([d_out/2 - d_out * heigth_cut_prcnt / 100 + 0.1/*<- fill the little gap between leaf and reed*/, -d_out/2, 0.35 * total_length]) {
         rotate([0, -leaf_degree_init, 0]) rotate([180, 90, -90]) {
             rotate_extrude(angle = leaf_degree_init, $fn=100) {
@@ -138,7 +134,7 @@ module reed2_cut2(total_length, d, heigth_cut_prcnt, leaf_degree_init, leaf_degr
 }
 
 module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coeff_init, stem_heigth_coeff) {
-    d_out = d+2*wall_thickness;
+    d_out = d+2*variants_reed_pipe_wall_thickness;
     leaf_len = (total_length - end_length)*0.9;
     
     // trunk of the leaf ;)
@@ -151,7 +147,7 @@ module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coe
     translate([d_out/2+leaf_len*stem_heigth_coeff_init/2-d*0.1/2, 0, end_length]) rotate([0,-atan(stem_heigth_coeff_init-stem_heigth_coeff),0]) rotate([0,0,-120]) cylinder(leaf_len, leaf_len*stem_heigth_coeff_init, leaf_len*stem_heigth_coeff, $fn=3);
     
     // text
-    // translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
+    // translate([d/2-variants_reed_pipe_wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", variants_reed_pipe_wall_thickness);
     
     // // round clip
     // difference() {
@@ -161,7 +157,7 @@ module reed2_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coe
 }
 
 module reed21_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_coeff_init, stem_heigth_coeff) {
-    d_out = d + 2 * wall_thickness;
+    d_out = d + 2 * variants_reed_pipe_wall_thickness;
     leaf_len = (total_length - end_length) * 0.94;
 
     // trunk of the leaf ;)
@@ -174,7 +170,7 @@ module reed21_leaf(total_length, end_length, d, heigth_cut_prcnt, stem_heigth_co
     translate([d_out * (1/2 - heigth_cut_prcnt / 100) + variants_leaf_thickness, -w_trunk / 2, end_length]) cube([variants_leaf_thickness + 0.001, w_trunk, leaf_len]);
 
     // text
-    // #translate([d/2-wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", wall_thickness);
+    // #translate([d/2-variants_reed_pipe_wall_thickness/6, d/8, end_length]) rotate([180,-90,0]) reed2_text(total_length, end_length, d, heigth_cut_prcnt, "-", variants_reed_pipe_wall_thickness);
 }
 
 module leaf21_text(l, w, leaf_enforcement_square_coeff, leaf_enforcement_linear_coeff, leaf_enforcement_const_coeff, leaf_enforcement_support_stem_height) {
@@ -221,18 +217,18 @@ module leaf21(l = variants_reed_pipe_length, leaf_enforcement_square_coeff, leaf
     }
 }
 
-module reed2_text1(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
+module reed2_text1(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, variants_reed_pipe_wall_thickness) {
     my_text = str(total_length, " ", end_length);
-    linear_extrude(wall_thickness * 1.3) text(my_text, size = d/2.5);
+    linear_extrude(variants_reed_pipe_wall_thickness * 1.3) text(my_text, size = d/2.5);
 }
-module reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, wall_thickness) {
+module reed2_text2(total_length, end_length, d, heigth_cut_prcnt, leaf_degree, variants_reed_pipe_wall_thickness) {
     my_text = str(heigth_cut_prcnt, " ", leaf_degree);
-    linear_extrude(wall_thickness * 1.3) text(my_text, size = d/2.5);
+    linear_extrude(variants_reed_pipe_wall_thickness * 1.3) text(my_text, size = d/2.5);
 }
 
 module reed2(total_length, end_length, entry_d, main_d, heigth_cut_prcnt, leaf_degree) {
     halved_leaf_degree = leaf_degree/2;
-    d_out = entry_d+2*wall_thickness;
+    d_out = entry_d+2*variants_reed_pipe_wall_thickness;
 
     // first part: plug
     translate([0,0,end_length]) reed_plug(end_length, entry_d, main_d);
@@ -246,11 +242,11 @@ module reed2(total_length, end_length, entry_d, main_d, heigth_cut_prcnt, leaf_d
 
     // Text
     translate([-main_d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
-        rotate([0, -90, 0]) reed2_text1(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+        rotate([0, -90, 0]) reed2_text1(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, variants_reed_pipe_wall_thickness);
 
     rotate([0, 0, 55])
         translate([-main_d / 2, -(total_length - end_length)/12/2, 1 + end_length + reed_plug_overhang_suppressor_len + total_length/10])
-            rotate([0, -90, 0]) reed2_text2(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, wall_thickness);
+            rotate([0, -90, 0]) reed2_text2(total_length, end_length, main_d, heigth_cut_prcnt, leaf_degree, variants_reed_pipe_wall_thickness);
 
 }
 

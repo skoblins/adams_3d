@@ -1,4 +1,5 @@
 include <variants-pipe.scad>
+include <BOSL2/std.scad>
 
 $fn = 200;
 
@@ -11,6 +12,7 @@ d_out3 = 50;
 
 module outside() {
 cylinder(h = h1, d1 = d_out2, d2 = d_out1);
+up(h1 - 10) bottom_half() sphere(r = d_out1);
 
 translate ([0, 0, -(h2 - 1)]) {
 hull() {
@@ -25,9 +27,9 @@ hull() {
 }
 
 module inside() {
-cylinder(h = h1 + 1, d1 = d_out2 - 4, d2 = d_out1 - 4);
+translate ([0, 0, -4]) cylinder(h = h1 + 5, d1 = d_out2 - 4, d2 = d_out1 - 4);
 
-translate ([0, 0, -(h2 * 0.75 + d_out3/2 - 3)]) {
+translate ([0, 0, -(h2 * 0.75 + d_out3/2)]) {
 hull() {
     translate([0, 0, h2 * 0.75]) sphere(d = d_out3 - 4);
     translate([0, 0, pipe_plug_len]) cube([variants_pipe_plug_stopper_d - 4, variants_pipe_plug_stopper_d - 4, 10], true);

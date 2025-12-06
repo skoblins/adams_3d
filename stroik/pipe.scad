@@ -1,5 +1,5 @@
 include <reed/pipe.scad>
-include <variants-pipe-7mm.scad>
+include <variants-pipe.scad>
 include <variants-reed-pipe.scad>
 include <BOSL2/std.scad>
 
@@ -28,21 +28,21 @@ module cutting_operator(where_coeff, connector_len, thickness) {
 
 // first / bottom half of the pipe
 
-where_cut = 0.55;
+where_cut = 0.54;
 my_connector_len = 18;
 
-select = 0;
+select = 1;
 
-if(select == 0){
+if(select == 0 || select == 2){
 difference() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
 }
 
-if(select == 1) {
+if(select == 1 || select == 2) {
 // second / upper half of the pipe
-intersection() {
+up(my_connector_len*1.5)intersection() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
 }
@@ -52,11 +52,11 @@ intersection() {
 // rotate([0,0,180]) support_struct();
 // rotate([0,0,270]) support_struct();
 
-if(select == 2) {
+if(select == 3) {
 translate([0, 0, -40]) rotate([180, 0, -90]) horn();
 }
 
-if(select == 3){
+if(select == 4){
 difference() {
     my_pipe();
     cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);

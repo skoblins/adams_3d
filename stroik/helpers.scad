@@ -4,8 +4,10 @@ include <variants-pipe.scad>
 include <variants-reed-pipe.scad>
 include <reed/tools.scad>
 include <reed/basic_shapes.scad>
+include <BOSL2/std.scad>
 
 $fn = 1000;
+reed_gap_eps=0.78;
 
 arrange(spacing = 40, n = 3) {
 
@@ -23,12 +25,12 @@ arrange(spacing = 40, n = 3) {
 
 	// reed_gap_eps = 0.6;
 
-	// pipe_reed_socket_flex_part(
-	// 	l = reed_socket_len,
-	// 	reed_d1 = variants_reed_pipe_in_diameter + reed_gap_eps,
-	// 	reed_d2 = 1.4 * variants_reed_pipe_in_diameter + reed_gap_eps,
-	// 	pipe_plug_in_d = variants_pipe_plug_in_d
-	// );
+	pipe_reed_socket_flex_part(
+	 	l = 15,
+	 	reed_d1 = 8.8,
+	 	reed_d2 = 12.0,
+	 	pipe_plug_in_d = variants_pipe_plug_in_d
+	);
 
 	// color(alpha = 0.2) just_a_box(h = 170, l = 40, w = 100, wall_thickness = 2);
 	// flex_part_in_just_a_box(h = 170, l = 40, w = 100, wall_thickness = 2);
@@ -41,7 +43,7 @@ arrange(spacing = 40, n = 3) {
 	// 	pipe_plug_in_d = variants_pipe_plug_in_d
 	// );
 
-	base_pipe_b(l = 40, d_in = 20, d_out = 24);
+	//base_pipe_b(l = 40, d_in = 20, d_out = 24);
 
 }
 

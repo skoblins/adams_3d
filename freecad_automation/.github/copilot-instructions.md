@@ -23,6 +23,7 @@ Because of this, `__file__` is not available when scripts run via `exec()`. Scri
 - `generation/` — scripts that export STL files from FreeCAD `.FCStd` projects
   - Each generation script has a companion `.sh` bash wrapper for convenience
   - Output STLs go into `generation/output/`
+- `label/` — FreeCAD macros for engraving/embossing text labels on part faces
 - `.github/copilot-instructions.md` — this file
 
 # Generation scripts
@@ -38,6 +39,33 @@ Exports STL meshes from `stroik/stroik1-D-leaf_PLA_flexi-sealing.FCStd` with par
 **Configuration:** Edit the `STROIK_RANGES` and `LISTEK_RANGES` dicts at the top of the script. Each range is a `(start, stop, step)` tuple where stop is exclusive (like Python `range()` but supports floats).
 
 **Run:** `./freecad_automation/generation/export_stroik1_d_leaf.sh`
+
+# Label macro
+
+## label/label_face.FCMacro
+
+Engraves or embosses VarSet variable values as text on a selected face of a body. Used to identify parts after 3D printing when doing parametric sweeps.
+
+**Modes:**
+- **GUI mode** — Run as a FreeCAD macro. Opens a dialog to pick variables, target body/face, text height, depth, and engrave/emboss. Adds a `VarLabel_Text` feature to the document with custom properties for later automation.
+- **Headless API** — Import `build_label_solid()` and `apply_label_to_shape()` functions from the macro for use in generation scripts.
+
+**Key functions:**
+- `build_label_solid(text, face, text_height, depth, emboss, font_dir, font_file)` → returns `list[Part.Shape]` of per-glyph solids positioned on the face
+- `apply_label_to_shape(body_shape, label_solids, emboss)` → returns modified `Part.Shape` with text cut/fused
+- `find_font()` → searches Flatpak, system, and matplotlib font paths for `.ttf` files
+
+**Custom properties stored on VarLabel_Text feature:**
+- `VarLabel_Variables` — semicolon-separated list of VarSet variable names
+- `VarLabel_Format` — Python format string for the label text
+- `VarLabel_Target` — target body label
+- `VarLabel_Face` — face name (e.g., `Face11`)
+- `VarLabel_TextHeight`, `VarLabel_Depth`, `VarLabel_Emboss` — engraving parameters
+
+**Limitations:**
+- Works reliably on planar faces only. Curved faces may produce incorrect results.
+- Text is generated via `Part.makeWireString()` (works in headless mode, unlike `Part::ShapeString`).
+- Font directory path must include a trailing `/` for `Part.makeWireString()`.
 
 # Conventions
 

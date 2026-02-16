@@ -46,10 +46,22 @@ PROJECT_PATH = os.path.normpath(
                  "stroik1-D-leaf_PLA_flexi-sealing.FCStd")
 )
 
+LABEL_MACRO_PATH = os.path.normpath(
+    os.path.join(_SCRIPT_DIR, "..", "label", "label_face.FCMacro")
+)
+
 OUTPUT_DIR = os.path.join(_SCRIPT_DIR, "output")
 
 # --- Mesh quality -------------------------------------------------------------
 LINEAR_DEFLECTION = 0.1   # mm  (smaller = finer mesh)
+
+# --- Stroik labeling ----------------------------------------------------------
+ENABLE_STROIK_LABEL = True
+STROIK_LABEL_VAR = "leaf_gap"
+STROIK_LABEL_FACE = "Face11"  # from: stroik1_D_leaf_PLA_flexi_sealing.Body.Pocket008.Face11
+STROIK_LABEL_TEXT_HEIGHT = 3.0
+STROIK_LABEL_DEPTH = 0.3
+STROIK_LABEL_EMBOSS = False
 
 # --- Parameter sweep ranges ---------------------------------------------------
 # Each range is (start, stop, step) — stop is EXCLUSIVE, like Python's range()
@@ -63,8 +75,8 @@ STROIK_RANGES = {
 
 # "listek" body — sweep over leaf_end_thickness × leaf_start_thickness × leaf_len
 LISTEK_RANGES = {
-    "leaf_end_thickness":   (0.15, 0.25, 0.02),  # mm
-    "leaf_start_thickness": (1.30, 1.50, 0.04),  # mm
+    "leaf_end_thickness":   (0.16, 0.24, 0.02),  # mm
+    "leaf_start_thickness": (1.36, 1.46, 0.02),  # mm
     "leaf_len":             (35.0, 36.5, 0.5),    # mm
 }
 
@@ -86,10 +98,34 @@ def format_val(v):
     return f"{v:.2f}"
 
 
-def export_body_stl(body, stl_path):
-    """Tessellate *body* and write an STL file.  Returns facet count."""
+def quantity_to_text(value):
+    """Convert a FreeCAD quantity to plain numeric text without unit suffix."""
+    s = str(value)
+    if s.endswith(" mm"):
+        s = s[:-3]
+    return s
+
+
+def load_label_helpers():
+    """Load build/apply label helpers from label_face.FCMacro."""
+    if not os.path.isfile(LABEL_MACRO_PATH):
+        raise RuntimeError(f"Label macro not found: {LABEL_MACRO_PATH}")
+
+    namespace = {"__name__": "__label_face_headless__"}
+    with open(LABEL_MACRO_PATH, "r", encoding="utf-8") as f:
+        exec(compile(f.read(), LABEL_MACRO_PATH, "exec"), namespace)
+
+    build_label_solid = namespace.get("build_label_solid")
+    apply_label_to_shape = namespace.get("apply_label_to_shape")
+    if not build_label_solid or not apply_label_to_shape:
+        raise RuntimeError("Label macro does not expose required helper functions")
+    return build_label_solid, apply_label_to_shape
+
+
+def export_shape_stl(shape, stl_path):
+    """Tessellate *shape* and write an STL file.  Returns facet count."""
     mesh = Mesh.Mesh()
-    shape = body.Shape.copy()
+    shape = shape.copy()
     verts, tris = shape.tessellate(LINEAR_DEFLECTION)
     for tri in tris:
         mesh.addFacet(verts[tri[0]], verts[tri[1]], verts[tri[2]])
@@ -97,7 +133,8 @@ def export_body_stl(body, stl_path):
     return mesh.CountFacets
 
 
-def sweep_and_export(doc, varset, body, label, ranges):
+def sweep_and_export(doc, varset, body, label, ranges,
+                     build_label_solid=None, apply_label_to_shape=None):
     """Run a parametric sweep over *ranges* and export *body* for each combo."""
     param_names = list(ranges.keys())
     param_values = [frange(*ranges[p]) for p in param_names]
@@ -118,7 +155,28 @@ def sweep_and_export(doc, varset, body, label, ranges):
         stl_path = os.path.join(OUTPUT_DIR, stl_name)
 
         if body.Shape.isValid():
-            n = export_body_stl(body, stl_path)
+            shape_to_export = body.Shape
+            if (label == "stroik" and ENABLE_STROIK_LABEL and
+                    build_label_solid and apply_label_to_shape):
+                try:
+                    target_face = body.Shape.getElement(STROIK_LABEL_FACE)
+                    label_text = quantity_to_text(getattr(varset, STROIK_LABEL_VAR))
+                    label_solids = build_label_solid(
+                        label_text,
+                        target_face,
+                        STROIK_LABEL_TEXT_HEIGHT,
+                        STROIK_LABEL_DEPTH,
+                        STROIK_LABEL_EMBOSS,
+                    )
+                    shape_to_export = apply_label_to_shape(
+                        body.Shape,
+                        label_solids,
+                        STROIK_LABEL_EMBOSS,
+                    )
+                except Exception as exc:
+                    print(f"  WARN {stl_name} — labeling failed: {exc}")
+
+            n = export_shape_stl(shape_to_export, stl_path)
             print(f"  {stl_name}  ({n} facets)")
         else:
             print(f"  SKIP {stl_name} — invalid shape after recompute")
@@ -147,12 +205,32 @@ def run():
     if not listek_body:
         print("ERROR: Body 'listek' not found"); return
 
+    build_label_solid = None
+    apply_label_to_shape = None
+    if ENABLE_STROIK_LABEL:
+        try:
+            build_label_solid, apply_label_to_shape = load_label_helpers()
+            print(
+                f"Loaded label macro, will engrave '{STROIK_LABEL_VAR}' "
+                f"on {STROIK_LABEL_FACE} for stroik exports"
+            )
+        except Exception as exc:
+            print(f"WARN: Could not load label macro, continuing without labels: {exc}")
+
     # Remember original values so we can restore them
     all_param_names = set(STROIK_RANGES) | set(LISTEK_RANGES)
     orig_vals = {p: getattr(varset, p) for p in all_param_names}
 
     # --- Stroik sweep: leaf_len × leaf_gap ---
-    sweep_and_export(doc, varset, stroik_body, "stroik", STROIK_RANGES)
+    sweep_and_export(
+        doc,
+        varset,
+        stroik_body,
+        "stroik",
+        STROIK_RANGES,
+        build_label_solid,
+        apply_label_to_shape,
+    )
 
     # --- Listek sweep: leaf_end_thickness × leaf_start_thickness × leaf_len ---
     sweep_and_export(doc, varset, listek_body, "listek", LISTEK_RANGES)

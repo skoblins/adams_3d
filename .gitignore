@@ -1,2 +1,3 @@
 *.stl
 *.sublime-workspace
+freecad_automation/generation/__pycache__

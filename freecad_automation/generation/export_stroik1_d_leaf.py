@@ -56,6 +56,12 @@ OUTPUT_DIR = os.path.join(_SCRIPT_DIR, "output")
 # --- Mesh quality -------------------------------------------------------------
 LINEAR_DEFLECTION = 0.1   # mm  (smaller = finer mesh)
 
+# --- Generation toggles -------------------------------------------------------
+GENERATE_STROIK = False
+GENERATE_LISTEK = False
+GENERATE_LISTEK_BOX = True
+GENERATE_LISTEK_LID = False
+
 # --- Stroik labeling ----------------------------------------------------------
 ENABLE_STROIK_LABEL = True
 STROIK_LABEL_VAR = "leaf_gap"
@@ -65,8 +71,7 @@ STROIK_LABEL_DEPTH = 0.3
 STROIK_LABEL_EMBOSS = False
 
 # --- Listek pocket box --------------------------------------------------------
-GENERATE_LISTEK_BOX =   True
-LISTEK_POCKET_DEPTH = 5.0         # mm
+LISTEK_POCKET_DEPTH = 10.0         # mm
 LISTEK_POCKET_SIDE_GAP = 1.0      # mm on each side
 LISTEK_BOX_BOTTOM_THICKNESS = 2.0 # mm
 LISTEK_BOX_OUTER_MARGIN = 3.0     # mm
@@ -75,16 +80,16 @@ LISTEK_BOX_STL_NAME = "listek_pocket_box.stl"
 LISTEK_BOX_SPLIT_NAME_FMT = "listek_pocket_box_{index}.stl"
 LISTEK_BOX_MAX_COUNT = 2
 LISTEK_BOX_LABEL_TEXT_HEIGHT = 3  # mm
-LISTEK_BOX_LABEL_DEPTH = 0.4        # mm
+LISTEK_BOX_LABEL_DEPTH = 0.8        # mm
 LISTEK_BOX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickness"]
 
 # --- Lid & magnets ------------------------------------------------------------
-LISTEK_LID_THICKNESS = 2.0           # mm
+LISTEK_LID_THICKNESS = 3.4           # mm
 LISTEK_LID_LIP_HEIGHT = 1.5          # mm  (lip that sits inside box rim)
 LISTEK_LID_LIP_INSET = 0.3           # mm  (clearance per side for a snug fit)
-LISTEK_MAGNET_DIAMETER = 3.0          # mm
-LISTEK_MAGNET_DEPTH = 1             # mm  (pocket depth in both lid and box)
-LISTEK_MAGNET_CORNER_INSET = 2.0      # mm  (center offset from each corner)
+LISTEK_MAGNET_DIAMETER = 5.0          # mm
+LISTEK_MAGNET_DEPTH = 3             # mm  (pocket depth in both lid and box)
+LISTEK_MAGNET_CORNER_INSET = 3.0      # mm  (center offset from each corner)
 LISTEK_LID_STL_NAME = "listek_pocket_lid.stl"
 LISTEK_LID_SPLIT_NAME_FMT = "listek_pocket_lid_{index}.stl"
 
@@ -251,7 +256,7 @@ def build_listek_pocket_box(pocket_sizes, pocket_labels, layout,
     cell_y = layout["cell_y"]
     swap = layout["swap"]
 
-    box_height = LISTEK_BOX_BOTTOM_THICKNESS + LISTEK_POCKET_DEPTH
+    box_height = LISTEK_BOX_BOTTOM_THICKNESS + LISTEK_POCKET_DEPTH + LISTEK_LID_LIP_HEIGHT
     tray = Part.makeBox(width, height, box_height, FreeCAD.Vector(0, 0, 0))
 
     x0 = LISTEK_BOX_OUTER_MARGIN
@@ -356,8 +361,25 @@ def build_listek_lid(layout):
         lip_cut = outer_block.cut(inner_block)
         lid = lid.cut(lip_cut)
 
-    # Magnet pockets on the bottom face of the lid (z=0 upward)
-    lid = _cut_magnet_pockets(lid, width, height, 0)
+    # Magnet pockets above the lip (so they don't intersect the lip)
+    lid = _cut_magnet_pockets(lid, width, height, LISTEK_LID_LIP_HEIGHT)
+
+    # Cut clearance holes in the lip for the box's magnets (from z=0 upward)
+    r = LISTEK_MAGNET_DIAMETER / 2.0
+    inset = LISTEK_MAGNET_CORNER_INSET
+    corners = [
+        (inset, inset),
+        (width - inset, inset),
+        (inset, height - inset),
+        (width - inset, height - inset),
+    ]
+    for cx, cy in corners:
+        cyl = Part.makeCylinder(
+            r, LISTEK_LID_LIP_HEIGHT,
+            FreeCAD.Vector(cx, cy, 0),
+            FreeCAD.Vector(0, 0, 1),
+        )
+        lid = lid.cut(cyl)
 
     return lid
 
@@ -407,7 +429,8 @@ def partition_listek_boxes(pocket_sizes, pocket_labels):
 
 
 def sweep_and_export(doc, varset, body, label, ranges,
-                     build_label_solid=None, apply_label_to_shape=None):
+                     build_label_solid=None, apply_label_to_shape=None,
+                     export_stls=True):
     """Run a parametric sweep over *ranges* and export *body* for each combo."""
     param_names = list(ranges.keys())
     param_values = [frange(*ranges[p]) for p in param_names]
@@ -452,10 +475,11 @@ def sweep_and_export(doc, varset, body, label, ranges,
                 except Exception as exc:
                     print(f"  WARN {stl_name} — labeling failed: {exc}")
 
-            n = export_shape_stl(shape_to_export, stl_path)
-            print(f"  {stl_name}  ({n} facets)")
+            if export_stls:
+                n = export_shape_stl(shape_to_export, stl_path)
+                print(f"  {stl_name}  ({n} facets)")
 
-            if label == "listek" and GENERATE_LISTEK_BOX:
+            if label == "listek" and (GENERATE_LISTEK_BOX or GENERATE_LISTEK_LID):
                 sx, sy = flat_pocket_size_from_shape(
                     shape_to_export,
                     LISTEK_POCKET_SIDE_GAP,
@@ -511,61 +535,76 @@ def run():
     orig_vals = {p: getattr(varset, p) for p in all_param_names}
 
     # --- Stroik sweep: leaf_len × leaf_gap ---
-    sweep_and_export(
-        doc,
-        varset,
-        stroik_body,
-        "stroik",
-        STROIK_RANGES,
-        build_label_solid,
-        apply_label_to_shape,
-    )
+    if GENERATE_STROIK:
+        sweep_and_export(
+            doc,
+            varset,
+            stroik_body,
+            "stroik",
+            STROIK_RANGES,
+            build_label_solid,
+            apply_label_to_shape,
+        )
+    else:
+        print("\n--- Skipping stroik sweep (GENERATE_STROIK=False) ---")
 
     # --- Listek sweep: leaf_end_thickness × leaf_start_thickness × leaf_len ---
-    listek_pocket_sizes, listek_pocket_labels = sweep_and_export(
-        doc,
-        varset,
-        listek_body,
-        "listek",
-        LISTEK_RANGES,
-    )
+    # The sweep must run whenever any listek output (STLs, box, or lid) is needed,
+    # because box/lid dimensions are derived from the swept pocket sizes.
+    need_listek_sweep = GENERATE_LISTEK or GENERATE_LISTEK_BOX or GENERATE_LISTEK_LID
+    listek_pocket_sizes = []
+    listek_pocket_labels = []
+    if need_listek_sweep:
+        listek_pocket_sizes, listek_pocket_labels = sweep_and_export(
+            doc,
+            varset,
+            listek_body,
+            "listek",
+            LISTEK_RANGES,
+            export_stls=GENERATE_LISTEK,
+        )
+    else:
+        print("\n--- Skipping listek sweep (nothing enabled) ---")
 
-    if GENERATE_LISTEK_BOX and listek_pocket_sizes:
+    if (GENERATE_LISTEK_BOX or GENERATE_LISTEK_LID) and listek_pocket_sizes:
         print(
-            "\n=== Building listek pocket box(es) with bed limit "
+            "\n=== Building listek pocket box/lid with bed limit "
             f"{LISTEK_BOX_MAX_X:.1f}x{LISTEK_BOX_MAX_Y:.1f} mm ===\n"
         )
         box_specs = partition_listek_boxes(listek_pocket_sizes, listek_pocket_labels)
 
         for i, (box_pockets, box_labels, layout) in enumerate(box_specs, start=1):
-            box_shape = build_listek_pocket_box(
-                box_pockets, box_labels, layout,
-                build_label_solid, apply_label_to_shape,
-            )
-            if len(box_specs) == 1:
-                stl_name = LISTEK_BOX_STL_NAME
-            else:
-                stl_name = LISTEK_BOX_SPLIT_NAME_FMT.format(index=i)
-            box_path = os.path.join(OUTPUT_DIR, stl_name)
-            n = export_shape_stl(box_shape, box_path)
-            print(
-                f"  {stl_name}  ({n} facets) "
-                f"size={layout['width']:.1f}x{layout['height']:.1f} mm "
-                f"pockets={len(box_pockets)}"
-            )
+            # Build and export pocket box
+            if GENERATE_LISTEK_BOX:
+                box_shape = build_listek_pocket_box(
+                    box_pockets, box_labels, layout,
+                    build_label_solid, apply_label_to_shape,
+                )
+                if len(box_specs) == 1:
+                    stl_name = LISTEK_BOX_STL_NAME
+                else:
+                    stl_name = LISTEK_BOX_SPLIT_NAME_FMT.format(index=i)
+                box_path = os.path.join(OUTPUT_DIR, stl_name)
+                n = export_shape_stl(box_shape, box_path)
+                print(
+                    f"  {stl_name}  ({n} facets) "
+                    f"size={layout['width']:.1f}x{layout['height']:.1f} mm "
+                    f"pockets={len(box_pockets)}"
+                )
 
             # Build and export matching lid
-            lid_shape = build_listek_lid(layout)
-            if len(box_specs) == 1:
-                lid_name = LISTEK_LID_STL_NAME
-            else:
-                lid_name = LISTEK_LID_SPLIT_NAME_FMT.format(index=i)
-            lid_path = os.path.join(OUTPUT_DIR, lid_name)
-            n_lid = export_shape_stl(lid_shape, lid_path)
-            print(
-                f"  {lid_name}  ({n_lid} facets) "
-                f"size={layout['width']:.1f}x{layout['height']:.1f} mm"
-            )
+            if GENERATE_LISTEK_LID:
+                lid_shape = build_listek_lid(layout)
+                if len(box_specs) == 1:
+                    lid_name = LISTEK_LID_STL_NAME
+                else:
+                    lid_name = LISTEK_LID_SPLIT_NAME_FMT.format(index=i)
+                lid_path = os.path.join(OUTPUT_DIR, lid_name)
+                n_lid = export_shape_stl(lid_shape, lid_path)
+                print(
+                    f"  {lid_name}  ({n_lid} facets) "
+                    f"size={layout['width']:.1f}x{layout['height']:.1f} mm"
+                )
 
     # --- Restore original values ---
     for pname, oval in orig_vals.items():

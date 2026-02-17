@@ -1,0 +1,444 @@
+"""
+label_face.FCMacro — Engrave or emboss VarSet variable values on a selected face.
+
+FreeCAD macro that creates a text label from VarSet variables on a selected
+face of a body/solid.  Designed for identifying 3D-printed parts produced by
+parametric sweeps.
+
+**GUI usage (interactive):**
+  1. Select a planar face on any solid in the 3D view
+  2. Run this macro  (Macro → Macros → label_face.FCMacro)
+  3. Pick which VarSet variables to label
+  4. Configure text size, depth, and mode (engrave / emboss)
+  5. Click OK
+
+**Headless usage (from generation scripts):**
+  The helper functions can be imported and called directly:
+      from label_face import build_label_solid, apply_label_to_shape
+
+Objects created in GUI mode:
+  - VarLabel_Text     : Part::Feature  (flat text compound)
+  - VarLabel_Extrude  : Part::Feature  (extruded text solid)
+  - VarLabel          : Part::Cut/Fuse (boolean result)
+
+Custom properties on VarLabel_Text (for script integration):
+  - VarLabel_Variables : comma-separated variable names
+  - VarLabel_Format    : label format string
+  - VarLabel_Target    : link to the original object
+  - VarLabel_Face      : face sub-element name (e.g. "Face6")
+"""
+
+import FreeCAD as App
+import Part
+import math
+import os
+import glob
+
+
+# ── Configuration ────────────────────────────────────────────────────────
+
+DEFAULT_TEXT_HEIGHT = 2.0   # mm
+DEFAULT_DEPTH = 0.3         # mm
+DEFAULT_FONT = None         # auto-detected; override with an absolute path
+
+
+# ── Font discovery ───────────────────────────────────────────────────────
+
+def find_font():
+    """Return (font_dir, font_file) for the first usable .ttf font found."""
+    if DEFAULT_FONT and os.path.isfile(DEFAULT_FONT):
+        return os.path.dirname(DEFAULT_FONT) + "/", os.path.basename(DEFAULT_FONT)
+
+    search_dirs = [
+        "/usr/share/fonts/liberation-fonts/",
+        "/usr/share/fonts/truetype/dejavu/",
+        "/usr/share/fonts/truetype/liberation/",
+        "/usr/share/fonts/truetype/freefont/",
+        "/usr/share/fonts/dejavu/",
+        "/usr/share/fonts/gnu-free/",
+        "/run/host/fonts/truetype/liberation/",
+        "/run/host/fonts/truetype/dejavu/",
+        "/run/host/fonts/truetype/freefont/",
+    ]
+    # FreeCAD bundled (matplotlib fallback)
+    try:
+        import matplotlib
+        mpl_fonts = os.path.join(os.path.dirname(matplotlib.__file__),
+                                 "mpl-data", "fonts", "ttf") + "/"
+        search_dirs.insert(0, mpl_fonts)
+    except ImportError:
+        pass
+
+    for d in search_dirs:
+        if os.path.isdir(d):
+            for f in sorted(os.listdir(d)):
+                if f.lower().endswith(".ttf") and "emoji" not in f.lower():
+                    return d, f
+
+    # Broad glob fallback
+    for base in ["/usr/share/fonts", "/run/host/fonts"]:
+        hits = glob.glob(os.path.join(base, "**", "*.ttf"), recursive=True)
+        hits = [h for h in hits if "emoji" not in h.lower()]
+        if hits:
+            h = sorted(hits)[0]
+            return os.path.dirname(h) + "/", os.path.basename(h)
+
+    return None, None
+
+
+# ── Geometry helpers ─────────────────────────────────────────────────────
+
+
+def face_center_and_normal(face):
+    """Return (center: Vector, outward_normal: Vector) for *face*."""
+    center = face.CenterOfMass
+    try:
+        uv = face.Surface.parameter(center)
+        normal = face.normalAt(uv[0], uv[1])
+    except Exception:
+        normal = face.normalAt(0, 0)
+    return center, normal.normalize()
+
+
+def compute_face_transform(face, text_bb):
+    """
+    Build a 4×4 matrix mapping XY-plane text (from makeWireString) onto
+    *face*, centered.  The text is placed flat on the face surface.
+
+    The mapping is:
+        local X (text width)  → face_right  (tangent on face)
+        local Y (text height) → face_up     (tangent on face)
+        local Z              → face normal  (outward)
+
+    Returns (matrix, face_normal).
+    """
+    center, normal = face_center_and_normal(face)
+
+    # Choose two tangent directions on the face
+    ref = App.Vector(0, 0, 1)
+    if abs(normal.dot(ref)) > 0.9:
+        ref = App.Vector(0, 1, 0)
+    face_right = ref.cross(normal).normalize()
+    face_up = normal.cross(face_right).normalize()
+
+    # Center the text on the face
+    cx = (text_bb.XMin + text_bb.XMax) / 2.0
+    cy = (text_bb.YMin + text_bb.YMax) / 2.0
+
+    origin = (center
+              - face_right * cx
+              - face_up * cy)
+
+    # Build matrix:  columns are (face_right, face_up, normal, origin)
+    mat = App.Matrix(
+        face_right.x, face_up.x, normal.x, origin.x,
+        face_right.y, face_up.y, normal.y, origin.y,
+        face_right.z, face_up.z, normal.z, origin.z,
+        0, 0, 0, 1
+    )
+    return mat, normal
+
+
+def format_value(val):
+    """Convert a FreeCAD quantity to a compact string (strip ' mm')."""
+    s = str(val)
+    if s.endswith(" mm"):
+        s = s[:-3]
+    return s
+
+
+def make_planar_face(wires):
+    """Build a planar face from one glyph's wires, including holes."""
+    # FaceMakerBullseye is robust for nested loops (e.g. '8', '0', 'B').
+    for maker in ("Part::FaceMakerBullseye", "Part::FaceMakerCheese"):
+        try:
+            face = Part.makeFace(wires, maker)
+            if not face.isNull():
+                return face
+        except Exception:
+            pass
+
+    # Fallback for simpler single-wire glyphs.
+    return Part.Face(wires)
+
+
+# ── High-level API (usable from generation scripts) ─────────────────────
+
+def build_label_solid(text, face, text_height, depth, emboss=False,
+                      font_dir=None, font_file=None):
+    """
+    Build a text solid positioned on *face*, ready for boolean with the body.
+
+    Parameters
+    ----------
+    text : str          Label text (single line).
+    face : Part.Face    Target face on the body.
+    text_height : float Text height in mm.
+    depth : float       Engrave/emboss depth in mm.
+    emboss : bool       True = outward, False = inward.
+    font_dir, font_file : str or None   Override auto-detected font.
+
+    Returns
+    -------
+    list[Part.Shape]   List of per-glyph solids positioned on the face,
+                       ready to cut (engrave) or fuse (emboss) with the body.
+    """
+    if font_dir is None or font_file is None:
+        font_dir, font_file = find_font()
+    if not font_dir:
+        raise RuntimeError("No TrueType font found.")
+
+    # 1. Create flat text wires at origin in XY plane
+    wires_per_char = Part.makeWireString(
+        text, font_dir, font_file, text_height, 0.0)
+    if not wires_per_char:
+        raise RuntimeError(f"Could not create text wires for '{text}'.")
+
+    # 2. Pre-compute bounding box of all wires for centering
+    all_wires = [w for cw in wires_per_char for w in cw]
+    if not all_wires:
+        raise RuntimeError(f"No valid wires for '{text}'.")
+    wire_compound = Part.makeCompound(all_wires)
+    text_bb = wire_compound.BoundBox
+
+    # 3. Compute transform from XY plane → face surface
+    _, normal = face_center_and_normal(face)
+    mat, normal = compute_face_transform(face, text_bb)
+
+    # 4. Transform each wire, create faces, extrude in face-normal direction
+    extrude_dir = normal * (-depth) if not emboss else normal * depth
+    # Offset slightly along normal to avoid coplanar boolean issues
+    offset_vec = normal * 0.01 if not emboss else normal * (-0.01)
+
+    solids = []
+    for char_wires in wires_per_char:
+        try:
+            # Transform wires to face position
+            transformed = [w.transformGeometry(mat) for w in char_wires]
+            # Offset wires slightly along normal
+            for tw in transformed:
+                tw.translate(offset_vec)
+            # Make face and extrude
+            face_shape = make_planar_face(transformed)
+            solid = face_shape.extrude(extrude_dir)
+            solids.append(solid)
+        except Exception as e:
+            App.Console.PrintWarning(f"  Skipping glyph: {e}\n")
+
+    if not solids:
+        raise RuntimeError(f"No valid glyphs could be created for '{text}'.")
+
+    return solids
+
+
+def apply_label_to_shape(body_shape, label_solids, emboss=False):
+    """
+    Boolean-combine each solid in *label_solids* with *body_shape*.
+
+    Parameters
+    ----------
+    body_shape : Part.Shape     The target body shape.
+    label_solids : list[Part.Shape]  Per-glyph solids from build_label_solid().
+    emboss : bool               True = fuse (raised), False = cut (engraved).
+
+    Returns the resulting Part.Shape.
+    """
+    result = body_shape
+    for solid in label_solids:
+        if emboss:
+            result = result.fuse(solid)
+        else:
+            result = result.cut(solid)
+    return result
+
+
+# ── GUI dialog ───────────────────────────────────────────────────────────
+
+def _run_gui():
+    """Interactive macro entry point — shows a dialog then creates objects."""
+    try:
+        import FreeCADGui as Gui
+        from PySide import QtWidgets
+    except ImportError:
+        App.Console.PrintError("This macro must be run from the FreeCAD GUI.\n")
+        return
+
+    doc = App.ActiveDocument
+    if not doc:
+        QtWidgets.QMessageBox.warning(None, "Label Face", "No active document.")
+        return
+
+    # ── Validate selection ──
+    sel = Gui.Selection.getSelectionEx()
+    if not sel or not sel[0].SubElementNames:
+        QtWidgets.QMessageBox.warning(
+            None, "Label Face",
+            "Select a face on an object in the 3D view first.")
+        return
+
+    sel_obj = sel[0].Object
+    sub_name = sel[0].SubElementNames[0]
+    if not sub_name.startswith("Face"):
+        QtWidgets.QMessageBox.warning(
+            None, "Label Face", f"'{sub_name}' is not a Face.")
+        return
+
+    face = sel_obj.Shape.getElement(sub_name)
+
+    # ── Find VarSet ──
+    varsets = [o for o in doc.Objects if o.TypeId == "App::VarSet"]
+    if not varsets:
+        QtWidgets.QMessageBox.warning(
+            None, "Label Face", "No App::VarSet found in the document.")
+        return
+    vs = varsets[0]
+
+    skip = {"ExpressionEngine", "Label", "Label2", "Visibility", "Group"}
+    var_info = []
+    for prop in vs.PropertiesList:
+        if prop not in skip:
+            try:
+                var_info.append((prop, getattr(vs, prop)))
+            except Exception:
+                pass
+    if not var_info:
+        QtWidgets.QMessageBox.warning(
+            None, "Label Face", "VarSet contains no usable properties.")
+        return
+
+    # ── Dialog ──
+    dlg = QtWidgets.QDialog(Gui.getMainWindow())
+    dlg.setWindowTitle("Label Face — VarSet")
+    dlg.setMinimumWidth(380)
+    layout = QtWidgets.QVBoxLayout(dlg)
+
+    layout.addWidget(QtWidgets.QLabel("Variables to engrave:"))
+    var_list = QtWidgets.QListWidget()
+    var_list.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+    for name, val in var_info:
+        var_list.addItem(f"{name} = {val}")
+    layout.addWidget(var_list)
+
+    row = QtWidgets.QHBoxLayout()
+    row.addWidget(QtWidgets.QLabel("Format:"))
+    fmt_combo = QtWidgets.QComboBox()
+    fmt_combo.addItems(["name=value", "value only"])
+    row.addWidget(fmt_combo)
+    layout.addLayout(row)
+
+    row = QtWidgets.QHBoxLayout()
+    row.addWidget(QtWidgets.QLabel("Text height (mm):"))
+    height_spin = QtWidgets.QDoubleSpinBox()
+    height_spin.setRange(0.3, 20.0)
+    height_spin.setValue(DEFAULT_TEXT_HEIGHT)
+    height_spin.setSingleStep(0.25)
+    row.addWidget(height_spin)
+    layout.addLayout(row)
+
+    row = QtWidgets.QHBoxLayout()
+    row.addWidget(QtWidgets.QLabel("Depth (mm):"))
+    depth_spin = QtWidgets.QDoubleSpinBox()
+    depth_spin.setRange(0.05, 5.0)
+    depth_spin.setValue(DEFAULT_DEPTH)
+    depth_spin.setSingleStep(0.05)
+    row.addWidget(depth_spin)
+    layout.addLayout(row)
+
+    emboss_cb = QtWidgets.QCheckBox("Emboss (raised) instead of engrave")
+    layout.addWidget(emboss_cb)
+
+    btn_box = QtWidgets.QDialogButtonBox(
+        QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+    btn_box.accepted.connect(dlg.accept)
+    btn_box.rejected.connect(dlg.reject)
+    layout.addWidget(btn_box)
+
+    if dlg.exec_() != QtWidgets.QDialog.Accepted:
+        return
+
+    chosen = [item.text().split(" = ")[0]
+              for item in var_list.selectedItems()]
+    if not chosen:
+        return
+
+    text_height = height_spin.value()
+    depth = depth_spin.value()
+    emboss = emboss_cb.isChecked()
+    fmt = fmt_combo.currentText()
+
+    # ── Build label text ──
+    parts = []
+    for v in chosen:
+        val_s = format_value(getattr(vs, v))
+        parts.append(f"{v}={val_s}" if fmt == "name=value" else val_s)
+    text = " ".join(parts)
+
+    # ── Font ──
+    font_dir, font_file = find_font()
+    if not font_dir:
+        QtWidgets.QMessageBox.warning(
+            None, "Label Face",
+            "No .ttf font found.\n"
+            "Install fonts or set DEFAULT_FONT in the macro.")
+        return
+
+    # ── Create geometry ──
+    doc.openTransaction("Label Face")
+    try:
+        label_solids = build_label_solid(
+            text, face, text_height, depth, emboss, font_dir, font_file)
+
+        # Store the compound of all glyphs as a document feature
+        text_feat = doc.addObject("Part::Feature", "VarLabel_Text")
+        text_feat.Shape = Part.makeCompound(label_solids)
+        text_feat.addProperty("App::PropertyString",
+                              "VarLabel_Variables", "VarLabel")
+        text_feat.VarLabel_Variables = ",".join(chosen)
+        text_feat.addProperty("App::PropertyString",
+                              "VarLabel_Format", "VarLabel")
+        text_feat.VarLabel_Format = fmt
+        text_feat.addProperty("App::PropertyLink",
+                              "VarLabel_Target", "VarLabel")
+        text_feat.VarLabel_Target = sel_obj
+        text_feat.addProperty("App::PropertyString",
+                              "VarLabel_Face", "VarLabel")
+        text_feat.VarLabel_Face = sub_name
+        text_feat.addProperty("App::PropertyFloat",
+                              "VarLabel_TextHeight", "VarLabel")
+        text_feat.VarLabel_TextHeight = text_height
+        text_feat.addProperty("App::PropertyFloat",
+                              "VarLabel_Depth", "VarLabel")
+        text_feat.VarLabel_Depth = depth
+        text_feat.addProperty("App::PropertyBool",
+                              "VarLabel_Emboss", "VarLabel")
+        text_feat.VarLabel_Emboss = emboss
+
+        # Boolean — cut/fuse each glyph individually for reliable results
+        result_shape = apply_label_to_shape(
+            sel_obj.Shape, label_solids, emboss)
+        result_feat = doc.addObject("Part::Feature", "VarLabel")
+        result_feat.Shape = result_shape
+
+        # Tidy up
+        text_feat.ViewObject.Visibility = False
+        sel_obj.ViewObject.Visibility = False
+
+        doc.recompute()
+        doc.commitTransaction()
+
+        mode = "embossed" if emboss else "engraved"
+        App.Console.PrintMessage(
+            f"Label '{text}' {mode} on {sel_obj.Label}.{sub_name} "
+            f"(height={text_height}mm, depth={depth}mm)\n")
+
+    except Exception as exc:
+        doc.abortTransaction()
+        QtWidgets.QMessageBox.critical(
+            None, "Label Face", f"Failed to create label:\n{exc}")
+        raise
+
+
+# ── Entry point ──────────────────────────────────────────────────────────
+
+if getattr(App, "GuiUp", False):
+    _run_gui()

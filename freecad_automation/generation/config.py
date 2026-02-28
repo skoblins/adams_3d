@@ -41,7 +41,7 @@ ENABLE_STROIK_LABEL = True
 STROIK_LABEL_VAR = "leaf_gap"
 STROIK_LABEL_FACE = "Face11"  # from: stroik1_D_leaf_PLA_flexi_sealing.Body.Pocket008.Face11
 STROIK_LABEL_TEXT_HEIGHT = 3.0
-STROIK_LABEL_DEPTH = 0.3
+STROIK_LABEL_DEPTH = 0.4
 STROIK_LABEL_EMBOSS = False
 
 # --- Listek pocket box --------------------------------------------------------
@@ -54,24 +54,51 @@ LISTEK_BOX_STL_NAME = "listek_pocket_box.stl"
 LISTEK_BOX_SPLIT_NAME_FMT = "listek_pocket_box_{index}.stl"
 LISTEK_BOX_MAX_COUNT = 2
 LISTEK_BOX_LABEL_TEXT_HEIGHT = 3   # mm
-LISTEK_BOX_LABEL_DEPTH = 0.8      # mm
+LISTEK_BOX_LABEL_DEPTH = 0.25      # mm
 LISTEK_BOX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickness"]
 
 # --- Lid & magnets ------------------------------------------------------------
 LISTEK_LID_THICKNESS = 3.4           # mm
 LISTEK_LID_LIP_HEIGHT = 1.5          # mm  (lip that sits inside box rim)
 LISTEK_LID_LIP_INSET = 0.3           # mm  (clearance per side for a snug fit)
-LISTEK_MAGNET_DIAMETER = 5.0          # mm
-LISTEK_MAGNET_DEPTH = 3              # mm  (pocket depth in both lid and box)
+LISTEK_MAGNET_DIAMETER = 3.1          # mm
+LISTEK_MAGNET_DEPTH = 1.1              # mm  (pocket depth in both lid and box)
 LISTEK_MAGNET_CORNER_INSET = 3.0      # mm  (center offset from each corner)
+LISTEK_LID_LABEL_DEPTH = 0.25              # mm  (text depth on lid bottom)
 LISTEK_LID_STL_NAME = "listek_pocket_lid.stl"
 LISTEK_LID_SPLIT_NAME_FMT = "listek_pocket_lid_{index}.stl"
+LISTEK_LID_TEXT_STL_NAME = "listek_pocket_lid_text.stl"
+LISTEK_LID_TEXT_SPLIT_NAME_FMT = "listek_pocket_lid_text_{index}.stl"
+
+# --- Stroik (reed) pocket box -------------------------------------------------
+# Pocket depth = d_outer (radius!) * 2 * STROIK_POCKET_DEPTH_FACTOR
+# d_outer default = 6.0 mm → diameter = 12.0 mm → pocket = 14.4 mm
+STROIK_POCKET_DEPTH_FACTOR = 1.2
+STROIK_BOX_STL_NAME = "stroik_pocket_box.stl"
+STROIK_BOX_SPLIT_NAME_FMT = "stroik_pocket_box_{index}.stl"
+STROIK_BOX_LABEL_TEXT_HEIGHT = 5   # mm
+STROIK_BOX_LABEL_PARAMS = ["leaf_len", "leaf_gap"]
+
+STROIK_LID_STL_NAME = "stroik_pocket_lid.stl"
+STROIK_LID_SPLIT_NAME_FMT = "stroik_pocket_lid_{index}.stl"
+STROIK_LID_TEXT_STL_NAME = "stroik_pocket_lid_text.stl"
+STROIK_LID_TEXT_SPLIT_NAME_FMT = "stroik_pocket_lid_text_{index}.stl"
 
 PRUSA_BED_X = 250.0
 PRUSA_BED_Y = 210.0
 PRUSA_BED_MARGIN = 10.0
 LISTEK_BOX_MAX_X = PRUSA_BED_X - 2.0 * PRUSA_BED_MARGIN
 LISTEK_BOX_MAX_Y = PRUSA_BED_Y - 2.0 * PRUSA_BED_MARGIN
+
+# --- Leaf matrix layout (print-ready grid with modifier labels) ---------------
+LEAF_MATRIX_BOTTOM_FACE_FEATURE = "Chamfer002"  # feature inside Body001
+LEAF_MATRIX_BOTTOM_FACE = "Face2"                # face on that feature
+LEAF_MATRIX_SPACING = 3.0           # mm gap between parts in the grid
+LEAF_MATRIX_LABEL_DEPTH = 0.2       # mm label thickness (modifier into part)
+LEAF_MATRIX_LABEL_MARGIN = 0.3      # mm text margin inside face boundary
+LEAF_MATRIX_STL_NAME = "leaf_matrix.stl"
+LEAF_MATRIX_LABEL_STL_NAME = "leaf_matrix_labels.stl"
+LEAF_MATRIX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickness"]
 
 # --- Parameter sweep ranges ---------------------------------------------------
 # Each range is (start, stop, step) — stop is EXCLUSIVE, like Python's range()
@@ -91,17 +118,19 @@ LISTEK_BOX_MAX_Y = PRUSA_BED_Y - 2.0 * PRUSA_BED_MARGIN
 # }
 
 STROIK_RANGES = {
-    "leaf_len":  (35.0, 36.5, 0.5),   # mm — 35.0, 35.5, 36.0
-    "leaf_gap":  (1.75, 2.1, 0.1),    # mm — 1.75, 1.80, 1.85, 1.90, 1.95, 2.00
+    "leaf_len":  (34.0, 37, 1),   # mm — 35.0, 35.5, 36.0
+    "leaf_gap":  (1.5, 2.5, 0.2),    # mm — 1.75, 1.80, 1.85, 1.90, 1.95, 2.00
 }
 
 LISTEK_RANGES = {
     "leaf_end_thickness":   (0.2, 0.26, 0.02),   # mm
     "leaf_start_thickness": (1.40, 1.46, 0.02),   # mm
-    "leaf_len":             (35.0, 36.5, 0.5),     # mm — 35.0, 35.5, 36.0
+    "leaf_len":             (34.0, 37, 1),     # mm — 35.0, 35.5, 36.0
 }
 
-## Easy ones for development testing!
+########################################################################
+# # Easy ones for development testing!
+########################################################################
 # STROIK_RANGES = {
 #     "leaf_len":  (36.0, 37, 0.5),   # mm — 35.0, 35.5, 36.0
 #     "leaf_gap":  (1.85, 2.1, 0.1),    # mm — 1.75, 1.80, 1.85, 1.90, 1.95, 2.00

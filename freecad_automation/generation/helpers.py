@@ -16,6 +16,7 @@ from config import (
     LISTEK_BOX_MAX_X, LISTEK_BOX_MAX_Y, LISTEK_BOX_MAX_COUNT,
     LISTEK_MAGNET_DIAMETER, LISTEK_MAGNET_DEPTH, LISTEK_MAGNET_CORNER_INSET,
     LISTEK_RANGES,
+    STROIK_RANGES, STROIK_BOX_LABEL_PARAMS,
 )
 
 
@@ -267,6 +268,42 @@ def collect_listek_pockets(doc, varset, listek_body):
             pocket_sizes.append((sx, sy))
             lbl = "/".join(format_val(combo[param_names.index(p)])
                           for p in LISTEK_BOX_LABEL_PARAMS
+                          if p in param_names)
+            pocket_labels.append(lbl)
+            print(f"  {tag} -> pocket {sx:.1f}x{sy:.1f} mm")
+        else:
+            print(f"  SKIP {tag} — invalid shape")
+
+    return pocket_sizes, pocket_labels
+
+
+def collect_stroik_pockets(doc, varset, stroik_body):
+    """Sweep stroik parameter ranges and collect pocket sizes + labels."""
+    param_names = list(STROIK_RANGES.keys())
+    param_values = [frange(*STROIK_RANGES[p]) for p in param_names]
+    combos = list(itertools.product(*param_values))
+
+    print(f"\n=== Collecting stroik pocket sizes: {len(combos)} combinations "
+          f"({' x '.join(param_names)}) ===\n")
+
+    pocket_sizes = []
+    pocket_labels = []
+
+    for combo in combos:
+        tag_parts = []
+        for pname, pval in zip(param_names, combo):
+            setattr(varset, pname, pval)
+            tag_parts.append(f"{pname}={format_val(pval)}")
+        doc.recompute()
+
+        tag = "_".join(tag_parts)
+
+        if stroik_body.Shape.isValid():
+            sx, sy = flat_pocket_size_from_shape(
+                stroik_body.Shape, LISTEK_POCKET_SIDE_GAP)
+            pocket_sizes.append((sx, sy))
+            lbl = "/".join(format_val(combo[param_names.index(p)])
+                          for p in STROIK_BOX_LABEL_PARAMS
                           if p in param_names)
             pocket_labels.append(lbl)
             print(f"  {tag} -> pocket {sx:.1f}x{sy:.1f} mm")

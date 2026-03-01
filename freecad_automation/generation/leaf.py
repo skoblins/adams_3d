@@ -24,7 +24,7 @@ import FreeCAD
 from config import OUTPUT_DIR, LISTEK_RANGES
 from helpers import (
     frange, format_val, export_shape_stl,
-    open_project, close_project,
+    open_project, close_project, get_valid_body_shape,
 )
 
 
@@ -51,11 +51,12 @@ def run():
         stl_name = f"listek_{tag}.stl"
         stl_path = os.path.join(OUTPUT_DIR, stl_name)
 
-        if not listek_body.Shape.isValid():
+        shape = get_valid_body_shape(listek_body)
+        if not shape.isValid():
             print(f"  SKIP {stl_name} — invalid shape")
             continue
 
-        n = export_shape_stl(listek_body.Shape, stl_path)
+        n = export_shape_stl(shape, stl_path)
         print(f"  {stl_name}  ({n} facets)")
 
     close_project(doc, varset, orig_vals)

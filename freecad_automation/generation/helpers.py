@@ -88,6 +88,28 @@ def flat_pocket_size_from_shape(shape, side_gap):
     return sx, sy
 
 
+def get_valid_body_shape(body):
+    """Return the shape of the last successfully computed feature in *body*.
+
+    When downstream features (e.g. Chamfer002) go *Invalid* after a
+    parameter change (topological-naming breakage), the body's own Shape
+    reverts to a stale cached result.  This helper walks the feature chain
+    backwards and returns the shape from the last feature whose state does
+    not include 'Invalid', so the upstream geometry that *did* update
+    correctly is used instead.
+    """
+    group = body.Group
+    # Walk features in reverse order
+    for feat in reversed(group):
+        state = set(feat.State) if hasattr(feat, 'State') else set()
+        if 'Invalid' in state:
+            continue
+        if hasattr(feat, 'Shape') and not feat.Shape.isNull():
+            return feat.Shape
+    # Fallback: return the body shape as-is
+    return body.Shape
+
+
 # --- Project I/O --------------------------------------------------------------
 
 def open_project():

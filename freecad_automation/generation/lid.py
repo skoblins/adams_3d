@@ -32,10 +32,8 @@ from config import (
     LISTEK_LID_TEXT_STL_NAME, LISTEK_LID_TEXT_SPLIT_NAME_FMT,
     LISTEK_LID_LABEL_DEPTH,
     LISTEK_BOX_MAX_X, LISTEK_BOX_MAX_Y,
-    LISTEK_BOX_LABEL_TEXT_HEIGHT,
     STROIK_LID_STL_NAME, STROIK_LID_SPLIT_NAME_FMT,
     STROIK_LID_TEXT_STL_NAME, STROIK_LID_TEXT_SPLIT_NAME_FMT,
-    STROIK_BOX_LABEL_TEXT_HEIGHT,
 )
 from helpers import (
     export_shape_stl,
@@ -43,10 +41,46 @@ from helpers import (
     collect_listek_pockets, collect_stroik_pockets,
     partition_listek_boxes,
     make_magnet_solids,
-    load_label_helpers,
 )
 
 BOX_MODE = os.environ.get("BOX_MODE", "listek")
+
+
+def _short_val(v):
+    """Shortest format: 34.00→'34', 1.40→'1.4', 0.20→'0.2'."""
+    s = f"{v:.2f}"
+    if "." in s:
+        s = s.rstrip("0")
+        if s.endswith("."):
+            s = s[:-1]
+    return s
+
+
+def _format_range_summary(ranges):
+    """Format ranges dict into list of compact lines for lid label."""
+    short_names = {
+        "leaf_len": "L",
+        "leaf_gap": "gap",
+        "leaf_end_thickness": "et",
+        "leaf_start_thickness": "st",
+    }
+    lines = []
+    for param, (start, stop, step) in ranges.items():
+        name = short_names.get(param, param)
+        v, vals = start, []
+        while v < stop - 1e-9:
+            vals.append(round(v, 6))
+            v += step
+        if not vals:
+            continue
+        first_s = _short_val(vals[0])
+        last_s = _short_val(vals[-1])
+        step_s = _short_val(step)
+        if first_s == last_s:
+            lines.append(f"{name}={first_s}")
+        else:
+            lines.append(f"{name}={first_s}-{last_s}/{step_s}")
+    return lines
 
 
 def build_listek_lid(layout):
@@ -105,26 +139,35 @@ def build_listek_lid(layout):
 
 def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
                             label_text_height=None, label_depth=None):
-    """Build mirrored pocket labels as a separate solid for modifier-STL export.
+    """Build pocket labels as a separate solid for modifier-STL export.
 
-    The solid is positioned on the lid bottom so it can be loaded alongside
-    the lid in the slicer and used as a filament-change modifier object.
+    Each label is placed at the exact centre of its pocket cell (matching
+    the pocket positions used by the box builder).  Text is auto-scaled to
+    fit within the cell, rotated 90° when the cell is taller than wide, and
+    X-mirrored so it reads correctly when viewed through the lid from above.
+
     Returns the fused text shape, or None if no labels could be built.
     """
     if not pocket_sizes or not pocket_labels or not any(pocket_labels):
         return None
 
     try:
-        build_label_solid, _ = load_label_helpers()
+        from config import LABEL_MACRO_PATH as _macro_path
+        ns = {"__name__": "__label_face_headless__"}
+        with open(_macro_path, "r", encoding="utf-8") as f:
+            exec(compile(f.read(), _macro_path, "exec"), ns)
+        find_font = ns["find_font"]
+        make_planar_face = ns["make_planar_face"]
     except Exception as exc:
         print(f"  WARN: Could not load label helpers: {exc}")
         return None
 
-    if not build_label_solid:
+    font_dir, font_file = find_font()
+    if not font_dir:
+        print("  WARN: No font found for pocket labels")
         return None
 
     width = layout["width"]
-    height = layout["height"]
     cols = layout["cols"]
     cell_x = layout["cell_x"]
     cell_y = layout["cell_y"]
@@ -135,8 +178,8 @@ def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
     step_x = cell_x + LISTEK_BOX_CELL_SPACING
     step_y = cell_y + LISTEK_BOX_CELL_SPACING
 
-    text_h = label_text_height or LISTEK_BOX_LABEL_TEXT_HEIGHT
     depth = label_depth or LISTEK_LID_LABEL_DEPTH
+    margin = 0.5  # mm inset from cell edge
 
     label_solids = []
     for idx, lbl in enumerate(pocket_labels):
@@ -146,27 +189,96 @@ def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
         sx, sy = (sy_raw, sx_raw) if swap else (sx_raw, sy_raw)
         row = idx // cols
         col = idx % cols
+
+        # Pocket position — identical to box_prepare.py
         px = x0 + col * step_x + (cell_x - sx) / 2.0
         py = y0 + row * step_y + (cell_y - sy) / 2.0
 
-        face = Part.makePlane(
-            sx, sy,
-            FreeCAD.Vector(px, py, 0),
-            FreeCAD.Vector(0, 0, 1),
-        )
-        try:
-            solids = build_label_solid(
-                lbl, face, text_h, depth, emboss=True)
-            if not isinstance(solids, (list, tuple)):
-                solids = [solids]
-            for s in solids:
-                mirrored = s.mirror(
-                    FreeCAD.Vector(width / 2.0, 0, 0),
-                    FreeCAD.Vector(1, 0, 0),
-                )
-                label_solids.append(mirrored)
-        except Exception as exc:
-            print(f"  WARN lid label '{lbl}': {exc}")
+        # Available area for the label inside this pocket cell
+        avail_x = sx - 2.0 * margin
+        avail_y = sy - 2.0 * margin
+        if avail_x <= 0 or avail_y <= 0:
+            continue
+
+        # Decide whether to rotate 90° (run text along the long axis)
+        rotate = avail_y > avail_x
+        if rotate:
+            fit_w = avail_y  # text width  fits the long dimension
+            fit_h = avail_x  # text height fits the short dimension
+        else:
+            fit_w = avail_x
+            fit_h = avail_y
+
+        # Auto-scale text height to fit within the cell
+        text_h = fit_h * 0.7
+        wires_per_char = None
+        for _attempt in range(6):
+            wires_per_char = Part.makeWireString(
+                lbl, font_dir, font_file, text_h, 0.0)
+            if not wires_per_char:
+                break
+            all_w = [w for cw in wires_per_char for w in cw]
+            if not all_w:
+                wires_per_char = None
+                break
+            bb = Part.makeCompound(all_w).BoundBox
+            if bb.XLength <= fit_w and bb.YLength <= fit_h:
+                break
+            scale = min(fit_w / bb.XLength, fit_h / bb.YLength) * 0.95
+            text_h *= scale
+        else:
+            pass  # proceed with whatever we have
+
+        if not wires_per_char:
+            continue
+
+        all_w = [w for cw in wires_per_char for w in cw]
+        if not all_w:
+            continue
+        bb = Part.makeCompound(all_w).BoundBox
+
+        # Cell centre
+        face_cx = px + sx / 2.0
+        face_cy = py + sy / 2.0
+        cx_text = bb.XMin + bb.XLength / 2.0
+        cy_text = bb.YMin + bb.YLength / 2.0
+
+        if rotate:
+            # 90° CCW rotation + X-mirror so text reads correctly
+            # when viewed from the lid top (through the material).
+            #   input X → output Y,  input Y → output X (mirrored)
+            tx = face_cx - cy_text
+            ty = face_cy - cx_text
+            mat = FreeCAD.Matrix(
+                0, 1, 0, tx,
+                1, 0, 0, ty,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            )
+        else:
+            # No rotation, X-mirror for readability through the lid.
+            tx = face_cx + cx_text  # mirror: -(x - cx) + face_cx
+            ty = face_cy - cy_text
+            mat = FreeCAD.Matrix(
+                -1, 0, 0, tx,
+                 0, 1, 0, ty,
+                 0, 0, 1, 0,
+                 0, 0, 0, 1,
+            )
+
+        extrude_dir = FreeCAD.Vector(0, 0, depth)
+        offset_vec = FreeCAD.Vector(0, 0, -0.01)
+
+        for char_wires in wires_per_char:
+            try:
+                transformed = [w.transformGeometry(mat) for w in char_wires]
+                for tw in transformed:
+                    tw.translate(offset_vec)
+                face_shape = make_planar_face(transformed)
+                solid = face_shape.extrude(extrude_dir)
+                label_solids.append(solid)
+            except Exception:
+                pass
 
     if not label_solids:
         return None
@@ -178,6 +290,122 @@ def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
     for s in label_solids[1:]:
         text_shape = text_shape.fuse(s)
     return text_shape
+
+
+def build_lid_summary(layout, ranges, label_depth):
+    """Build a multi-line summary label on the lid top surface.
+
+    Each parameter range gets its own line.  Lines are stacked vertically,
+    auto-scaled to fit within the lid width and height, then centred on
+    the top face.  Uses direct wire-string rendering with scaling instead
+    of build_label_solid (which doesn't constrain to face bounds).
+    """
+    try:
+        from config import LABEL_MACRO_PATH as _macro_path
+        ns = {"__name__": "__label_face_headless__"}
+        with open(_macro_path, "r", encoding="utf-8") as f:
+            exec(compile(f.read(), _macro_path, "exec"), ns)
+        find_font = ns["find_font"]
+        make_planar_face = ns["make_planar_face"]
+    except Exception as exc:
+        print(f"  WARN: Could not load label helpers for summary: {exc}")
+        return None
+
+    font_dir, font_file = find_font()
+    if not font_dir:
+        print("  WARN: No font found for summary label")
+        return None
+
+    width = layout["width"]
+    height = layout["height"]
+    lines = _format_range_summary(ranges)
+    if not lines:
+        return None
+
+    lid_top_z = LISTEK_LID_THICKNESS + LISTEK_LID_LIP_HEIGHT
+    n_lines = len(lines)
+
+    pad = 1.5
+    line_gap = 0.8  # mm between lines
+    face_w = width - 2.0 * pad
+    total_avail_h = height - 2.0 * pad
+
+    if face_w <= 0 or total_avail_h <= 0:
+        return None
+
+    # First pass: determine text height that fits all lines within the lid.
+    # Start with height that fills the vertical space equally.
+    max_line_h = (total_avail_h - (n_lines - 1) * line_gap) / n_lines
+    text_h = max_line_h * 0.9
+
+    # Measure each line's width and find the worst-case scale factor.
+    for _attempt in range(8):
+        max_width_ratio = 0.0
+        for line_text in lines:
+            wires = Part.makeWireString(
+                line_text, font_dir, font_file, text_h, 0.0)
+            if not wires:
+                continue
+            all_w = [w for cw in wires for w in cw]
+            if all_w:
+                bb = Part.makeCompound(all_w).BoundBox
+                ratio = bb.XLength / face_w
+                if ratio > max_width_ratio:
+                    max_width_ratio = ratio
+        if max_width_ratio <= 1.0:
+            break
+        text_h *= (1.0 / max_width_ratio) * 0.95
+    else:
+        # Even after scaling, proceed with whatever we have
+        pass
+
+    # Actual line height after scaling (for vertical stacking)
+    actual_line_h = text_h * 1.3  # approximate line height with descenders
+    total_text_h = n_lines * actual_line_h + (n_lines - 1) * line_gap
+    y_start = pad + (total_avail_h - total_text_h) / 2.0  # vertical centring
+
+    extrude_dir = FreeCAD.Vector(0, 0, label_depth)
+    offset_vec = FreeCAD.Vector(0, 0, -0.01)  # avoid coplanar issues
+
+    all_solids = []
+    for i, line_text in enumerate(lines):
+        wires_per_char = Part.makeWireString(
+            line_text, font_dir, font_file, text_h, 0.0)
+        if not wires_per_char:
+            continue
+        all_w = [w for cw in wires_per_char for w in cw]
+        if not all_w:
+            continue
+        bb = Part.makeCompound(all_w).BoundBox
+
+        # Centre this line horizontally, stack vertically
+        ly = y_start + i * (actual_line_h + line_gap)
+        off_x = pad + (face_w - bb.XLength) / 2.0 - bb.XMin
+        off_y = ly - bb.YMin
+
+        for char_wires in wires_per_char:
+            try:
+                moved = []
+                for w in char_wires:
+                    w2 = w.copy()
+                    w2.translate(FreeCAD.Vector(off_x, off_y, lid_top_z - label_depth))
+                    w2.translate(offset_vec)
+                    moved.append(w2)
+                face_shape = make_planar_face(moved)
+                solid = face_shape.extrude(extrude_dir)
+                all_solids.append(solid)
+            except Exception:
+                pass
+
+    if not all_solids:
+        return None
+
+    if len(all_solids) == 1:
+        return all_solids[0]
+    result = all_solids[0]
+    for s in all_solids[1:]:
+        result = result.fuse(s)
+    return result
 
 
 def run():
@@ -216,20 +444,21 @@ def run():
 
     box_specs = partition_listek_boxes(pocket_sizes, pocket_labels)
 
-    if BOX_MODE == "stroik":
-        lid_label_text_height = STROIK_BOX_LABEL_TEXT_HEIGHT
-    else:
-        lid_label_text_height = LISTEK_BOX_LABEL_TEXT_HEIGHT
-
     for i, (box_pockets, box_labels, layout) in enumerate(box_specs, start=1):
         lid_shape = build_listek_lid(layout)
         text_shape = build_lid_text_modifier(
             layout,
             pocket_sizes=box_pockets,
             pocket_labels=box_labels,
-            label_text_height=lid_label_text_height,
             label_depth=LISTEK_LID_LABEL_DEPTH,
         )
+        summary_shape = build_lid_summary(layout, ranges, LISTEK_LID_LABEL_DEPTH)
+        if summary_shape is not None:
+            if text_shape is not None:
+                text_shape = text_shape.fuse(summary_shape)
+            else:
+                text_shape = summary_shape
+            print(f"  Added summary label: {' | '.join(_format_range_summary(ranges))}")
         if len(box_specs) == 1:
             lid_name = lid_stl
             text_name = lid_text_stl

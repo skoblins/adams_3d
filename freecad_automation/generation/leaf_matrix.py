@@ -48,7 +48,7 @@ from config import (
 )
 from helpers import (
     frange, format_val, export_shape_stl,
-    open_project, close_project,
+    open_project, close_project, get_valid_body_shape,
 )
 
 
@@ -157,10 +157,10 @@ def build_leaf_labels(text, x, y, face_w, face_h, depth, margin,
     """Build text-label solids for one leaf at grid position (x, y).
 
     The label sits on the Z=0 plane and extrudes *upward* by *depth*
-    so it overlaps with the bottom of the leaf.  The text is rotated 90°
-    to run along the long axis of the leaf for maximum readability, then
-    mirrored so it reads correctly when viewing the bottom of the printed
-    part.
+    so it overlaps with the bottom of the leaf.  When the leaf is taller
+    than wide the text is rotated 90° to run along the long axis;
+    otherwise it runs horizontally.  In both cases the text is X-mirrored
+    so it reads correctly when viewing the bottom of the printed part.
 
     Returns a list of Part.Shape solids (one per glyph).
     """
@@ -169,10 +169,18 @@ def build_leaf_labels(text, x, y, face_w, face_h, depth, margin,
     if avail_w <= 0 or avail_h <= 0:
         return []
 
-    # Text will be rotated 90° so it runs along the long axis.
-    # Fit text into: width → face_h (long), height → face_w (short).
-    fit_w = avail_h   # text width  fits the long dimension
-    fit_h = avail_w   # text height fits the short dimension
+    # Rotate text 90° only when the leaf is taller than wide so
+    # the label always runs along the longest edge.
+    rotate = face_h > face_w
+
+    if rotate:
+        # Text will be rotated 90° — fit into swapped dimensions.
+        fit_w = avail_h   # text width  fits the long dimension
+        fit_h = avail_w   # text height fits the short dimension
+    else:
+        # No rotation — text runs along X (the long axis).
+        fit_w = avail_w
+        fit_h = avail_h
 
     # Start with text height = 70 % of available short dimension
     text_height = fit_h * 0.7
@@ -200,36 +208,31 @@ def build_leaf_labels(text, x, y, face_w, face_h, depth, margin,
     all_wires = [w for cw in wires_per_char for w in cw]
     bb = Part.makeCompound(all_wires).BoundBox
 
-    # Build a 4x4 transform matrix that:
-    #   1. Centres text at the origin
-    #   2. Rotates 90° CCW  (X→-Y, Y→X  for the text baseline)
-    #   3. Mirrors in the new-X direction (so text reads correctly from
-    #      below the print bed)
-    #   4. Translates to the centre of the leaf footprint
-    #
-    # Combining rotation 90° CCW  with X-mirror gives:
-    #   x' = -(y - cy_text)  then mirror →  (y - cy_text)   + tx
-    #   y' =  (x - cx_text)                                  + ty
-    #
-    # So the matrix columns are:
-    #     col0 (maps input X):  ( 0,  1, 0)
-    #     col1 (maps input Y):  ( 1,  0, 0)   (mirror flips the sign)
-    #     col2 (maps input Z):  ( 0,  0, 1)
-    #     col3 (translation)
     cx_text = bb.XMin + bb.XLength / 2.0
     cy_text = bb.YMin + bb.YLength / 2.0
     face_cx = x + face_w / 2.0
     face_cy = y + face_h / 2.0
 
-    tx = face_cx - cy_text   # ← y_text maps to final x
-    ty = face_cy - cx_text   # ← x_text maps to final y
-
-    mat = FreeCAD.Matrix(
-        0, 1, 0, tx,
-        1, 0, 0, ty,
-        0, 0, 1, 0,
-        0, 0, 0, 1,
-    )
+    if rotate:
+        # 90° CCW rotation + X-mirror so text reads correctly from below.
+        tx = face_cx - cy_text
+        ty = face_cy - cx_text
+        mat = FreeCAD.Matrix(
+            0, 1, 0, tx,
+            1, 0, 0, ty,
+            0, 0, 1, 0,
+            0, 0, 0, 1,
+        )
+    else:
+        # No rotation, X-mirror only so text reads correctly from below.
+        tx = face_cx + cx_text   # mirror: -(x - cx) + face_cx
+        ty = face_cy - cy_text
+        mat = FreeCAD.Matrix(
+            -1, 0, 0, tx,
+             0, 1, 0, ty,
+             0, 0, 1, 0,
+             0, 0, 0, 1,
+        )
 
     extrude_dir = FreeCAD.Vector(0, 0, depth)
     solids = []
@@ -283,7 +286,8 @@ def run():
         tag = "_".join(f"{pn}={format_val(pv)}"
                        for pn, pv in zip(param_names, combo))
 
-        if not listek_body.Shape.isValid():
+        shape = get_valid_body_shape(listek_body)
+        if not shape.isValid():
             print(f"  SKIP {tag} — invalid shape")
             continue
 
@@ -295,7 +299,7 @@ def run():
             print(f"  SKIP {tag} — cannot find {LEAF_MATRIX_BOTTOM_FACE}: {exc}")
             continue
 
-        oriented = orient_shape_on_face(listek_body.Shape, bottom_face)
+        oriented = orient_shape_on_face(shape, bottom_face)
 
         # Label text: shortest form of the configured parameters
         label_parts = []
@@ -380,20 +384,21 @@ def run():
         col = idx % cols
         row = idx // cols
 
-        bb = oriented.BoundBox
-
-        # Position: centre within cell, with spacing on each side
+        # When swap is active, rotate the shape 90° around Z so it fits
+        # the swapped cell dimensions.
         if swap:
-            face_w = bb.YLength
-            face_h = bb.XLength
+            placed = oriented.copy()
+            placed.rotate(FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(0, 0, 1), 90)
+            pbb = placed.BoundBox
+            placed.translate(FreeCAD.Vector(-pbb.XMin, -pbb.YMin, -pbb.ZMin))
         else:
-            face_w = bb.XLength
-            face_h = bb.YLength
+            placed = oriented.copy()
+
+        bb = placed.BoundBox
 
         gx = col * cx + (cx - bb.XLength) / 2.0
         gy = row * cy + (cy - bb.YLength) / 2.0
 
-        placed = oriented.copy()
         placed.translate(FreeCAD.Vector(gx, gy, 0))
         all_leaf_solids.append(placed)
 

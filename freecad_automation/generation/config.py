@@ -58,7 +58,7 @@ LISTEK_BOX_LABEL_DEPTH = 0.25      # mm
 LISTEK_BOX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickness"]
 
 # --- Lid & magnets ------------------------------------------------------------
-LISTEK_LID_THICKNESS = 3.4           # mm
+LISTEK_LID_THICKNESS = 1.5           # mm
 LISTEK_LID_LIP_HEIGHT = 1.5          # mm  (lip that sits inside box rim)
 LISTEK_LID_LIP_INSET = 0.3           # mm  (clearance per side for a snug fit)
 LISTEK_MAGNET_DIAMETER = 3.1          # mm
@@ -73,7 +73,7 @@ LISTEK_LID_TEXT_SPLIT_NAME_FMT = "listek_pocket_lid_text_{index}.stl"
 # --- Stroik (reed) pocket box -------------------------------------------------
 # Pocket depth = d_outer (radius!) * 2 * STROIK_POCKET_DEPTH_FACTOR
 # d_outer default = 6.0 mm → diameter = 12.0 mm → pocket = 14.4 mm
-STROIK_POCKET_DEPTH_FACTOR = 1.2
+STROIK_POCKET_DEPTH_FACTOR = 1.5
 STROIK_BOX_STL_NAME = "stroik_pocket_box.stl"
 STROIK_BOX_SPLIT_NAME_FMT = "stroik_pocket_box_{index}.stl"
 STROIK_BOX_LABEL_TEXT_HEIGHT = 5   # mm
@@ -100,6 +100,18 @@ LEAF_MATRIX_STL_NAME = "leaf_matrix.stl"
 LEAF_MATRIX_LABEL_STL_NAME = "leaf_matrix_labels.stl"
 LEAF_MATRIX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickness"]
 
+# --- Reed matrix layout (print-ready grid with modifier labels) ---------------
+REED_MATRIX_BOTTOM_FACE_FEATURE = "Pocket008"  # feature inside Body (stroik)
+REED_MATRIX_BOTTOM_FACE = "Face11"              # face on that feature
+REED_MATRIX_SPACING = 3.0               # mm gap between parts in the grid
+REED_MATRIX_LABEL_DEPTH = 0.2           # mm label thickness (modifier into part)
+REED_MATRIX_LABEL_MARGIN = 1.0          # mm text margin inside face boundary
+REED_MATRIX_RAFT_EXTEND = 0           # mm raft extends beyond reed footprint
+REED_MATRIX_RAFT_THICKNESS = 0.2        # mm raft thickness at z=0
+REED_MATRIX_STL_NAME = "reed_matrix.stl"
+REED_MATRIX_LABEL_STL_NAME = "reed_matrix_labels.stl"
+REED_MATRIX_LABEL_PARAMS = ["leaf_len", "leaf_gap"]
+
 # --- Parameter sweep ranges ---------------------------------------------------
 # Each range is (start, stop, step) — stop is EXCLUSIVE, like Python's range()
 # but supports floats.  A single-value "range" looks like (val, val+step, step).
@@ -119,13 +131,20 @@ LEAF_MATRIX_LABEL_PARAMS = ["leaf_len", "leaf_start_thickness", "leaf_end_thickn
 
 STROIK_RANGES = {
     "leaf_len":  (34.0, 37, 1),   # mm — 35.0, 35.5, 36.0
-    "leaf_gap":  (1.5, 2.5, 0.2),    # mm — 1.75, 1.80, 1.85, 1.90, 1.95, 2.00
+    "leaf_gap":  (1.5, 3.1, 0.2),    # mm — 1.75, 1.80, 1.85, 1.90, 1.95, 2.00
 }
 
+# LISTEK_RANGES = {
+#     "leaf_end_thickness":   (0.2, 0.26, 0.02),   # mm
+#     "leaf_start_thickness": (1.40, 1.46, 0.02),   # mm
+#     "leaf_len":             (34.0, 37, 1),     # mm — 35.0, 35.5, 36.0
+# }
+
+# Burdon
 LISTEK_RANGES = {
-    "leaf_end_thickness":   (0.2, 0.26, 0.02),   # mm
-    "leaf_start_thickness": (1.40, 1.46, 0.02),   # mm
-    "leaf_len":             (34.0, 37, 1),     # mm — 35.0, 35.5, 36.0
+    "leaf_end_thickness":   (1, 1.2, 0.2),   # mm
+    "leaf_start_thickness": (0.2, 1.2, 0.2),   # mm
+    "leaf_len":             (36.0, 37, 1),     # mm — 35.0, 35.5, 36.0
 }
 
 ########################################################################

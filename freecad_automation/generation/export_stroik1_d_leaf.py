@@ -508,15 +508,15 @@ def run():
     doc = FreeCAD.openDocument(PROJECT_PATH)
 
     varset = doc.getObject("VarSet")
-    stroik_body = doc.getObject("Body")      # Label: stroik
-    listek_body = doc.getObject("Body001")   # Label: listek
+    stroik_body = doc.getObject("Body")      # Label: MainPart
+    listek_body = doc.getObject("Body002")   # Label: Leaf
 
     if not varset:
         print("ERROR: VarSet not found in project"); return
     if not stroik_body:
-        print("ERROR: Body 'stroik' not found"); return
+        print("ERROR: Body 'MainPart' (Body) not found"); return
     if not listek_body:
-        print("ERROR: Body 'listek' not found"); return
+        print("ERROR: Body 'Leaf' (Body002) not found"); return
 
     build_label_solid = None
     apply_label_to_shape = None

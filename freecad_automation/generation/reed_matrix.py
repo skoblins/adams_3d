@@ -206,12 +206,12 @@ def build_reed_labels(lines, x, y, face_w, face_h, depth, margin,
         fit_h = avail_h
 
     # Divide available height among lines with small gap
-    line_gap = -0.3  # mm between lines (negative = overlap/tighter)
+    line_gap = 0  # mm between lines (negative = overlap/tighter)
     line_h = (fit_h - (n_lines - 1) * line_gap) / n_lines
     if line_h <= 0:
         return []
 
-    text_height = line_h * 0.55
+    text_height = line_h * 0.3
 
     face_cx = x + face_w / 2.0
     face_cy = y + face_h / 2.0
@@ -365,14 +365,6 @@ def run():
 
         oriented = orient_shape_on_face(stroik_body.Shape, bottom_face)
 
-        # Flip 180° around X — Face11 normal points inward, so the
-        # default orient puts the part upside-down.
-        bb = oriented.BoundBox
-        cx = bb.Center
-        oriented.rotate(cx, FreeCAD.Vector(1, 0, 0), 180)
-        bb = oriented.BoundBox
-        oriented.translate(FreeCAD.Vector(-bb.XMin, -bb.YMin, -bb.ZMin))
-
         # Label text: one line per parameter, shortest form
         label_lines = []
         for p in REED_MATRIX_LABEL_PARAMS:
@@ -396,18 +388,18 @@ def run():
     max_bx = max(s.BoundBox.XLength for s, _ in entries)
     max_by = max(s.BoundBox.YLength for s, _ in entries)
 
-    # Raft is circular: radius = sqrt((w/2+ext)^2 + (h/2+ext)^2)
+    # Raft extends beyond the reed footprint by ext on each side
     ext = REED_MATRIX_RAFT_EXTEND
-    max_raft_d = 2.0 * math.sqrt((max_bx / 2.0 + ext) ** 2
-                                  + (max_by / 2.0 + ext) ** 2)
+    raft_w = max_bx + 2.0 * ext
+    raft_h = max_by + 2.0 * ext
 
-    cell_x = max(max_bx, max_raft_d) + REED_MATRIX_SPACING
-    cell_y = max(max_by, max_raft_d) + REED_MATRIX_SPACING
+    cell_x = raft_w + REED_MATRIX_SPACING
+    cell_y = raft_h + REED_MATRIX_SPACING
 
     bed_x = PRUSA_BED_X - 2.0 * PRUSA_BED_MARGIN
     bed_y = PRUSA_BED_Y - 2.0 * PRUSA_BED_MARGIN
 
-    # Try both orientations (swap cell axes)
+    # Try both orientations (swap cell axes) — prefer most square-like layout
     best = None
     for swap in (False, True):
         cx, cy = (cell_y, cell_x) if swap else (cell_x, cell_y)
@@ -421,13 +413,14 @@ def run():
                 continue
             total_w = cols * cx
             total_h = rows * cy
-            area = total_w * total_h
-            if best is None or area < best["area"]:
+            # Prefer most square-like shape (aspect ratio closest to 1)
+            aspect = max(total_w, total_h) / max(min(total_w, total_h), 1e-9)
+            if best is None or aspect < best["aspect"]:
                 best = {
                     "cols": cols, "rows": rows,
                     "cell_x": cx, "cell_y": cy,
                     "total_w": total_w, "total_h": total_h,
-                    "swap": swap, "area": area,
+                    "swap": swap, "aspect": aspect,
                 }
 
     if best is None:
@@ -478,25 +471,34 @@ def run():
         placed.translate(FreeCAD.Vector(gx, gy, 0))
         all_reed_solids.append(placed)
 
-        # Build a thin circular raft around the reed footprint at z=0
+        # Build a thin rounded-rectangle raft around the reed footprint at z=0
         ext = REED_MATRIX_RAFT_EXTEND
-        raft_cx = gx + bb.XLength / 2.0
-        raft_cy = gy + bb.YLength / 2.0
-        raft_r = math.sqrt((bb.XLength / 2.0 + ext) ** 2
-                           + (bb.YLength / 2.0 + ext) ** 2)
-        raft = Part.makeCylinder(
-            raft_r, REED_MATRIX_RAFT_THICKNESS,
-            FreeCAD.Vector(raft_cx, raft_cy, 0),
-            FreeCAD.Vector(0, 0, 1),
-        )
+        raft_x = gx - ext
+        raft_y = gy - ext
+        rw = bb.XLength + 2.0 * ext
+        rh = bb.YLength + 2.0 * ext
+        fillet_r = min(rw, rh) / 2.0  # fully rounded short ends
+        raft_wire = Part.makePolygon([
+            FreeCAD.Vector(raft_x, raft_y, 0),
+            FreeCAD.Vector(raft_x + rw, raft_y, 0),
+            FreeCAD.Vector(raft_x + rw, raft_y + rh, 0),
+            FreeCAD.Vector(raft_x, raft_y + rh, 0),
+            FreeCAD.Vector(raft_x, raft_y, 0),
+        ])
+        try:
+            raft_wire = raft_wire.makeFillet2d(fillet_r,
+                                               raft_wire.Vertexes)
+        except Exception:
+            pass  # proceed with sharp corners if fillet fails
+        raft_face = Part.Face(raft_wire)
+        raft = raft_face.extrude(FreeCAD.Vector(0, 0, REED_MATRIX_RAFT_THICKNESS))
         all_reed_solids.append(raft)
 
-        # Build label on the raft circular area
-        # Use bounding square of the circle for label layout
-        lx = raft_cx - raft_r
-        ly = raft_cy - raft_r
-        lw = 2.0 * raft_r
-        lh = 2.0 * raft_r
+        # Build label on the raft rectangular area
+        lx = raft_x
+        ly = raft_y
+        lw = rw
+        lh = rh
 
         glyph_solids = build_reed_labels(
             label_lines, lx, ly, lw, lh,

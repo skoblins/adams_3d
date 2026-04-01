@@ -124,15 +124,15 @@ def open_project():
     doc = FreeCAD.openDocument(PROJECT_PATH)
 
     varset = doc.getObject("VarSet")
-    stroik_body = doc.getObject("Body")       # Label: stroik
-    listek_body = doc.getObject("Body001")    # Label: listek
+    stroik_body = doc.getObject("Body")       # Label: MainPart
+    listek_body = doc.getObject("Body002")    # Label: Leaf
 
     if not varset:
         raise RuntimeError("VarSet not found in project")
     if not stroik_body:
-        raise RuntimeError("Body 'stroik' not found")
+        raise RuntimeError("Body 'MainPart' (Body) not found")
     if not listek_body:
-        raise RuntimeError("Body 'listek' not found")
+        raise RuntimeError("Body 'Leaf' (Body002) not found")
 
     return doc, varset, stroik_body, listek_body
 
@@ -296,6 +296,13 @@ def collect_listek_pockets(doc, varset, listek_body):
         else:
             print(f"  SKIP {tag} — invalid shape")
 
+    # Normalize all pockets to the biggest size — uniform walls, simpler box
+    if pocket_sizes:
+        max_sx = max(sx for sx, _ in pocket_sizes)
+        max_sy = max(sy for _, sy in pocket_sizes)
+        print(f"  Uniform pocket size: {max_sx:.1f}x{max_sy:.1f} mm")
+        pocket_sizes = [(max_sx, max_sy)] * len(pocket_sizes)
+
     return pocket_sizes, pocket_labels
 
 
@@ -331,5 +338,12 @@ def collect_stroik_pockets(doc, varset, stroik_body):
             print(f"  {tag} -> pocket {sx:.1f}x{sy:.1f} mm")
         else:
             print(f"  SKIP {tag} — invalid shape")
+
+    # Normalize all pockets to the biggest size — uniform walls, simpler box
+    if pocket_sizes:
+        max_sx = max(sx for sx, _ in pocket_sizes)
+        max_sy = max(sy for _, sy in pocket_sizes)
+        print(f"  Uniform pocket size: {max_sx:.1f}x{max_sy:.1f} mm")
+        pocket_sizes = [(max_sx, max_sy)] * len(pocket_sizes)
 
     return pocket_sizes, pocket_labels

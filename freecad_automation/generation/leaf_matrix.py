@@ -6,7 +6,7 @@ Generates two STL files:
   - leaf_matrix_labels.stl — text labels (slicer modifier, different material)
 
 Each leaf is oriented to lie on its bottom face
-(Body001.Chamfer002.Face2) and arranged in a grid that fits the Prusa
+(Body002.Pocket006.Face2) and arranged in a grid that fits the Prusa
 print area.  Labels show parameter values in the shortest possible form
 and are positioned flush with each leaf's bottom face so that after
 loading into the slicer both files are immediately ready for slicing.
@@ -273,7 +273,7 @@ def run():
     face_feature = doc.getObject(LEAF_MATRIX_BOTTOM_FACE_FEATURE)
     if face_feature is None:
         print(f"WARN: Feature '{LEAF_MATRIX_BOTTOM_FACE_FEATURE}' not found, "
-              f"falling back to Body001 for face lookup")
+              f"falling back to Body002 for face lookup")
 
     # ── Collect oriented shapes ──────────────────────────────────────
     entries = []  # list of (oriented_shape, label_text)

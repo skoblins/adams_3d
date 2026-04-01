@@ -1,11 +1,11 @@
 include <variants-reed-pipe.scad>
 
-variants_pipe_len = 180;
+variants_pipe_len = 200;
 variants_pipe_in_d = 8;
-//variants_pipe_thickness_top = 4;
-//variants_pipe_thickness_bottom = 10;
 variants_pipe_thickness_top = 4;
-variants_pipe_thickness_bottom = 8;
+variants_pipe_thickness_bottom = 10;
+//variants_pipe_thickness_top = 6;
+//variants_pipe_thickness_bottom = 6;
 variants_pipe_bottom_d = variants_pipe_in_d + 2 * variants_pipe_thickness_bottom;
 variants_pipe_plug_in_d = 18;
 variants_pipe_plug_out_d = 20;

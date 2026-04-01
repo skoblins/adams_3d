@@ -188,9 +188,10 @@ def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
         sx_raw, sy_raw = pocket_sizes[idx]
         sx, sy = (sy_raw, sx_raw) if swap else (sx_raw, sy_raw)
         row = idx // cols
-        col = idx % cols
+        col = (cols - 1) - (idx % cols)  # mirror columns for face-down printing
 
-        # Pocket position — identical to box_prepare.py
+        # Pocket position — mirrored column order so labels match pockets
+        # after the lid is flipped 180° for face-down printing
         px = x0 + col * step_x + (cell_x - sx) / 2.0
         py = y0 + row * step_y + (cell_y - sy) / 2.0
 
@@ -292,13 +293,16 @@ def build_lid_text_modifier(layout, pocket_sizes, pocket_labels,
     return text_shape
 
 
-def build_lid_summary(layout, ranges, label_depth):
+def build_lid_summary(layout, ranges, label_depth, extra_lines=None):
     """Build a multi-line summary label on the lid top surface.
 
     Each parameter range gets its own line.  Lines are stacked vertically,
     auto-scaled to fit within the lid width and height, then centred on
     the top face.  Uses direct wire-string rendering with scaling instead
     of build_label_solid (which doesn't constrain to face bounds).
+
+    *extra_lines* — optional list of pre-formatted strings appended after
+    the range summary (e.g. ``["di=5.3"]``).
     """
     try:
         from config import LABEL_MACRO_PATH as _macro_path
@@ -319,16 +323,26 @@ def build_lid_summary(layout, ranges, label_depth):
     width = layout["width"]
     height = layout["height"]
     lines = _format_range_summary(ranges)
+    if extra_lines:
+        lines.extend(extra_lines)
     if not lines:
         return None
 
     lid_top_z = LISTEK_LID_THICKNESS + LISTEK_LID_LIP_HEIGHT
+
+    # Orient text along the longest edge so it fits best.
+    rotated = height > width
+    if rotated:
+        long_dim, short_dim = height, width
+    else:
+        long_dim, short_dim = width, height
+
     n_lines = len(lines)
 
     pad = 1.5
     line_gap = 0.8  # mm between lines
-    face_w = width - 2.0 * pad
-    total_avail_h = height - 2.0 * pad
+    face_w = long_dim - 2.0 * pad       # text flows along longest edge
+    total_avail_h = short_dim - 2.0 * pad  # lines stack along short edge
 
     if face_w <= 0 or total_avail_h <= 0:
         return None
@@ -359,14 +373,37 @@ def build_lid_summary(layout, ranges, label_depth):
         # Even after scaling, proceed with whatever we have
         pass
 
-    # Actual line height after scaling (for vertical stacking)
-    actual_line_h = text_h * 1.3  # approximate line height with descenders
-    total_text_h = n_lines * actual_line_h + (n_lines - 1) * line_gap
+    # Measure actual rendered height and scale down if lines don't fit
+    # vertically.  Iterate until the total stacked height fits.
+    for _v_attempt in range(5):
+        line_bbs = []
+        for line_text in lines:
+            wires = Part.makeWireString(
+                line_text, font_dir, font_file, text_h, 0.0)
+            if not wires:
+                line_bbs.append(None)
+                continue
+            all_w = [w for cw in wires for w in cw]
+            if all_w:
+                line_bbs.append(Part.makeCompound(all_w).BoundBox)
+            else:
+                line_bbs.append(None)
+
+        max_rendered_h = max((b.YLength for b in line_bbs if b), default=text_h)
+        actual_line_h = max_rendered_h * 1.1  # small extra clearance
+        total_text_h = n_lines * actual_line_h + (n_lines - 1) * line_gap
+        if total_text_h <= total_avail_h:
+            break
+        # Scale down proportionally to fit
+        text_h *= (total_avail_h / total_text_h) * 0.95
+
     y_start = pad + (total_avail_h - total_text_h) / 2.0  # vertical centring
 
     extrude_dir = FreeCAD.Vector(0, 0, label_depth)
     offset_vec = FreeCAD.Vector(0, 0, -0.01)  # avoid coplanar issues
 
+    # Build text in a virtual (long_dim × short_dim) space along X,
+    # then rotate into place if the longest edge is along Y.
     all_solids = []
     for i, line_text in enumerate(lines):
         wires_per_char = Part.makeWireString(
@@ -401,10 +438,21 @@ def build_lid_summary(layout, ranges, label_depth):
         return None
 
     if len(all_solids) == 1:
-        return all_solids[0]
-    result = all_solids[0]
-    for s in all_solids[1:]:
-        result = result.fuse(s)
+        result = all_solids[0]
+    else:
+        result = all_solids[0]
+        for s in all_solids[1:]:
+            result = result.fuse(s)
+
+    # Rotate the text block from the virtual space onto the actual lid.
+    if rotated:
+        vcx = long_dim / 2.0
+        vcy = short_dim / 2.0
+        result.rotate(FreeCAD.Vector(vcx, vcy, 0),
+                      FreeCAD.Vector(0, 0, 1), 90)
+        result.translate(FreeCAD.Vector(width / 2.0 - vcx,
+                                        height / 2.0 - vcy, 0))
+
     return result
 
 
@@ -452,7 +500,10 @@ def run():
             pocket_labels=box_labels,
             label_depth=LISTEK_LID_LABEL_DEPTH,
         )
-        summary_shape = build_lid_summary(layout, ranges, LISTEK_LID_LABEL_DEPTH)
+        d_inner_val = float(getattr(varset, "d_inner"))
+        extra = [f"di={_short_val(d_inner_val)}"]
+        summary_shape = build_lid_summary(layout, ranges, LISTEK_LID_LABEL_DEPTH,
+                                          extra_lines=extra)
         if summary_shape is not None:
             if text_shape is not None:
                 text_shape = text_shape.fuse(summary_shape)

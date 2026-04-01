@@ -16,7 +16,7 @@ run_freecad() {
     freecad.cmd "$@"
 }
 
-VALID="reeds leafs leaf_matrix reed_matrix box lid reed_box reed_lid"
+VALID="reeds leafs leaf_matrix reed_matrix box lid reed_box reed_lid ring"
 
 if [[ $# -eq 0 ]]; then
     echo "Usage: $0 <target> [target ...]"
@@ -27,7 +27,7 @@ fi
 # Validate all arguments first
 for arg in "$@"; do
     case "$arg" in
-        reeds|leafs|leaf_matrix|reed_matrix|box|lid|reed_box|reed_lid) ;;
+        reeds|leafs|leaf_matrix|reed_matrix|box|lid|reed_box|reed_lid|ring) ;;
         *)
             echo "ERROR: unknown target '$arg' (valid: $VALID)"
             exit 1
@@ -111,6 +111,7 @@ for arg in "$@"; do
         leafs) script="leaf.py" ;;
         leaf_matrix) script="leaf_matrix.py" ;;
         reed_matrix) script="reed_matrix.py" ;;
+        ring) script="ring.py" ;;
         lid)   script="lid.py"  ;;
         reed_lid)
             echo "=== Starting: reed_lid ==="

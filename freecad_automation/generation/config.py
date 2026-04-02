@@ -125,13 +125,13 @@ RING_STL_NAME = "ring.stl"
 # pipe reed
 
 STROIK_RANGES = {
-    "leaf_len":  (30.0, 35, 1), # [mm]
+    "leaf_len":  (29.0, 30, 1), # [mm]
     "leaf_gap":  (0.5, 0.8, 0.1), # [mm]
 }
 
 LISTEK_RANGES = {
     "leaf_end_thickness":   (0.2, 0.3, 0.1),   # mm
-    "leaf_start_thickness": (1.3, 1.6, 0.1),   # mm
+    "leaf_start_thickness": (1.2, 1.4, 0.1),   # mm
     "leaf_len":             STROIK_RANGES["leaf_len"],     # mm 
 }
 

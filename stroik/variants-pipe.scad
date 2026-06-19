@@ -19,7 +19,7 @@ variants_pipe_holes=[
                          [0.09, 7/variants_reed_pipe_in_diameter], // d
                         // 9 a
                         //[0.105, 7/variants_reed_pipe_in_diameter], // d
-                        [0.25, 8/variants_reed_pipe_in_diameter],  // e
+                        [0.26, 8/variants_reed_pipe_in_diameter],  // e
                         [0.39, 5/variants_reed_pipe_in_diameter],  // f
                         [0.43, 6/variants_reed_pipe_in_diameter],  // f#
                         [0.53, 7/variants_reed_pipe_in_diameter], // g

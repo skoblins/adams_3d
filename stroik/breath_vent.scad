@@ -7,10 +7,10 @@ $fn = 100;
 vent_thickness = 5;
 odlewac_len = 40;
 // mod for my old pipe!
-variants_pipe_plug_out_d = 15;
-//old_pipe_plug_in_d = 7.5;
-//old_pipe_plug_out_d = 9.5;
-//plug_to_old_mouth_pipe_len = 12.5;
+//variants_pipe_plug_out_d = 15;
+old_pipe_plug_in_d = 7.5;
+old_pipe_plug_out_d = 9.5;
+plug_to_old_mouth_pipe_len = 12.5;
 
 cutting_block_w = variants_pipe_plug_out_d + 2;
 cutting_block_len = variants_breath_pipe_len;
@@ -77,19 +77,19 @@ module  breath_vent(){
 //    }
 //}
 
-//module plug_to_old_mouth_pipe() {
-//    base_pipe_b(l = plug_to_old_mouth_pipe_len + eps, d_in = old_pipe_plug_in_d, d_out = old_pipe_plug_out_d);
-//}
+module plug_to_old_mouth_pipe() {
+    base_pipe_b(l = plug_to_old_mouth_pipe_len + eps, d_in = old_pipe_plug_in_d, d_out = old_pipe_plug_out_d);
+}
 
-//module connection_between_2_diameters() {
-  //  base_pipe_b(l = 2 + eps, d_in = old_pipe_plug_in_d, d_out = variants_pipe_plug_out_d);
-//}
+module connection_between_2_diameters() {
+    base_pipe_b(l = 2 + eps, d_in = old_pipe_plug_in_d, d_out = variants_pipe_plug_out_d);
+}
 
-//stack(heights = [plug_to_old_mouth_pipe_len, plug_to_old_mouth_pipe_len + 1, //plug_to_old_mouth_pipe_len + 1 + variants_breath_pipe_len]) {
-    //plug_to_old_mouth_pipe();
-    //connection_between_2_diameters();
+stack(heights = [plug_to_old_mouth_pipe_len, plug_to_old_mouth_pipe_len + 1, plug_to_old_mouth_pipe_len + 1 + variants_breath_pipe_len]) {
+    plug_to_old_mouth_pipe();
+    connection_between_2_diameters();
     breath_vent();
-//}
+}
 
-//%translate([10, 0, plug_to_old_mouth_pipe_len + 1]) breath_vent_flap();
+%translate([10, 0, plug_to_old_mouth_pipe_len + 1]) breath_vent_flap();
 

@@ -130,7 +130,7 @@ STROIK_RANGES = {
 }
 
 LISTEK_RANGES = {
-    "leaf_end_thickness":   (0.3, 0.4, 0.1),   # mm
+    "leaf_end_thickness":   (0.2, 0.4, 0.1),   # mm
     "leaf_start_thickness": (1.2, 1.4, 0.1),   # mm
     "leaf_len":             STROIK_RANGES["leaf_len"],     # mm 
 }

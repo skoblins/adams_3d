@@ -44,7 +44,7 @@ if(select == 1 || select == 2) {
 // second / upper half of the pipe
 up(my_connector_len*1.5)intersection() {
     my_pipe();
-    cutting_operator(where_coeff = where_cut, connector_len = my_connector_len, thickness = 4);
+    cutting_operator(where_coeff = where_cut, connector_len = my_connector_len + 0.2, thickness = 4);
 }
 }
 //support_struct();

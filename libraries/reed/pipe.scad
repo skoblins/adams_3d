@@ -32,9 +32,9 @@ module curbs(l, d1, d2, flute_count) {
     }
 }
 
-module pipe_plug(l, d1, d2) {
+module pipe_plug(l, d1, d2, coeff=1.05) {
 	base_pipe(l, d1, (d2-d1)/2, (d2-d1)/2);
-	curbs(l, d2, d2*1.05, 6);
+	curbs(l, d2, d2*coeff, 6);
 }
 
 module pipe_horn_plug(l, d1, d2) {
@@ -105,7 +105,7 @@ module pipe(l, d_in, reed_d_in, thickness_bottom, thickness_top, holes) {
 	translate([0,0,l]) pipe_reed_socket(reed_socket_len, d_in+2*thickness_top, variants_pipe_plug_stopper_d, reed_d_in+reed_gap_eps, reed_d_in*1.1+reed_gap_eps, variants_pipe_plug_in_d);
 
 	// pipe plug (to the bag)
-	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, variants_pipe_plug_out_d);
+	translate([0,0,l+reed_socket_len]) pipe_plug(pipe_plug_len, variants_pipe_plug_in_d, variants_pipe_plug_out_d, 1);
 
 	// // ornament before the pipe plug (to the horn)
 	// difference() {

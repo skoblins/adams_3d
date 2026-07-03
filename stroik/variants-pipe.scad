@@ -21,12 +21,12 @@ variants_pipe_holes=[
                         //[0.105, 7/variants_reed_pipe_in_diameter], // d
                         [0.26, 8/variants_reed_pipe_in_diameter],  // e
                         [0.39, 5/variants_reed_pipe_in_diameter],  // f
-                        [0.43, 6/variants_reed_pipe_in_diameter],  // f#
+                        [0.455, 6/variants_reed_pipe_in_diameter],  // f#
                         [0.53, 7/variants_reed_pipe_in_diameter], // g
                         [0.68, 7/variants_reed_pipe_in_diameter],  // a
                         [/*0.725*/0.77, 6/variants_reed_pipe_in_diameter], // b / h
-                        [0.865, 5/variants_reed_pipe_in_diameter], // c
-                        [0.94, 5/variants_reed_pipe_in_diameter],  // d
+                        [0.86, 6/variants_reed_pipe_in_diameter], // c
+                        [0.935, 6/variants_reed_pipe_in_diameter],  // d
 ];
 
 variants_breath_pipe_len = 60;

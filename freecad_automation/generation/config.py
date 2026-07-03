@@ -40,7 +40,7 @@ LINEAR_DEFLECTION = 0.1   # mm  (smaller = finer mesh)
 ENABLE_STROIK_LABEL = True
 STROIK_LABEL_VAR = "leaf_gap"
 STROIK_LABEL_FACE = "Face2"
-STROIK_LABEL_TEXT_HEIGHT = 3.7
+STROIK_LABEL_TEXT_HEIGHT = 2
 STROIK_LABEL_DEPTH = 0.4
 STROIK_LABEL_EMBOSS = False
 
@@ -125,8 +125,8 @@ RING_STL_NAME = "ring.stl"
 # pipe reed
 
 STROIK_RANGES = {
-    "leaf_len":  (29.0, 30, 1), # [mm]
-    "leaf_gap":  (0.3, 0.5, 0.1), # [mm]
+    "leaf_len":  (28.0, 29, 1), # [mm]
+    "leaf_gap":  (1.8, 1.9, 0.1), # [mm]
 }
 
 LISTEK_RANGES = {

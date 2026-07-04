@@ -126,7 +126,7 @@ RING_STL_NAME = "ring.stl"
 
 STROIK_RANGES = {
     "leaf_len":  (28.0, 29, 1), # [mm]
-    "leaf_gap":  (1.8, 1.9, 0.1), # [mm]
+    "leaf_gap":  (0.7, 0.9, 0.1), # [mm]
 }
 
 LISTEK_RANGES = {

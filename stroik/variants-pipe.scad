@@ -16,16 +16,16 @@ horn_plug_out_d = 20;
 horn_pos = -horn_plug_len;
 
 variants_pipe_holes=[
-                         [0.092, 7/variants_reed_pipe_in_diameter], // d
+                         [0.094, 7/variants_reed_pipe_in_diameter], // d
                         // 9 a
-                        //[0.108, 7/variants_reed_pipe_in_diameter], // d
-                        [0.267, 8/variants_reed_pipe_in_diameter],  // e
-                        [0.400, 5/variants_reed_pipe_in_diameter],  // f
-                        [0.466, 6/variants_reed_pipe_in_diameter],  // f#
-                        [0.543, 7/variants_reed_pipe_in_diameter], // g
-                        [0.697, 7/variants_reed_pipe_in_diameter],  // a
-                        [/*0.743*/0.789, 6/variants_reed_pipe_in_diameter], // b / h
-                        [0.882, 6/variants_reed_pipe_in_diameter], // c
+                        //[0.111, 7/variants_reed_pipe_in_diameter], // d
+                        [0.274, 8/variants_reed_pipe_in_diameter],  // e
+                        [0.410, 5/variants_reed_pipe_in_diameter],  // f
+                        [0.477, 6/variants_reed_pipe_in_diameter],  // f#
+                        [0.557, 7/variants_reed_pipe_in_diameter], // g
+                        [0.715, 7/variants_reed_pipe_in_diameter],  // a
+                        [/*0.762*/0.809, 6/variants_reed_pipe_in_diameter], // b / h
+                        [0.905, 6/variants_reed_pipe_in_diameter], // c
                         [0.958, 6/variants_reed_pipe_in_diameter],  // d
 ];
 

@@ -28,7 +28,7 @@ module cutting_operator(where_coeff, connector_len, thickness) {
 
 // first / bottom half of the pipe
 
-where_cut = 0.58;
+where_cut = 0.57;
 my_connector_len = 18;
 
 select = 2;

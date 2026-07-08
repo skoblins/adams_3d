@@ -31,7 +31,7 @@ module cutting_operator(where_coeff, connector_len, thickness) {
 where_cut = 0.57;
 my_connector_len = 18;
 
-select = 2;
+select = 0;
 
 if(select == 0 || select == 2){
 difference() {

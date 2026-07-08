@@ -68,7 +68,7 @@ module horn(horn_len = 85, horn_degree = 80, horn_twist = 90, grow_coeff = 1.25,
 	unit = resolution;
 
 	function diameter(z)    = variants_pipe_bottom_d + grow_coeff * z / horn_len * variants_pipe_bottom_d;
-	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95 + 0.4/*in the beginning it's too tight*/;
+	function in_diameter(z) = ((horn_len - z) / horn_len) * horn_plug_out_d + z / horn_len * diameter(z) * 0.95 + 0.8/*in the beginning it's too tight*/;
 	function rotation(z) = z / horn_len * horn_twist;
 	function scale_x(z) = 1 + 0.15 * z / horn_len;
 	function scale_y(z) = 1 - 0.15 * z / horn_len;
